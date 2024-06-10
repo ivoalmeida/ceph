@@ -25,18 +25,18 @@ Once this component is removed we should be ok to remove the overrides below
 Side nav
 ******************************************/
 
-$block-size: 2.7rem;
+$sidenav-block-size: 2.7rem;
 
 .cds--side-nav__submenu {
-  block-size: $block-size;
+  block-size: $sidenav-block-size;
 }
 
 a.cds--side-nav__link {
-  min-block-size: $block-size;
+  min-block-size: $sidenav-block-size;
 }
 
 .cds--side-nav__menu a.cds--side-nav__link {
-  block-size: $block-size;
+  block-size: $sidenav-block-size;
 }
 
 .cds--side-nav__submenu-title,
@@ -60,16 +60,22 @@ a.cds--side-nav__link > .cds--side-nav__link-text {
 /******************************************
 Header
 ******************************************/
+$header-block-size: 3.9rem;
 
 a.cds--header__menu-item,
 .cds--header__action,
 .cds--header {
-  block-size: 3.9rem;
+  block-size: $header-block-size;
   font-size: calc(type.type-scale(4) + 0.5px);
 }
 
 button.cds--header__menu-trigger.cds--header__action.cds--header__menu-toggle {
-  inline-size: 3.9rem;
+  inline-size: $header-block-size;
+}
+
+button.cds--overflow-menu {
+  block-size: $header-block-size;
+  inline-size: calc($header-block-size - 1rem);
 }
 
 /******************************************
