@@ -19,12 +19,12 @@
     <cds-header-navigation>
       <cd-language-selector class="d-flex"></cd-language-selector>
     </cds-header-navigation>
-    <cds-header-action>
+    <cds-header-action cdOutsideClick>
       <cd-notifications (click)="toggleRightSidebar()"></cd-notifications>
     </cds-header-action>
-      <cds-header-action><cd-dashboard-help></cd-dashboard-help></cds-header-action>
-    <cds-header-action><cd-administration></cd-administration></cds-header-action>
-    <cds-header-action><cd-identity></cd-identity></cds-header-action>
+    <cds-header-action cdOutsideClick><cd-dashboard-help></cd-dashboard-help></cds-header-action>
+    <cds-header-action cdOutsideClick><cd-administration></cd-administration></cds-header-action>
+    <cds-header-action cdOutsideClick><cd-identity></cd-identity></cds-header-action>
   </cds-header-global>
 </cds-header>
 <!-- ***************************** -->
