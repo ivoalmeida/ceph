@@ -1,7 +1,7 @@
 @use './src/styles/vendor/variables' as vv;
 
 $theme: (
-  text-disabled: vv.$gray-700,
+  text-disabled: vv.$gray-500,
   text-error: vv.$danger,
   text-helper: vv.$body-color,
   text-inverse: vv.$black,
@@ -15,5 +15,6 @@ $theme: (
   background: vv.$secondary,
   layer-01: vv.$secondary,
   icon-primary: vv.$gray-100,
-  icon-secondary: vv.$gray-300
+  icon-secondary: vv.$gray-300,
+  link-primary: vv.$primary,
 );
