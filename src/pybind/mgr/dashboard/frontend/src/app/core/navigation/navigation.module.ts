@@ -30,7 +30,7 @@ import UserFilledIcon from '@carbon/icons/es/user--filled/20';
 import SettingsIcon from '@carbon/icons/es/settings/20';
 import HelpIcon from '@carbon/icons/es/help/20';
 import NotificationIcon from '@carbon/icons/es/notification/20';
-import LaunchIcon from '@carbon/icons/es/launch/20';
+import LaunchIcon from '@carbon/icons/es/launch/16';
 import DashboardIcon from '@carbon/icons/es/template/20';
 import ClusterIcon from '@carbon/icons/es/web-services--cluster/20';
 import MultiClusterIcon from '@carbon/icons/es/edge-cluster/20';
