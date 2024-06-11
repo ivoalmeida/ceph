@@ -187,8 +187,7 @@ $sidebar-width: 20.8rem;
     z-index: 999;
 
     &.active {
-      // margin-left: -$sidebar-width;
-      margin-left: -16rem;
+      margin-left: -$sidebar-width;
     }
   }
 }

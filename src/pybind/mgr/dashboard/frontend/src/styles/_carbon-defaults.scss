@@ -3,12 +3,12 @@
   $flex-grid-columns: 16,
   $use-flexbox-grid: true,
 );
-@use './themes/upstream';
+@use './themes/default';
 @use '@carbon/styles/scss/compat/themes' as compat;
 @use '@carbon/styles/scss/themes';
 @use '@carbon/styles/scss/theme' with (
   $theme: compat.$g90,
-  $fallback: upstream.$theme,
+  $fallback: default.$theme,
 );
 @use '@carbon/styles';
 @use '@carbon/type';
@@ -57,6 +57,15 @@ a.cds--side-nav__link > .cds--side-nav__link-text {
   min-width: 4.2rem;
 }
 
+.cds--side-nav__navigation {
+  transition: 250ms ease;
+  left: -4.8rem;
+}
+
+.cds--side-nav--expanded{
+  transition: 250ms ease;
+  left: 0;
+}
 /******************************************
 Header
 ******************************************/
