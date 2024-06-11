@@ -39,7 +39,6 @@ import ObjectIcon from '@carbon/icons/es/object-storage/20';
 import FileIcon from '@carbon/icons/es/file-storage/20';
 import ObservabilityIcon from '@carbon/icons/es/observed--hail/20';
 import AdminIcon from '@carbon/icons/es/network--admin-control/20';
-import { OutsideClickDirective } from './directives/outside-click.directive';
 
 @NgModule({
   imports: [
@@ -65,8 +64,7 @@ import { OutsideClickDirective } from './directives/outside-click.directive';
     NotificationsComponent,
     DashboardHelpComponent,
     AdministrationComponent,
-    IdentityComponent,
-    OutsideClickDirective
+    IdentityComponent
   ],
   exports: [NavigationComponent, BreadcrumbsComponent]
 })
