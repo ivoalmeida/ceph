@@ -39,6 +39,8 @@ import ObjectIcon from '@carbon/icons/es/object-storage/20';
 import FileIcon from '@carbon/icons/es/file-storage/20';
 import ObservabilityIcon from '@carbon/icons/es/observed--hail/20';
 import AdminIcon from '@carbon/icons/es/network--admin-control/20';
+import LockedIcon from '@carbon/icons/es/locked/16';
+import LogoutIcon from '@carbon/icons/es/logout/16';
 
 @NgModule({
   imports: [
@@ -83,7 +85,9 @@ export class NavigationModule {
       ObjectIcon,
       FileIcon,
       ObservabilityIcon,
-      AdminIcon
+      AdminIcon,
+      LockedIcon,
+      LogoutIcon
     ]);
   }
 }

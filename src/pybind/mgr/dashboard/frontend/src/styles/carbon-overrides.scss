@@ -85,3 +85,10 @@ Modals
 .modal-dialog {
   margin-top: 5rem !important;
 }
+
+/******************************************
+Overflow menu
+******************************************/
+.cds--overflow-menu.cds--overflow-menu--open {
+  box-shadow: none;
+}

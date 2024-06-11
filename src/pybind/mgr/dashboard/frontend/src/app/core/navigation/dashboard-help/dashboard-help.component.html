@@ -10,13 +10,16 @@
             size="16"></svg>
     </a>
   </li>
-  <cds-overflow-menu-option routerLink="/api-docs"
-                            target="_blank"
-                            i18n>API
-    <svg cdsIcon="launch"
-         class="ms-2"
-         size="16"></svg>
-  </cds-overflow-menu-option>
+  <li>
+    <a routerLink="/api-docs"
+       target="_blank"
+       class="cds--overflow-menu-options__btn"
+       i18n>API
+      <svg cdsIcon="launch"
+           class="ms-2"
+           size="16"></svg>
+    </a>
+  </li>
   <cds-overflow-menu-option (click)="openAboutModal()"
                             i18n>About</cds-overflow-menu-option>
   <cds-overflow-menu-option (click)="openFeedbackModal()"
