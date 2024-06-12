@@ -26,6 +26,9 @@ import { FormlyFileTypeComponent } from '../forms/crud-form/formly-file-type/for
 import { FormlyFileValueAccessorDirective } from '../forms/crud-form/formly-file-type/formly-file-type-accessor';
 import { CheckedTableFormComponent } from './checked-table-form/checked-table-form.component';
 
+import {TableModule} from 'carbon-components-angular';
+import { CarbonTableComponent } from './carbon-table/carbon-table.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -69,7 +72,8 @@ import { CheckedTableFormComponent } from './checked-table-form/checked-table-fo
       ],
       wrappers: [{ name: 'input-wrapper', component: FormlyInputWrapperComponent }]
     }),
-    FormlyBootstrapModule
+    FormlyBootstrapModule,
+    TableModule
   ],
   declarations: [
     TableComponent,
@@ -84,7 +88,8 @@ import { CheckedTableFormComponent } from './checked-table-form/checked-table-fo
     FormlyInputWrapperComponent,
     FormlyFileTypeComponent,
     FormlyFileValueAccessorDirective,
-    CheckedTableFormComponent
+    CheckedTableFormComponent,
+    CarbonTableComponent
   ],
   exports: [
     TableComponent,
