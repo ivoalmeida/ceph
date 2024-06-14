@@ -1,21 +1,66 @@
-<div class="dataTables_wrapper">
+<div cdsTheme="white">
+  <cds-table-container>
 
-  <div *ngIf="onlyActionHeader"
+  <!-- <div *ngIf="onlyActionHeader"
        class="dataTables_header clearfix">
     <div class="cd-datatable-actions">
       <ng-content select=".only-table-actions"></ng-content>
     </div>
-  </div>
-  <div class="dataTables_header clearfix" style="outline: 3px dashed hotpink"
-       *ngIf="toolHeader">
-    <!-- actions -->
-    <div class="cd-datatable-actions">
-      <ng-content select=".table-actions"></ng-content>
-    </div>
-    <!-- end actions -->
+  </div> -->
+
+  <cds-table-toolbar
+                     *ngIf="toolHeader">
+        <cds-table-toolbar-content>
+        <!-- search -->
+          <cds-table-toolbar-search *ngIf="searchField"
+                                    [expandable]="false"
+                                    [(ngModel)]="search"
+                                    (valueChange)="updateFilter($event)"
+                                    (clear)="onClearSearch()">
+          </cds-table-toolbar-search>                                    
+          <!-- end search -->
+          <!-- refresh button -->
+          <button cdsButton="ghost"
+                  [disabled]="!fetchData?.observers?.length"
+                  (click)="refreshBtn()"
+                  title="Refresh"
+                  [description]="status.msg"
+                  i18n-title
+                  i18n-description
+                  class="toolbar-action"
+                  placement="bottom">
+            <svg cdsIcon="renew" size="20" class="cds--toolbar-action__icon"></svg>
+          </button>
+          <!-- end refresh button -->
+          <!-- show hide columns -->
+          <button cdsButton="ghost"
+                  class="toolbar-action"
+                  [cdsOverflowMenu]="showHideColumnsRef"
+                  placement="bottom"
+                  [flip]="true"
+                  [offset]="{ x: 3, y: 0 }">
+            <svg cdsIcon="data-table" size="20" class="cds--toolbar-action__icon"></svg>
+          </button>
+          <ng-template #showHideColumnsRef>
+            <div style="padding: 0 1rem;" (click)="overflowOnClick($event)">
+              <cds-checkbox *ngFor="let column of columns"
+                            
+                            id="{{ column.prop }}{{ tableName }}"
+                            [name]="column.prop"
+                            [checked]="!column.isHidden"
+                            (checkedChange)="toggleColumn(column); false;">{{ column.name }}
+              </cds-checkbox>
+            </div>
+          </ng-template>
+          <!-- end show hide columns -->
+        
+        <!-- actions -->
+        <ng-content select=".table-actions"></ng-content>    
+        <!-- end actions -->
+      </cds-table-toolbar-content>
 
     <!-- column filters -->
-    <div *ngIf="columnFilters.length !== 0"
+    <!-- <div *ngIf="columnFilters.length !== 0"
          class="btn-group widget-toolbar">
       <div ngbDropdown
            placement="bottom-right"
@@ -53,31 +98,14 @@
           </ng-container>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- end column filters -->
 
-    <!-- search -->
-    <div class="input-group search"
-         *ngIf="searchField">
-      <span class="input-group-text">
-        <i [ngClass]="[icons.search]"></i>
-      </span>
-      <input aria-label="search"
-             class="form-control"
-             type="text"
-             [(ngModel)]="search"
-             (keyup)="updateFilter()">
-      <button type="button"
-              class="btn btn-light"
-              title="Clear"
-              (click)="onClearSearch()">
-        <i class="icon-prepend {{ icons.destroy }}"></i>
-      </button>
-    </div>
-    <!-- end search -->
+    
+    
 
     <!-- pagination limit -->
-    <div class="input-group dataTables_paginate"
+    <!-- <div class="input-group dataTables_paginate"
          *ngIf="limit">
       <input aria-label="table pagination"
              class="form-control"
@@ -88,11 +116,11 @@
              (click)="setLimit($event)"
              (keyup)="setLimit($event)"
              (blur)="setLimit($event)">
-    </div>
+    </div> -->
     <!-- end pagination limit-->
 
     <!-- show hide columns -->
-    <div class="widget-toolbar">
+    <!-- <div class="widget-toolbar">
       <div ngbDropdown
            autoClose="outside"
            class="tc_menuitem">
@@ -121,11 +149,11 @@
           </ng-container>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- end show hide columns -->
 
     <!-- refresh button -->
-    <div class="widget-toolbar tc_refreshBtn"
+    <!-- <div class="widget-toolbar tc_refreshBtn"
          *ngIf="fetchData.observers.length > 0">
 
       <button type="button"
@@ -136,9 +164,9 @@
         <i [ngClass]="[icons.large, icons.refresh]"
            [class.fa-spin]="updating || loadingIndicator"></i>
       </button>
-    </div>
+    </div> -->
     <!-- end refresh button -->
-  </div>
+  </cds-table-toolbar>
   <div class="dataTables_header clearfix"
        *ngIf="toolHeader && columnFiltered">
     <!-- filter chips for column filters -->
@@ -246,6 +274,7 @@
       </ng-template>
     </ngx-datatable-footer>
   </ngx-datatable>
+  </cds-table-container>
 </div>
 
 <!-- cell templates that can be accessed from outside -->

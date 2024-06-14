@@ -5,6 +5,11 @@ import { RouterModule } from '@angular/router';
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPipeFunctionModule } from 'ngx-pipe-function';
+import { TableModule, ButtonModule, IconModule, IconService, CheckboxModule } from 'carbon-components-angular';
+import AddIcon from '@carbon/icons/es/add/16';
+import FilterIcon from '@carbon/icons/es/filter/20';
+import ReloadIcon from '@carbon/icons/es/renew/20';
+import DataTableIcon from '@carbon/icons/es/data-table/20';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
@@ -26,7 +31,6 @@ import { FormlyFileTypeComponent } from '../forms/crud-form/formly-file-type/for
 import { FormlyFileValueAccessorDirective } from '../forms/crud-form/formly-file-type/formly-file-type-accessor';
 import { CheckedTableFormComponent } from './checked-table-form/checked-table-form.component';
 
-import {TableModule} from 'carbon-components-angular';
 import { CarbonTableComponent } from './carbon-table/carbon-table.component';
 
 @NgModule({
@@ -73,7 +77,10 @@ import { CarbonTableComponent } from './carbon-table/carbon-table.component';
       wrappers: [{ name: 'input-wrapper', component: FormlyInputWrapperComponent }]
     }),
     FormlyBootstrapModule,
-    TableModule
+    TableModule,
+    ButtonModule,
+    IconModule,
+    CheckboxModule
   ],
   declarations: [
     TableComponent,
@@ -98,7 +105,15 @@ import { CarbonTableComponent } from './carbon-table/carbon-table.component';
     TableActionsComponent,
     CRUDTableComponent,
     TablePaginationComponent,
-    CheckedTableFormComponent
+    CheckedTableFormComponent,
+    CarbonTableComponent
   ]
 })
-export class DataTableModule {}
+export class DataTableModule {
+  constructor(private iconService: IconService) {
+    this.iconService.registerAll([AddIcon]);
+    this.iconService.registerAll([FilterIcon]);
+    this.iconService.registerAll([ReloadIcon]);
+    this.iconService.registerAll([DataTableIcon]);
+  }
+}

@@ -1,4 +1,17 @@
-<div class="btn-group">
+<ng-container *ngIf="currentAction">
+  <button type="button"
+          cdsButton
+          title="{{ useDisableDesc(currentAction) }}"
+          (click)="useClickAction(currentAction)"
+          [disabled]="disableSelectionAction(currentAction)"
+          [routerLink]="useRouterLink(currentAction)"
+          [attr.aria-label]="currentAction.name"
+          [preserveFragment]="currentAction.preserveFragment ? '' : null">
+    <span i18n>{{ currentAction.name }}</span>
+    <svg class="cds--btn__icon" cdsIcon="add" size="16"></svg>
+  </button>
+</ng-container>
+<!-- <div class="btn-group">
   <ng-container *ngIf="currentAction">
     <button type="button"
             title="{{ useDisableDesc(currentAction) }}"
@@ -42,4 +55,4 @@
       </ng-container>
     </div>
   </div>
-</div>
+</div> -->

@@ -1,16 +1,23 @@
-<cds-table-container>
-  <cds-table-header *ngIf="title">
-      <h4 cdsTableHeaderTitle>{{title}}</h4>
-      <p cdsTableHeaderDescription>{{description}}</p>
-  </cds-table-header>
+<div cdsTheme="theme">
+  <cds-table-container>
+    <cds-table-header *ngIf="title">
+        <h4 cdsTableHeaderTitle>{{title}}</h4>
+        <p cdsTableHeaderDescription>{{description}}</p>
+    </cds-table-header>
 
-  <cds-table-toolbar>
-    <cds-table-toolbar-actions>
+    <cds-table-toolbar #toolbar>
+      <!-- BULK ACTIONS -->
+      <cds-table-toolbar-actions>
 
-    </cds-table-toolbar-actions>    
-  </cds-table-toolbar>
+      </cds-table-toolbar-actions>    
+      <!-- VISIBLE TOOLBAR ACTIONS -->
+      <cds-table-toolbar-content>
+        <cds-table-toolbar-search [expandable]="true"></cds-table-toolbar-search>
+      </cds-table-toolbar-content>
+    </cds-table-toolbar>
 
-  <cds-table model="dataModel">
-    <ng-content></ng-content>
-  </cds-table>
-</cds-table-container>
+    <cds-table [model]="dataModel">
+      <ng-content></ng-content>
+    </cds-table>
+  </cds-table-container>
+</div>
