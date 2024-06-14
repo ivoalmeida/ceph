@@ -274,6 +274,14 @@
       </ng-template>
     </ngx-datatable-footer>
   </ngx-datatable>
+    <cds-pagination	[disabled]="false"
+                    [pageInputDisabled]="false"
+                    [pagesUnknown]="false"
+                    [showPageInput]="true"
+                    [skeleton]="false"
+                    [model]="paginationModel"
+                    (selectPage)="setLimit($event)">
+		</cds-pagination>
   </cds-table-container>
 </div>
 

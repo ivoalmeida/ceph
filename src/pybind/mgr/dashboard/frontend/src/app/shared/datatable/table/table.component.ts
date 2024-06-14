@@ -22,6 +22,7 @@ import {
   SortPropDir,
   TableColumnProp
 } from '@swimlane/ngx-datatable';
+import { PaginationModel } from 'carbon-components-angular';
 import _ from 'lodash';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 
@@ -255,11 +256,15 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
     });
   }
 
+  paginationModel:PaginationModel;
+
   constructor(
     // private ngZone: NgZone,
     private cdRef: ChangeDetectorRef,
     private timerService: TimerService
-  ) {}
+  ) {
+    this.paginationModel = new PaginationModel();
+  }
 
   static prepareSearch(search: string) {
     search = search.toLowerCase().replace(/,/g, '');
@@ -272,6 +277,13 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   }
 
   ngOnInit() {
+    this.paginationModel.pageLength = this.table.pageSize;
+    this.paginationModel.totalDataLength = this.table.rowCount;
+    this.table.page.subscribe({next: (value:any)=> {
+      console.log('current page? ', value);
+      this.paginationModel.currentPage = value;
+    }})
+
     this.localColumns = _.clone(this.columns);
     // debounce reloadData method so that search doesn't run api requests
     // for every keystroke
@@ -639,6 +651,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
         this.userConfig.limit = this.maxLimit;
         // change input field to maxLimit
         e.srcElement.value = this.maxLimit;
+        this.paginationModel.pageLength = this.maxLimit;
       } else {
         this.userConfig.limit = value;
       }

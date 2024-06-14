@@ -5,7 +5,14 @@ import { RouterModule } from '@angular/router';
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPipeFunctionModule } from 'ngx-pipe-function';
-import { TableModule, ButtonModule, IconModule, IconService, CheckboxModule } from 'carbon-components-angular';
+import {
+  TableModule,
+  ButtonModule,
+  IconModule,
+  IconService,
+  CheckboxModule,
+  PaginationModule
+} from 'carbon-components-angular';
 import AddIcon from '@carbon/icons/es/add/16';
 import FilterIcon from '@carbon/icons/es/filter/20';
 import ReloadIcon from '@carbon/icons/es/renew/20';
@@ -80,7 +87,8 @@ import { CarbonTableComponent } from './carbon-table/carbon-table.component';
     TableModule,
     ButtonModule,
     IconModule,
-    CheckboxModule
+    CheckboxModule,
+    PaginationModule
   ],
   declarations: [
     TableComponent,
