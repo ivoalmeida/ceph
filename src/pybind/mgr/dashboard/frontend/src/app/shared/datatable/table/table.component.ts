@@ -22,7 +22,7 @@ import {
   SortPropDir,
   TableColumnProp
 } from '@swimlane/ngx-datatable';
-import { PaginationModel } from 'carbon-components-angular';
+import { PaginationModel, TableHeaderItem, TableItem, TableModel } from 'carbon-components-angular';
 import _ from 'lodash';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 
@@ -82,7 +82,14 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   data: any[];
   // Each item -> { prop: 'attribute name', name: 'display name' }
   @Input()
-  columns: CdTableColumn[];
+  set columns(values: CdTableColumn[]) {
+    this._columns = values;
+    this.model.header = values.map((col: CdTableColumn) => new TableHeaderItem({ data: col.name }));
+  }
+  get columns() {
+    return this._columns;
+  }
+
   // Each item -> { prop: 'attribute name', dir: 'asc'||'desc'}
   @Input()
   sorts?: SortPropDir[];
@@ -207,6 +214,9 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
    */
   @Output() columnFiltersChanged = new EventEmitter<CdTableColumnFiltersChange>();
 
+  model = new TableModel();
+  private _columns: CdTableColumn[];
+
   /**
    * Use this variable to access the selected row(s).
    */
@@ -229,7 +239,44 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
     [key: string]: TemplateRef<any>;
   } = {};
   search = '';
-  rows: any[] = [];
+  private _rows: any[] = [];
+  set rows(values: any[]) {
+    this._rows = values;
+    if (!values?.length) return;
+    const props = this.columns
+      .filter((col) => !col.isHidden)
+      .filter((col) => !col.isInvisible)
+      // .filter((col) => !col.cellTemplate)
+      // .filter((col) => !col.cellTransformation)
+      .reduce((prev, curr) => [...prev, curr.prop], []);
+    let datasets: TableItem[][] = [];
+    // debugger;
+    // for (const prop of props) {
+    //   values.forEach((v) => {
+    //     const data = _.get(v, prop);
+    //     if (data) {
+    //       dataset.push(new TableItem({ data }));
+    //     }
+    //   });
+    //   // dataset.push(new TableItem({ data: 'hello' }));
+    // }
+    _.forEach(values, (val) => {
+      let dataset: TableItem[] = [];
+      _.forEach(props, (p) => {
+        const data = _.get(val, p);
+        if (data) {
+          dataset.push(new TableItem({ data }));
+        }
+      });
+      datasets.push(dataset);
+    });
+    // debugger;
+
+    this.model.data = datasets;
+  }
+  get rows() {
+    return this._rows;
+  }
   loadingIndicator = true;
   paginationClasses = {
     pagerLeftArrow: Icons.leftArrowDouble,
@@ -256,7 +303,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
     });
   }
 
-  paginationModel:PaginationModel;
+  paginationModel: PaginationModel;
 
   constructor(
     // private ngZone: NgZone,
@@ -277,12 +324,14 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   }
 
   ngOnInit() {
-    this.paginationModel.pageLength = this.table.pageSize;
-    this.paginationModel.totalDataLength = this.table.rowCount;
-    this.table.page.subscribe({next: (value:any)=> {
-      console.log('current page? ', value);
-      this.paginationModel.currentPage = value;
-    }})
+    this.paginationModel.pageLength = 10;
+    this.paginationModel.totalDataLength = this.rows.length;
+    this.paginationModel.currentPage = 1;
+    // this.table.page.subscribe({
+    //   next: (value: any) => {
+    //     console.log('current page? ', value);
+    //   }
+    // });
 
     this.localColumns = _.clone(this.columns);
     // debounce reloadData method so that search doesn't run api requests
@@ -293,7 +342,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
 
     // ngx-datatable triggers calculations each time mouse enters a row,
     // this will prevent that.
-    this.table.element.addEventListener('mouseenter', (e) => e.stopPropagation());
+    // this.table.element.addEventListener('mouseenter', (e) => e.stopPropagation());
     this._addTemplates();
     if (!this.sorts) {
       // Check whether the specified identifier exists.
@@ -852,7 +901,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
     } else {
       let rows = this.columnFilters.length !== 0 ? this.doColumnFiltering() : this.data;
 
-      if (this.search.length > 0 && rows) {
+      if (this.search.length > 0 && rows?.length) {
         const columns = this.localColumns.filter(
           (c) => c.cellTransformation !== CellTemplate.sparkline
         );
