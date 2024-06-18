@@ -243,34 +243,23 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   set rows(values: any[]) {
     this._rows = values;
     if (!values?.length) return;
-    const props = this.columns
-      .filter((col) => !col.isHidden)
-      .filter((col) => !col.isInvisible)
-      // .filter((col) => !col.cellTemplate)
-      // .filter((col) => !col.cellTransformation)
-      .reduce((prev, curr) => [...prev, curr.prop], []);
+    const props = this.columns.filter((col) => !col.isHidden).filter((col) => !col.isInvisible);
+    // .reduce((prev, curr) => [...prev, curr.prop], []);
     let datasets: TableItem[][] = [];
-    // debugger;
-    // for (const prop of props) {
-    //   values.forEach((v) => {
-    //     const data = _.get(v, prop);
-    //     if (data) {
-    //       dataset.push(new TableItem({ data }));
-    //     }
-    //   });
-    //   // dataset.push(new TableItem({ data: 'hello' }));
-    // }
     _.forEach(values, (val) => {
       let dataset: TableItem[] = [];
       _.forEach(props, (p) => {
-        const data = _.get(val, p);
+        const data = _.get(val, p.prop);
         if (data) {
-          dataset.push(new TableItem({ data }));
+          let tableItem = new TableItem({ data });
+          if (p.cellTemplate) {
+            tableItem.template = p.cellTemplate;
+          }
+          dataset.push(tableItem);
         }
       });
       datasets.push(dataset);
     });
-    // debugger;
 
     this.model.data = datasets;
   }

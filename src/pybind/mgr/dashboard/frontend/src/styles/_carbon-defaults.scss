@@ -7,8 +7,8 @@
 @use '@carbon/styles/scss/compat/themes' as compat;
 @use '@carbon/styles/scss/themes';
 @use '@carbon/styles/scss/theme' with (
-  $theme: default.$theme,
-  $fallback: compat.$g90,
+  $fallback: default.$theme,
+  $theme: compat.$g10,
 );
 @use '@carbon/styles';
 @use '@carbon/type';

@@ -17,6 +17,7 @@ import AddIcon from '@carbon/icons/es/add/16';
 import FilterIcon from '@carbon/icons/es/filter/20';
 import ReloadIcon from '@carbon/icons/es/renew/20';
 import DataTableIcon from '@carbon/icons/es/data-table/20';
+import CheckIcon from '@carbon/icons/es/checkmark/20';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
@@ -123,5 +124,6 @@ export class DataTableModule {
     this.iconService.registerAll([FilterIcon]);
     this.iconService.registerAll([ReloadIcon]);
     this.iconService.registerAll([DataTableIcon]);
+    this.iconService.registerAll([CheckIcon]);
   }
 }

@@ -190,7 +190,28 @@
     </div>
     <!-- end filter chips for column filters -->
   </div>
+  <cds-table #table
+             [model]="model"
+             [sortable]="!!userConfig.sorts"
+             size="md"
+             [skeleton]="false"
+             [showSelectionColumn]="selectionType === 'multiClick'"
+             [enableSingleSelect]="selectionType === 'single'"
+             [stickyHeader]="false"
+             [striped]="true"
+             [isDataGrid]="true">
+  </cds-table>
+  <!-- 
+    <cds-table [model]="model"
+              [sortable]="true"
+              size="md"
+              [skeleton]="false"
+              [showSelectionColumn]="true"
+              [enableSingleSelect]="selectionType==='single'"
+              [isDataGrid]="true">
+            </cds-table> -->
   <ngx-datatable #table
+                 *ngIf="1 > 2"
                  class="bootstrap cd-datatable"
                  [cssClasses]="paginationClasses"
                  [selectionType]="selectionType"
@@ -307,8 +328,10 @@
 
 <ng-template #checkIconTpl
              let-value="value">
-  <i [ngClass]="[icons.check]"
-     [hidden]="!(value | boolean)"></i>
+  <svg cdsIcon="checkmark"
+       size="20"
+       [hidden]="!(value | boolean)">
+  </svg>
 </ng-template>
 
 <ng-template #perSecondTpl
