@@ -82,13 +82,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   data: any[];
   // Each item -> { prop: 'attribute name', name: 'display name' }
   @Input()
-  set columns(values: CdTableColumn[]) {
-    this._columns = values;
-    this.model.header = values.map((col: CdTableColumn) => new TableHeaderItem({ data: col.name }));
-  }
-  get columns() {
-    return this._columns;
-  }
+  columns: CdTableColumn[];
 
   // Each item -> { prop: 'attribute name', dir: 'asc'||'desc'}
   @Input()
@@ -215,7 +209,6 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   @Output() columnFiltersChanged = new EventEmitter<CdTableColumnFiltersChange>();
 
   model = new TableModel();
-  private _columns: CdTableColumn[];
 
   /**
    * Use this variable to access the selected row(s).
@@ -232,40 +225,75 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
    * how the table is renderer a second time, we now clone that list into a
    * local variable and only use the clone.
    */
-  localColumns: CdTableColumn[];
+  private _localColumns: CdTableColumn[];
+
   tableColumns: CdTableColumn[];
+
+  set localColumns(values: CdTableColumn[]) {
+    this._localColumns = values;
+    this.model.header = values.map(
+      (col: CdTableColumn) =>
+        new TableHeaderItem({
+          data: col.name,
+          title: col.name,
+          visible: !col.isHidden || !col.isInvisible
+        })
+    );
+  }
+
+  get localColumns() {
+    return this._localColumns;
+  }
+
   icons = Icons;
   cellTemplates: {
     [key: string]: TemplateRef<any>;
   } = {};
+
   search = '';
+
   private _rows: any[] = [];
+
   set rows(values: any[]) {
     this._rows = values;
+
+    this.model.data = [];
+
     if (!values?.length) return;
-    const props = this.columns.filter((col) => !col.isHidden).filter((col) => !col.isInvisible);
-    // .reduce((prev, curr) => [...prev, curr.prop], []);
+
+    const columnProps = this.tableColumns
+      .filter((col) => !col.isHidden)
+      .filter((col) => !col.isInvisible);
+
     let datasets: TableItem[][] = [];
-    _.forEach(values, (val) => {
+
+    values.forEach((val) => {
       let dataset: TableItem[] = [];
-      _.forEach(props, (p) => {
+
+      columnProps.forEach((p) => {
         const data = _.get(val, p.prop);
+
         if (data) {
           let tableItem = new TableItem({ data });
+
           if (p.cellTemplate) {
             tableItem.template = p.cellTemplate;
           }
+
           dataset.push(tableItem);
         }
       });
+
       datasets.push(dataset);
     });
 
     this.model.data = datasets;
   }
+
   get rows() {
     return this._rows;
   }
+
   loadingIndicator = true;
   paginationClasses = {
     pagerLeftArrow: Icons.leftArrowDouble,
