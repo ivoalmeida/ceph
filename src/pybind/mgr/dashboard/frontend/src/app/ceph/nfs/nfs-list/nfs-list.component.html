@@ -22,7 +22,7 @@
 </cd-table>
 
 <ng-template #nfsFsal
-             let-value="value">
+             let-value="data.value">
   <ng-container *ngIf="value.name==='CEPH'"
                 i18n>CephFS</ng-container>
   <ng-container *ngIf="value.name==='RGW'"

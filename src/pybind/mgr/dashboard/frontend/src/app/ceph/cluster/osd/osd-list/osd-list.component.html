@@ -116,7 +116,7 @@
 </ng-template>
 
 <ng-template #flagsTpl
-             let-row="row">
+             let-row="data.row">
   <span *ngFor="let flag of row.cdClusterFlags;"
         class="badge badge-hdd me-1">{{ flag }}</span>
   <span *ngFor="let flag of row.cdIndivFlags;"
@@ -124,7 +124,7 @@
 </ng-template>
 
 <ng-template #osdUsageTpl
-             let-row="row">
+             let-row="data.row">
   <cd-usage-bar [title]="'osd ' + row.osd"
                 [total]="row.stats.stat_bytes"
                 [used]="row.stats.stat_bytes_used"

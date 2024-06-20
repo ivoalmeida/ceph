@@ -29,8 +29,8 @@
 </cd-table>
 
 <ng-template #expiresTpl
-             let-row="row"
-             let-value="value">
+             let-row="data.row"
+             let-value="data.value">
   <ng-container *ngIf="row.cdIsExpired"
                 i18n>Expired at</ng-container>
 

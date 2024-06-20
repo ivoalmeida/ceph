@@ -76,6 +76,8 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   rowSelectionTpl: TemplateRef<any>;
   @ViewChild('pathTpl', { static: true })
   pathTpl: TemplateRef<any>;
+  @ViewChild('defaultValueTpl', { static: true })
+  defaultValueTpl: TemplateRef<any>;
 
   // This is the array with the items to be shown.
   @Input()
@@ -261,9 +263,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
 
     if (!values?.length) return;
 
-    const columnProps = this.tableColumns
-      .filter((col) => !col.isHidden)
-      .filter((col) => !col.isInvisible);
+    const columnProps = this.tableColumns.filter((x) => !x.isHidden).filter((x) => !x.isInvisible);
 
     let datasets: TableItem[][] = [];
 
@@ -272,12 +272,16 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
 
       columnProps.forEach((p) => {
         const data = _.get(val, p.prop);
+        const propData = _.pick(val, p.prop);
+        const rowData = _.omit(val, propData);
 
         if (data) {
-          let tableItem = new TableItem({ data });
+          let tableItem = new TableItem({ data: { value: data, row: rowData, column: p } });
 
           if (p.cellTemplate) {
             tableItem.template = p.cellTemplate;
+          } else {
+            tableItem.template = this.defaultValueTpl;
           }
 
           dataset.push(tableItem);

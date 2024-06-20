@@ -237,7 +237,7 @@
 
     <!-- Row Selection Template-->
     <ng-template #rowSelectionTpl
-                 let-value="value"
+                 let-value="data.value"
                  let-isSelected="isSelected"
                  ngx-datatable-cell-template>
       <input type="checkbox"
@@ -249,7 +249,7 @@
     <!-- Row Detail Template -->
     <ngx-datatable-row-detail rowHeight="auto"
                               #detailRow>
-      <ng-template let-row="row"
+      <ng-template let-row="data.row"
                    let-expanded="expanded"
                    ngx-datatable-row-detail-template>
         <!-- Table Details -->
@@ -307,27 +307,33 @@
 </div>
 
 <!-- cell templates that can be accessed from outside -->
+<ng-template #defaultValueTpl
+             let-value="data.value"
+             let-column="data.column">
+  <span ngClass="column?.cellClass">{{ value }}</span>
+</ng-template>
+
 <ng-template #tableCellBoldTpl
-             let-value="value">
+             let-value="data.value">
   <strong>{{ value }}</strong>
 </ng-template>
 
 <ng-template #sparklineTpl
-             let-row="row"
-             let-value="value">
+             let-row="data.row"
+             let-value="data.value">
   <cd-sparkline [data]="value"
                 [isBinary]="row.cdIsBinary"></cd-sparkline>
 </ng-template>
 
 <ng-template #routerLinkTpl
-             let-row="row"
-             let-value="value">
+             let-row="data.row"
+             let-value="data.value">
   <a [routerLink]="[row.cdLink]"
      [queryParams]="row.cdParams">{{ value }}</a>
 </ng-template>
 
 <ng-template #checkIconTpl
-             let-value="value">
+             let-value="data.value">
   <svg cdsIcon="checkmark"
        size="20"
        [hidden]="!(value | boolean)">
@@ -335,15 +341,15 @@
 </ng-template>
 
 <ng-template #perSecondTpl
-             let-row="row"
-             let-value="value">
+             let-row="data.row"
+             let-value="data.value">
   {{ value | dimless }} /s
 </ng-template>
 
 <ng-template #executingTpl
-             let-column="column"
-             let-row="row"
-             let-value="value">
+             let-column="data.column"
+             let-row="data.row"
+             let-value="data.value">
   <i [ngClass]="[icons.spinner, icons.spin]"
      *ngIf="row.cdExecuting"></i>
   <span [ngClass]="column?.customTemplateConfig?.valueClass">
@@ -354,13 +360,13 @@
 </ng-template>
 
 <ng-template #classAddingTpl
-             let-value="value">
+             let-value="data.value">
   <span class="{{ value | pipeFunction:useCustomClass:this }}">{{ value }}</span>
 </ng-template>
 
 <ng-template #badgeTpl
-             let-column="column"
-             let-value="value">
+             let-column="data.column"
+             let-value="data.value">
   <span *ngFor="let item of (value | array); last as last">
     <span class="badge"
           [ngClass]="(column?.customTemplateConfig?.map && column?.customTemplateConfig?.map[item]?.class) ? column.customTemplateConfig.map[item].class : (column?.customTemplateConfig?.class ? column.customTemplateConfig.class : 'badge-primary')"
@@ -372,20 +378,20 @@
 </ng-template>
 
 <ng-template #mapTpl
-             let-column="column"
-             let-value="value">
+             let-column="data.column"
+             let-value="data.value">
   <span>{{ value | map:column?.customTemplateConfig }}</span>
 </ng-template>
 
 <ng-template #truncateTpl
-             let-column="column"
-             let-value="value">
+             let-column="data.column"
+             let-value="data.value">
   <span data-toggle="tooltip"
         [title]="value">{{ value | truncate:column?.customTemplateConfig?.length:column?.customTemplateConfig?.omission }}</span>
 </ng-template>
 
 <ng-template #rowDetailsTpl
-             let-row="row"
+             let-row="data.row"
              let-isExpanded="expanded"
              ngx-datatable-cell-template>
   <a href="javascript:void(0)"
@@ -399,13 +405,13 @@
 </ng-template>
 
 <ng-template #timeAgoTpl
-             let-value="value">
+             let-value="data.value">
   <span data-toggle="tooltip"
         [title]="value | cdDate">{{ value | relativeDate }}</span>
 </ng-template>
 
 <ng-template #pathTpl
-             let-value="value">
+             let-value="data.value">
   <span data-toggle="tooltip"
         [title]="value"
         class="font-monospace">{{ value | path }}

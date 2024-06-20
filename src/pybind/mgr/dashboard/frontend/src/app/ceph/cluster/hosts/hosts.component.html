@@ -65,7 +65,7 @@
 </ng-template>
 
 <ng-template #hostNameTpl
-             let-row="row">
+             let-row="data.row">
   <span [ngClass]="row">
     {{ row.hostname }}
   </span><br>
@@ -87,7 +87,7 @@
 
 
 <ng-template #hostMetricTmpl
-             let-value="value">
+             let-value="data.value">
   <div *ngIf="validValue(value)">
     <span>{{ value }}</span>
   </div>
@@ -97,7 +97,7 @@
 </ng-template>
 
 <ng-template #hostDimlessTmpl
-             let-value="value">
+             let-value="data.value">
   <div *ngIf="!validValue(value)">
     <span ngbTooltip="Not available. Data could not be fetched from Ceph">-</span>
   </div>
