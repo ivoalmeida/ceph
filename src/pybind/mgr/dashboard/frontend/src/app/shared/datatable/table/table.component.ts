@@ -1,5 +1,6 @@
 import {
   AfterContentChecked,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -24,7 +25,7 @@ import {
 } from '@swimlane/ngx-datatable';
 import { PaginationModel, TableHeaderItem, TableItem, TableModel } from 'carbon-components-angular';
 import _ from 'lodash';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 
 import { TableStatus } from '~/app/shared/classes/table-status';
 import { CellTemplate } from '~/app/shared/enum/cell-template.enum';
@@ -45,7 +46,8 @@ const TABLE_LIST_LIMIT = 10;
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent implements AfterContentChecked, OnInit, OnChanges, OnDestroy {
+export class TableComponent
+  implements AfterContentChecked, AfterViewInit, OnInit, OnChanges, OnDestroy {
   @ViewChild(DatatableComponent, { static: true })
   table: DatatableComponent;
   @ViewChild('tableCellBoldTpl', { static: true })
@@ -78,6 +80,8 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   pathTpl: TemplateRef<any>;
   @ViewChild('defaultValueTpl', { static: true })
   defaultValueTpl: TemplateRef<any>;
+  @ViewChild('rowDetailTpl', { static: true })
+  rowDetailTpl: TemplateRef<any>;
 
   // This is the array with the items to be shown.
   @Input()
@@ -255,43 +259,11 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   search = '';
 
   private _rows: any[] = [];
+  private _dataset = new BehaviorSubject<any[]>([]);
 
   set rows(values: any[]) {
     this._rows = values;
-
-    this.model.data = [];
-
-    if (!values?.length) return;
-
-    const columnProps = this.tableColumns.filter((x) => !x.isHidden).filter((x) => !x.isInvisible);
-
-    let datasets: TableItem[][] = [];
-
-    values.forEach((val) => {
-      let dataset: TableItem[] = [];
-
-      columnProps.forEach((p) => {
-        const data = _.get(val, p.prop);
-        const propData = _.pick(val, p.prop);
-        const rowData = _.omit(val, propData);
-
-        if (data) {
-          let tableItem = new TableItem({ data: { value: data, row: rowData, column: p } });
-
-          if (p.cellTemplate) {
-            tableItem.template = p.cellTemplate;
-          } else {
-            tableItem.template = this.defaultValueTpl;
-          }
-
-          dataset.push(tableItem);
-        }
-      });
-
-      datasets.push(dataset);
-    });
-
-    this.model.data = datasets;
+    this._dataset.next(values);
   }
 
   get rows() {
@@ -324,6 +296,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
     });
   }
 
+  // TODO: Remove this
   paginationModel: PaginationModel;
 
   constructor(
@@ -331,7 +304,53 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
     private cdRef: ChangeDetectorRef,
     private timerService: TimerService
   ) {
+    // TODO: Remove this
     this.paginationModel = new PaginationModel();
+  }
+
+  ngAfterViewInit(): void {
+    // this.model.data = [];
+    this._dataset.subscribe({
+      next: (values: any[]) => {
+        if (!values?.length) return;
+
+        const columnProps = this.tableColumns
+          .filter((x) => !x.isHidden)
+          .filter((x) => !x.isInvisible);
+
+        let datasets: TableItem[][] = [];
+
+        values.forEach((val) => {
+          let dataset: TableItem[] = [];
+
+          columnProps.forEach((p) => {
+            const data = _.get(val, p.prop);
+            const propData = _.pick(val, p.prop);
+            const rowData = _.omit(val, propData);
+
+            if (data) {
+              let tableItem = new TableItem({
+                data: { value: data, row: rowData, column: p },
+                expandedData: val,
+                expandedTemplate: this.rowDetailTpl
+              });
+
+              if (p.cellTemplate) {
+                tableItem.template = p.cellTemplate;
+              } else {
+                tableItem.template = this.defaultValueTpl;
+              }
+
+              dataset.push(tableItem);
+            }
+          });
+
+          datasets.push(dataset);
+        });
+
+        this.model.data = datasets;
+      }
+    });
   }
 
   static prepareSearch(search: string) {

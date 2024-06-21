@@ -201,15 +201,11 @@
              [striped]="true"
              [isDataGrid]="true">
   </cds-table>
-  <!-- 
-    <cds-table [model]="model"
-              [sortable]="true"
-              size="md"
-              [skeleton]="false"
-              [showSelectionColumn]="true"
-              [enableSingleSelect]="selectionType==='single'"
-              [isDataGrid]="true">
-            </cds-table> -->
+  <ng-template #rowDetailTpl>
+    <div style="outline: 2px dashed navy; padding: 1.5em;">
+      <ng-content select="[cdTableDetail]"></ng-content>
+    </div>
+  </ng-template>
   <ngx-datatable #table
                  *ngIf="1 > 2"
                  class="bootstrap cd-datatable"
@@ -253,7 +249,7 @@
                    let-expanded="expanded"
                    ngx-datatable-row-detail-template>
         <!-- Table Details -->
-        <ng-content select="[cdTableDetail]"></ng-content>
+        <!-- <ng-content select="[cdTableDetail]"></ng-content> -->
       </ng-template>
     </ngx-datatable-row-detail>
 
