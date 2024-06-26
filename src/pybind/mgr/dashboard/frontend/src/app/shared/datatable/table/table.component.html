@@ -3,7 +3,7 @@
     <cds-table-toolbar-content>
       <!-- search -->
       <cds-table-toolbar-search *ngIf="searchField"
-                                [expandable]="false"
+                                [expandable]="true"
                                 [(ngModel)]="search"
                                 (valueChange)="updateFilter($event)"
                                 (clear)="onClearSearch()">
