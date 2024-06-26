@@ -6,6 +6,20 @@ import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPipeFunctionModule } from 'ngx-pipe-function';
 
+import {
+  TableModule,
+  ButtonModule,
+  IconModule,
+  IconService,
+  CheckboxModule,
+  PaginationModule
+} from 'carbon-components-angular';
+import AddIcon from '@carbon/icons/es/add/16';
+import FilterIcon from '@carbon/icons/es/filter/20';
+import ReloadIcon from '@carbon/icons/es/renew/20';
+import DataTableIcon from '@carbon/icons/es/data-table/20';
+import CheckIcon from '@carbon/icons/es/checkmark/20';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
@@ -69,7 +83,12 @@ import { CheckedTableFormComponent } from './checked-table-form/checked-table-fo
       ],
       wrappers: [{ name: 'input-wrapper', component: FormlyInputWrapperComponent }]
     }),
-    FormlyBootstrapModule
+    FormlyBootstrapModule,
+    TableModule,
+    ButtonModule,
+    IconModule,
+    CheckboxModule,
+    PaginationModule
   ],
   declarations: [
     TableComponent,
@@ -96,4 +115,8 @@ import { CheckedTableFormComponent } from './checked-table-form/checked-table-fo
     CheckedTableFormComponent
   ]
 })
-export class DataTableModule {}
+export class DataTableModule {
+  constructor(private iconService: IconService) {
+    this.iconService.registerAll([AddIcon, FilterIcon, ReloadIcon, DataTableIcon, CheckIcon]);
+  }
+}
