@@ -852,15 +852,15 @@ export class TableComponent
   }
 
   onSelect($event: any) {
-    // Ensure we do not process DOM 'select' events.
-    // https://github.com/swimlane/ngx-datatable/issues/899
-    // if (_.has($event, 'selected')) {
-    //   this.selection.selected = $event['selected'];
-    // }
-    // this.updateSelection.emit(_.clone(this.selection));
     const { selectedRowIndex } = $event;
     const selectedData = this.model.data[selectedRowIndex];
-    console.log('row selected', selectedData);
+    this.selection.selected = [selectedData];
+    this.updateSelection.emit(_.clone(this.selection));
+    this.model.rowsIndices.forEach((i: number) => {
+      if (i !== selectedRowIndex) {
+        this.model.expandRow(i, false);
+      }
+    });
   }
 
   toggleColumn(column: CdTableColumn) {
