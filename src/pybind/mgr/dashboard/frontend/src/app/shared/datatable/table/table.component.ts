@@ -237,7 +237,7 @@ export class TableComponent
   model: TableModel = new TableModel();
 
   set tableColumns(value: CdTableColumn[]) {
-    this._tableColumns = value;   
+    this._tableColumns = value;
     this.model.header = value.map(
       (col: CdTableColumn) =>
         new TableHeaderItem({
@@ -245,7 +245,7 @@ export class TableComponent
           title: col.name,
           visible: !col.isHidden || !col.isInvisible
         })
-    ); 
+    );
   }
 
   get tableColumns() {
@@ -336,6 +336,7 @@ export class TableComponent
 
             if (!_.isNil(value)) {
               let tableItem = new TableItem({
+                ...val,
                 data: { value, row, column },
                 expandedData: val,
                 expandedTemplate: this.rowDetailTpl
@@ -353,15 +354,6 @@ export class TableComponent
         this.model.data = datasets;
       }
     });
-
-    this.model.header = this.tableColumns.map(
-      (col: CdTableColumn) =>
-        new TableHeaderItem({
-          data: col.name,
-          title: col.name,
-          visible: !col.isHidden || !col.isInvisible
-        })
-    );
   }
 
   ngOnInit() {
@@ -727,14 +719,14 @@ export class TableComponent
     if (changes.data && changes.data.currentValue) {
       this.useData();
     }
-    this.model.header = this.tableColumns?.map?.(
-      (col: CdTableColumn) =>
-        new TableHeaderItem({
-          data: col.name,
-          title: col.name,
-          visible: !col.isHidden || !col.isInvisible
-        })
-    );
+    // this.model.header = this.tableColumns?.map?.(
+    //   (col: CdTableColumn) =>
+    //     new TableHeaderItem({
+    //       data: col.name,
+    //       title: col.name,
+    //       visible: !col.isHidden || !col.isInvisible
+    //     })
+    // );
   }
 
   setLimit(e: any) {
@@ -830,26 +822,33 @@ export class TableComponent
    * or some selected items may have been removed.
    */
   updateSelected() {
-    if (this.updateSelectionOnRefresh === 'never') {
-      return;
-    }
-    const newSelected = new Set();
-    this.selection.selected.forEach((selectedItem) => {
-      for (const row of this.data) {
-        if (selectedItem[this.identifier] === row[this.identifier]) {
-          newSelected.add(row);
-        }
-      }
-    });
-    const newSelectedArray = Array.from(newSelected.values());
-    if (
-      this.updateSelectionOnRefresh === 'onChange' &&
-      _.isEqual(this.selection.selected, newSelectedArray)
-    ) {
-      return;
-    }
-    this.selection.selected = newSelectedArray;
-    this.onSelect(this.selection);
+    // TODO: Update this method to work with new data struture
+    // if (this.updateSelectionOnRefresh === 'never') {
+    //   return;
+    // }
+    // if (!this.selection?.selected) return;
+
+    // const newSelected = new Set();
+    // this.selection.selected.forEach((selectedItem) => {
+    //   for (const row of this.data) {
+    //     if (selectedItem[this.identifier] === row[this.identifier]) {
+    //       // TODO: Create method that creates individual TableItem obj based on raw data
+    //       newSelected.add(row);
+    //     }
+    //   }
+    // });
+
+    // if (newSelected.size === 0) return;
+
+    // const newSelectedArray = Array.from(newSelected.values());
+    // if (
+    //   this.updateSelectionOnRefresh === 'onChange' &&
+    //   _.isEqual(this.selection.selected, newSelectedArray)
+    // ) {
+    //   return;
+    // }
+    // this.selection.selected = newSelectedArray;
+    // this.onSelect(this.selection);
   }
 
   updateExpanded() {
@@ -870,9 +869,10 @@ export class TableComponent
 
   onSelect($event: any) {
     const { selectedRowIndex } = $event;
-    const selectedData = this.model.data[selectedRowIndex];
-    this.selection.selected = [selectedData];
-    this.updateSelection.emit(_.clone(this.selection));
+    // TODO: Fix row selection to work with new data structure
+    // const selectedData = this.model.data[selectedRowIndex];
+    // this.selection.selected = [selectedData];
+    // this.updateSelection.emit(_.clone(this.selection));
     this.model.rowsIndices.forEach((i: number) => {
       if (i !== selectedRowIndex) {
         this.model.expandRow(i, false);
