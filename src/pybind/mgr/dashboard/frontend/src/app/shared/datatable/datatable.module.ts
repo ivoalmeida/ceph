@@ -12,7 +12,7 @@ import {
   IconModule,
   IconService,
   CheckboxModule,
-  PaginationModule
+  PaginationModule, ThemeModule,
 } from 'carbon-components-angular';
 import AddIcon from '@carbon/icons/es/add/16';
 import FilterIcon from '@carbon/icons/es/filter/20';
@@ -88,7 +88,8 @@ import { CheckedTableFormComponent } from './checked-table-form/checked-table-fo
     ButtonModule,
     IconModule,
     CheckboxModule,
-    PaginationModule
+    PaginationModule,
+    ThemeModule
   ],
   declarations: [
     TableComponent,

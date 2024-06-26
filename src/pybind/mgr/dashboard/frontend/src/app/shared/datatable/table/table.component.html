@@ -1,32 +1,29 @@
-<div class="dataTables_wrapper">
-  <div cdsTheme="white">
-    <cds-table-container>
-      <cds-table [model]="model"
-                 [sortable]="!!userConfig.sorts"
-                 size="md"
-                 [skeleton]="false"
-                 [showSelectionColumn]="selectionType === 'multiClick'"
-                 [enableSingleSelect]="selectionType === 'single'"
-                 [stickyHeader]="false"
-                 [striped]="true"
-                 [isDataGrid]="true"
-                 (selectRow)="onSelect($event)">
-    </cds-table>
-    </cds-table-container>
-    <ng-template #rowDetailTpl>
-      <div style="outline: 2px dashed navy; padding: 1.5em;">
-        <ng-content select="[cdTableDetail]"></ng-content>
-      </div>
-    </ng-template>
+<cds-table-container cdsTheme="white">
+  <cds-table [model]="model"
+              [sortable]="!!userConfig.sorts"
+              size="md"
+              [skeleton]="false"
+              [showSelectionColumn]="selectionType === 'multiClick'"
+              [enableSingleSelect]="selectionType === 'single'"
+              [stickyHeader]="false"
+              [striped]="false"
+              [isDataGrid]="true"
+              (selectRow)="onSelect($event)">
+</cds-table>
+</cds-table-container>
 
-    <ng-template #defaultValueTpl
-                 let-value="data.value"
-                 let-column="data.column">
-      <span ngClass="column?.cellClass">{{ value }}</span>
-    </ng-template>
+<ng-template #rowDetailTpl>
+  <div style="outline: 2px dashed navy; padding: 1.5em;">
+    <ng-content select="[cdTableDetail]"></ng-content>
   </div>
+</ng-template>
 
-</div>
+<ng-template #defaultValueTpl
+              let-value="data.value"
+              let-column="data.column">
+  <span ngClass="column?.cellClass">{{ value }}</span>
+</ng-template>
+
 
 <!-- cell templates that can be accessed from outside -->
 <ng-template #tableCellBoldTpl
@@ -37,8 +34,10 @@
 <ng-template #sparklineTpl
              let-row="data.row"
              let-value="data.value">
-  <cd-sparkline [data]="value"
+  <div style="position: relative;">
+    <cd-sparkline [data]="value"
                 [isBinary]="row.cdIsBinary"></cd-sparkline>
+  </div>
 </ng-template>
 
 <ng-template #routerLinkTpl
