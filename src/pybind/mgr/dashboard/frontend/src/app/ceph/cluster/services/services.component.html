@@ -28,7 +28,7 @@
 
 
 <ng-template #runningTpl
-             let-value="value">
+             let-value="data.value">
   <span ngbTooltip="Service instances running out of the total number of services requested.">
     {{ value.running }} / {{ value.size }}
   </span>

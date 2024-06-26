@@ -21,7 +21,7 @@
 </ng-container>
 
 <ng-template #quotaUsageTpl
-             let-row="row">
+             let-row="data.row">
   <cd-usage-bar *ngIf="row.info.bytes_pcent && row.info.bytes_pcent !== 'undefined'; else noLimitTpl"
                 [total]="row.info.bytes_quota"
                 [used]="row.info.bytes_used"
@@ -40,12 +40,12 @@
 </ng-template>
 
 <ng-template #typeTpl
-             let-value="value">
+             let-value="data.value">
   <cd-label [value]="value"></cd-label>
 </ng-template>
 
 <ng-template #modeToHumanReadableTpl
-             let-value="value">
+             let-value="data.value">
   <span *ngFor="let result of (value | octalToHumanReadable)"
         [ngClass]="result.class"
         [ngbTooltip]="result.toolTip">

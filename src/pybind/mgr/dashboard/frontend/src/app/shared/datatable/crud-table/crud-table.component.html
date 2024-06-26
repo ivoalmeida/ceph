@@ -46,7 +46,7 @@
 </ng-container>
 
 <ng-template #badgeDictTpl
-             let-value="value">
+             let-value="data.value">
   <span *ngFor="let instance of value | keyvalue; last as isLast">
     <span class="badge badge-background-primary" >{{ instance.key }}: {{ instance.value }}</span>
     <ng-container *ngIf="!isLast">&nbsp;</ng-container>
@@ -54,12 +54,12 @@
 </ng-template>
 
 <ng-template #dateTpl
-             let-value="value">
+             let-value="data.value">
   <span>{{ value | cdDate }}</span>
 </ng-template>
 
 <ng-template #durationTpl
-             let-value="value">
+             let-value="data.value">
   <span>{{ value | duration }}</span>
 </ng-template>
 

@@ -233,15 +233,7 @@ export class TableComponent
   model: TableModel = new TableModel();
 
   set tableColumns(value: CdTableColumn[]) {
-    this._tableColumns = value;
-    this.model.header = value.map(
-      (col: CdTableColumn) =>
-        new TableHeaderItem({
-          data: col.name,
-          title: col.name,
-          visible: !col.isHidden || !col.isInvisible
-        })
-    );
+    this._tableColumns = value;    
   }
 
   get tableColumns() {
@@ -326,13 +318,13 @@ export class TableComponent
           let dataset: TableItem[] = [];
 
           columnProps.forEach((column) => {
-            const data = _.get(val, column.prop);
+            const value = _.get(val, column.prop);
             const propData = _.pick(val, column.prop);
             const row = _.omit(val, propData);
 
-            if (data) {
+            if (!_.isNil(value)) {
               let tableItem = new TableItem({
-                data: { value: data, row, column },
+                data: { value, row, column },
                 expandedData: val,
                 expandedTemplate: this.rowDetailTpl
               });
@@ -349,6 +341,15 @@ export class TableComponent
         this.model.data = datasets;
       }
     });
+
+    this.model.header = this.tableColumns.map(
+      (col: CdTableColumn) =>
+        new TableHeaderItem({
+          data: col.name,
+          title: col.name,
+          visible: !col.isHidden || !col.isInvisible
+        })
+    );
   }
 
   ngOnInit() {
@@ -361,7 +362,7 @@ export class TableComponent
 
     // ngx-datatable triggers calculations each time mouse enters a row,
     // this will prevent that.
-    this.table.element.addEventListener('mouseenter', (e) => e.stopPropagation());
+    // this.table.element.addEventListener('mouseenter', (e) => e.stopPropagation());
     this._addTemplates();
     if (!this.sorts) {
       // Check whether the specified identifier exists.
@@ -847,10 +848,13 @@ export class TableComponent
   onSelect($event: any) {
     // Ensure we do not process DOM 'select' events.
     // https://github.com/swimlane/ngx-datatable/issues/899
-    if (_.has($event, 'selected')) {
-      this.selection.selected = $event['selected'];
-    }
-    this.updateSelection.emit(_.clone(this.selection));
+    // if (_.has($event, 'selected')) {
+    //   this.selection.selected = $event['selected'];
+    // }
+    // this.updateSelection.emit(_.clone(this.selection));
+    const { selectedRowIndex } = $event;
+    const selectedData = this.model.data[selectedRowIndex];
+    console.log('row selected', selectedData);
   }
 
   toggleColumn(column: CdTableColumn) {

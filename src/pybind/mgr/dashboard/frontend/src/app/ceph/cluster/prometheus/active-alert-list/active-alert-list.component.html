@@ -34,8 +34,8 @@
 </cd-table>
 
 <ng-template #externalLinkTpl
-             let-row="row"
-             let-value="value">
+             let-row="data.row"
+             let-value="data.value">
   <a [href]="value"
      target="_blank"><i [ngClass]="[icons.lineChart]"></i> Source</a>
 </ng-template>
