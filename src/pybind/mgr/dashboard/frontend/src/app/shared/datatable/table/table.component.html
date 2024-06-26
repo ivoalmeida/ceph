@@ -1,4 +1,29 @@
 <div class="dataTables_wrapper">
+  <div cdsTheme="white">
+    <cds-table-container>
+      <cds-table [model]="model"
+                 [sortable]="!!userConfig.sorts"
+                 size="md"
+                 [skeleton]="false"
+                 [showSelectionColumn]="selectionType === 'multiClick'"
+                 [enableSingleSelect]="selectionType === 'single'"
+                 [stickyHeader]="false"
+                 [striped]="true"
+                 [isDataGrid]="true">
+    </cds-table>
+    </cds-table-container>
+    <ng-template #rowDetailTpl>
+      <div style="outline: 2px dashed navy; padding: 1.5em;">
+        <ng-content select="[cdTableDetail]"></ng-content>
+      </div>
+    </ng-template>
+
+    <ng-template #defaultValueTpl
+                 let-value="data.value"
+                 let-column="data.column">
+      <span ngClass="column?.cellClass">{{ value }}</span>
+    </ng-template>
+  </div>
 
   <div *ngIf="onlyActionHeader"
        class="dataTables_header clearfix">

@@ -1,8 +1,9 @@
 import { TableColumn, TableColumnProp } from '@swimlane/ngx-datatable';
 
 import { CellTemplate } from '../enum/cell-template.enum';
+import { TableHeaderItem } from 'carbon-components-angular';
 
-export interface CdTableColumn extends TableColumn {
+export interface CdTableColumn extends TableColumn, Partial<TableHeaderItem> {
   cellTransformation?: CellTemplate;
   isHidden?: boolean;
   prop: TableColumnProp; // Enforces properties to get sortable columns

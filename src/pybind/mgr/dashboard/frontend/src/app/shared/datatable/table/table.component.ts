@@ -1,5 +1,6 @@
 import {
   AfterContentChecked,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -22,6 +23,7 @@ import {
   SortPropDir,
   TableColumnProp
 } from '@swimlane/ngx-datatable';
+import { TableHeaderItem, TableItem, TableModel } from 'carbon-components-angular';
 import _ from 'lodash';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 
@@ -44,7 +46,8 @@ const TABLE_LIST_LIMIT = 10;
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent implements AfterContentChecked, OnInit, OnChanges, OnDestroy {
+export class TableComponent
+  implements AfterContentChecked, AfterViewInit, OnInit, OnChanges, OnDestroy {
   @ViewChild(DatatableComponent, { static: true })
   table: DatatableComponent;
   @ViewChild('tableCellBoldTpl', { static: true })
@@ -77,8 +80,12 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
   pathTpl: TemplateRef<any>;
   @ViewChild('tooltipTpl', { static: true })
   tooltipTpl: TemplateRef<any>;
-  @ViewChild('copyTpl', { static: true })
+@ViewChild('copyTpl', { static: true })
   copyTpl: TemplateRef<any>;
+  @ViewChild('defaultValueTpl', { static: true })
+  defaultValueTpl: TemplateRef<any>;
+  @ViewChild('rowDetailTpl', { static: true })
+  rowDetailTpl: TemplateRef<any>;
 
   // This is the array with the items to be shown.
   @Input()
@@ -226,13 +233,48 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
    * local variable and only use the clone.
    */
   localColumns: CdTableColumn[];
-  tableColumns: CdTableColumn[];
+
+  model: TableModel = new TableModel();
+
+  set tableColumns(value: CdTableColumn[]) {
+    this._tableColumns = value;
+    this.model.header = value.map(
+      (col: CdTableColumn) =>
+        new TableHeaderItem({
+          data: col.name,
+          title: col.name,
+          visible: !col.isHidden || !col.isInvisible
+        })
+    );
+  }
+
+  get tableColumns() {
+    return this._tableColumns;
+  }
+
+  private _tableColumns: CdTableColumn[];
+
   icons = Icons;
   cellTemplates: {
     [key: string]: TemplateRef<any>;
   } = {};
   search = '';
-  rows: any[] = [];
+
+  set rows(value: any[]) {
+    this._rows = value;
+    this._dataset.next(value);
+  }
+
+  get rows() {
+    return this._rows;
+  }
+
+  private _rows: any[] = [];
+
+  private _dataset = new BehaviorSubject<any[]>([]);
+
+  private _datasetSub!: Subscription;
+
   loadingIndicator = true;
   paginationClasses = {
     pagerLeftArrow: Icons.leftArrowDouble,
@@ -273,6 +315,44 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
       });
     }
     return search.split(' ').filter((word) => word);
+  }
+
+  ngAfterViewInit(): void {
+    this._datasetSub = this._dataset.subscribe({
+      next: (values: any[]) => {
+        if (!values?.length) return;
+
+        const columnProps = this.tableColumns.filter((x) => !x.isHidden || !x.isInvisible);
+
+        let datasets: TableItem[][] = [];
+
+        values.forEach((val) => {
+          let dataset: TableItem[] = [];
+
+          columnProps.forEach((column) => {
+            const data = _.get(val, column.prop);
+            const propData = _.pick(val, column.prop);
+            const row = _.omit(val, propData);
+
+            if (data) {
+              let tableItem = new TableItem({
+                data: { value: data, row, column },
+                expandedData: val,
+                expandedTemplate: this.rowDetailTpl
+              });
+
+              tableItem.template = column.cellTemplate || this.defaultValueTpl;
+
+              dataset.push(tableItem);
+            }
+          });
+
+          datasets.push(dataset);
+        });
+
+        this.model.data = datasets;
+      }
+    });
   }
 
   ngOnInit() {
@@ -582,6 +662,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnChanges, O
     if (this.saveSubscriber) {
       this.saveSubscriber.unsubscribe();
     }
+    this._datasetSub.unsubscribe();
   }
 
   ngAfterContentChecked() {
