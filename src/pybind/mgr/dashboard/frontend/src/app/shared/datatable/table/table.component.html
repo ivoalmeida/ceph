@@ -119,7 +119,7 @@
 
 <ng-template #rowDetailsTpl
              let-row="data.row"
-             let-isExpanded="expanded"
+             let-isExpanded="data.expanded"
              ngx-datatable-cell-template>
   <a href="javascript:void(0)"
      [class.expand-collapse-icon-right]="!isExpanded"

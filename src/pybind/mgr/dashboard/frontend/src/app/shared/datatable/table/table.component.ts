@@ -237,7 +237,15 @@ export class TableComponent
   model: TableModel = new TableModel();
 
   set tableColumns(value: CdTableColumn[]) {
-    this._tableColumns = value;    
+    this._tableColumns = value;   
+    this.model.header = value.map(
+      (col: CdTableColumn) =>
+        new TableHeaderItem({
+          data: col.name,
+          title: col.name,
+          visible: !col.isHidden || !col.isInvisible
+        })
+    ); 
   }
 
   get tableColumns() {
@@ -531,19 +539,20 @@ export class TableComponent
    * Add a column to expand and collapse the table row if it 'hasDetails'
    */
   initExpandCollapseColumn() {
-    if (this.hasDetails) {
-      this.localColumns.unshift({
-        prop: undefined,
-        resizeable: false,
-        sortable: false,
-        draggable: false,
-        isHidden: false,
-        canAutoResize: false,
-        cellClass: 'cd-datatable-expand-collapse',
-        width: 40,
-        cellTemplate: this.rowDetailsTpl
-      });
-    }
+    // TODO: remove this method
+    // if (this.hasDetails) {
+    //   this.localColumns.unshift({
+    //     prop: undefined,
+    //     resizeable: false,
+    //     sortable: false,
+    //     draggable: false,
+    //     isHidden: false,
+    //     canAutoResize: false,
+    //     cellClass: 'cd-datatable-expand-collapse',
+    //     width: 40,
+    //     cellTemplate: this.rowDetailsTpl
+    //   });
+    // }
   }
 
   filterHiddenColumns() {
@@ -718,6 +727,14 @@ export class TableComponent
     if (changes.data && changes.data.currentValue) {
       this.useData();
     }
+    this.model.header = this.tableColumns?.map?.(
+      (col: CdTableColumn) =>
+        new TableHeaderItem({
+          data: col.name,
+          title: col.name,
+          visible: !col.isHidden || !col.isInvisible
+        })
+    );
   }
 
   setLimit(e: any) {
