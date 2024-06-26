@@ -821,7 +821,6 @@ export class TableComponent
     //   return;
     // }
     // if (!this.selection?.selected) return;
-
     // const newSelected = new Set();
     // this.selection.selected.forEach((selectedItem) => {
     //   for (const row of this.data) {
@@ -831,9 +830,7 @@ export class TableComponent
     //     }
     //   }
     // });
-
     // if (newSelected.size === 0) return;
-
     // const newSelectedArray = Array.from(newSelected.values());
     // if (
     //   this.updateSelectionOnRefresh === 'onChange' &&
@@ -875,14 +872,21 @@ export class TableComponent
   }
 
   toggleColumn(column: CdTableColumn) {
-    const prop: TableColumnProp = column.prop;
-    const hide = !column.isHidden;
-    if (hide && this.tableColumns.length === 1) {
-      column.isHidden = true;
-      return;
-    }
-    _.find(this.localColumns, (c: CdTableColumn) => c.prop === prop).isHidden = hide;
-    this.updateColumns();
+    // TODO: Understand what this mean and modify appropriately
+    // const prop: TableColumnProp = column.prop;
+    // const hide = !column.isHidden;
+    // if (hide && this.tableColumns.length === 1) {
+    //   column.isHidden = true;
+    //   return;
+    // }
+    // _.find(this.localColumns, (c: CdTableColumn) => c.prop === prop).isHidden = hide;
+    // this.updateColumns();
+    this.model.header.forEach((col) => {
+      const shouldHide = !col.visible;
+      if (column.data === col.data) {
+        col.visible = shouldHide;
+      }
+    });
   }
 
   updateColumns() {
@@ -941,14 +945,15 @@ export class TableComponent
     } else {
       let rows = this.columnFilters.length !== 0 ? this.doColumnFiltering() : this.data;
 
-      if (this.search.length > 0 && rows) {
+      if (this.search.length > 0 && rows?.length) {
         const columns = this.localColumns.filter(
           (c) => c.cellTransformation !== CellTemplate.sparkline
         );
         // update the rows
         rows = this.subSearch(rows, TableComponent.prepareSearch(this.search), columns);
         // Whenever the filter changes, always go back to the first page
-        this.table.offset = 0;
+        // TODO: Understand how this works and change appropriately
+        //this.table.offset = 0;
       }
 
       this.rows = rows;

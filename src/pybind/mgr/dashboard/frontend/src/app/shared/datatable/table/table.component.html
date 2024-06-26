@@ -1,4 +1,55 @@
 <cds-table-container cdsTheme="white">
+  <cds-table-toolbar *ngIf="toolHeader">
+    <cds-table-toolbar-content>
+      <!-- search -->
+      <cds-table-toolbar-search *ngIf="searchField"
+                                [expandable]="false"
+                                [(ngModel)]="search"
+                                (valueChange)="updateFilter($event)"
+                                (clear)="onClearSearch()">
+      </cds-table-toolbar-search>                                    
+      <!-- end search -->
+      <!-- refresh button -->
+      <button cdsButton="ghost"
+              [disabled]="!fetchData?.observers?.length"
+              (click)="refreshBtn()"
+              title="Refresh"
+              [description]="status.msg"
+              i18n-title
+              i18n-description
+              class="toolbar-action"
+              placement="bottom">
+        <svg cdsIcon="renew" size="20" class="cds--toolbar-action__icon"></svg>
+      </button>
+      <!-- end refresh button -->
+      <!-- show hide columns -->
+      <button cdsButton="ghost"
+              class="toolbar-action"
+              [cdsOverflowMenu]="showHideColumnsRef"
+              placement="bottom"
+              [flip]="true"
+              [offset]="{ x: 3, y: 0 }">
+        <svg cdsIcon="data-table" size="20" class="cds--toolbar-action__icon"></svg>
+      </button>
+      <ng-template #showHideColumnsRef>
+        <div class="vstack gap-3 p-3"
+             cdsTheme="white"
+             (click)="$event.stopPropagation()">
+          <cds-checkbox *ngFor="let column of model.header"                        
+                        id="{{ column.data }}"
+                        [name]="column.data"
+                        [checked]="column.visible"
+                        (checkedChange)="toggleColumn(column);">{{ column.data }}
+          </cds-checkbox>
+        </div>
+      </ng-template>
+      <!-- end show hide columns -->
+    
+    <!-- actions -->
+    <ng-content select=".table-actions"></ng-content>    
+    <!-- end actions -->
+  </cds-table-toolbar-content>
+  </cds-table-toolbar>
   <cds-table [model]="model"
               [sortable]="!!userConfig.sorts"
               size="md"
