@@ -7,7 +7,7 @@
                                 [(ngModel)]="search"
                                 (valueChange)="updateFilter($event)"
                                 (clear)="onClearSearch()">
-      </cds-table-toolbar-search>                                    
+      </cds-table-toolbar-search>
       <!-- end search -->
       <!-- refresh button -->
       <button cdsButton="ghost"
@@ -19,7 +19,9 @@
               i18n-description
               class="toolbar-action"
               placement="bottom">
-        <svg cdsIcon="renew" size="20" class="cds--toolbar-action__icon"></svg>
+        <svg cdsIcon="renew"
+             size="20"
+             class="cds--toolbar-action__icon"></svg>
       </button>
       <!-- end refresh button -->
       <!-- show hide columns -->
@@ -29,13 +31,15 @@
               placement="bottom"
               [flip]="true"
               [offset]="{ x: 3, y: 0 }">
-        <svg cdsIcon="data-table" size="20" class="cds--toolbar-action__icon"></svg>
+        <svg cdsIcon="data-table"
+             size="20"
+             class="cds--toolbar-action__icon"></svg>
       </button>
       <ng-template #showHideColumnsRef>
         <div class="vstack gap-3 p-3"
              cdsTheme="white"
              (click)="$event.stopPropagation()">
-          <cds-checkbox *ngFor="let column of model.header"                        
+          <cds-checkbox *ngFor="let column of model.header"
                         id="{{ column.data }}"
                         [name]="column.data"
                         [checked]="column.visible"
@@ -44,34 +48,31 @@
         </div>
       </ng-template>
       <!-- end show hide columns -->
-    
-    <!-- actions -->
-    <ng-content select=".table-actions"></ng-content>    
-    <!-- end actions -->
-  </cds-table-toolbar-content>
+      <!-- actions -->
+      <ng-content select=".table-actions"></ng-content>
+      <!-- end actions -->
+    </cds-table-toolbar-content>
   </cds-table-toolbar>
   <cds-table [model]="model"
-              [sortable]="!!userConfig.sorts"
-              size="md"
-              [skeleton]="false"
-              [showSelectionColumn]="selectionType === 'multiClick'"
-              [enableSingleSelect]="selectionType === 'single'"
-              [stickyHeader]="false"
-              [striped]="false"
-              [isDataGrid]="true"
-              (selectRow)="onSelect($event)">
+             [sortable]="!!userConfig.sorts"
+             size="md"
+             [skeleton]="false"
+             [showSelectionColumn]="selectionType === 'multiClick'"
+             [enableSingleSelect]="selectionType === 'single'"
+             [stickyHeader]="false"
+             [striped]="false"
+             [isDataGrid]="false"
+             (selectRow)="onSelect($event)">
 </cds-table>
 </cds-table-container>
 
 <ng-template #rowDetailTpl>
-  <div style="outline: 2px dashed navy; padding: 1.5em;">
-    <ng-content select="[cdTableDetail]"></ng-content>
-  </div>
+  <ng-container [ngTemplateOutlet]="row-expand-detail"></ng-container>
 </ng-template>
 
 <ng-template #defaultValueTpl
-              let-value="data.value"
-              let-column="data.column">
+             let-value="data.value"
+             let-column="data.column">
   <span ngClass="column?.cellClass">{{ value }}</span>
 </ng-template>
 
@@ -85,9 +86,9 @@
 <ng-template #sparklineTpl
              let-row="data.row"
              let-value="data.value">
-  <div style="position: relative;">
+  <div class="position-relative">
     <cd-sparkline [data]="value"
-                [isBinary]="row.cdIsBinary"></cd-sparkline>
+                  [isBinary]="row.cdIsBinary"></cd-sparkline>
   </div>
 </ng-template>
 

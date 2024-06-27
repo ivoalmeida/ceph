@@ -953,7 +953,7 @@ export class TableComponent
         rows = this.subSearch(rows, TableComponent.prepareSearch(this.search), columns);
         // Whenever the filter changes, always go back to the first page
         // TODO: Understand how this works and change appropriately
-        //this.table.offset = 0;
+        // this.table.offset = 0;
       }
 
       this.rows = rows;

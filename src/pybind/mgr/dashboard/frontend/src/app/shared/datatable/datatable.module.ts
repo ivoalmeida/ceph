@@ -12,8 +12,9 @@ import {
   IconModule,
   IconService,
   CheckboxModule,
-  PaginationModule, ThemeModule,
-  DialogModule,
+  PaginationModule,
+  ThemeModule,
+  DialogModule
 } from 'carbon-components-angular';
 import AddIcon from '@carbon/icons/es/add/16';
 import FilterIcon from '@carbon/icons/es/filter/20';
