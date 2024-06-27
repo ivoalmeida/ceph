@@ -66,8 +66,9 @@
 </cds-table>
 </cds-table-container>
 
-<ng-template #rowDetailTpl>
-  <ng-container [ngTemplateOutlet]="row-expand-detail"></ng-container>
+<ng-template #rowDetailTpl
+             let-row="data.row">
+  <ng-container [ngTemplateOutlet]="template"></ng-container>
 </ng-template>
 
 <ng-template #defaultValueTpl

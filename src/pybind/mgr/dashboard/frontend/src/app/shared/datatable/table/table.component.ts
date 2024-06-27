@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ContentChild,
   EventEmitter,
   Input,
   OnChanges,
@@ -86,6 +87,8 @@ export class TableComponent
   defaultValueTpl: TemplateRef<any>;
   @ViewChild('rowDetailTpl', { static: true })
   rowDetailTpl: TemplateRef<any>;
+
+  @ContentChild(TemplateRef<any>) template!: TemplateRef<any>;
 
   // This is the array with the items to be shown.
   @Input()
