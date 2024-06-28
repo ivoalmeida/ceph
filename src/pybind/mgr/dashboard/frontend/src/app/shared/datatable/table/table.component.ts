@@ -294,7 +294,8 @@ export class TableComponent
 
   // Internal variable to check if it is necessary to recalculate the
   // table columns after the browser window has been resized.
-  private currentWidth: number;
+  // TODO: Probably won't need this anymore
+  // private currentWidth: number;
 
   columnFilters: CdTableColumnFilter[] = [];
   selectedFilter: CdTableColumnFilter;
@@ -339,7 +340,7 @@ export class TableComponent
 
             if (!_.isNil(value)) {
               let tableItem = new TableItem({
-                ...val,
+                selected: val,
                 data: { value, row, column },
                 expandedData: val,
                 expandedTemplate: this.rowDetailTpl
@@ -436,7 +437,8 @@ export class TableComponent
       this.userConfig.limit = this.limit;
     }
     if (!(this.userConfig.offset >= 0)) {
-      this.userConfig.offset = this.table.offset;
+      // TODO: How to replace this? What does it do?
+      // this.userConfig.offset = this.table.offset;
     }
     if (!this.userConfig.search) {
       this.userConfig.search = this.search;
@@ -676,17 +678,20 @@ export class TableComponent
     // automatically if the tab gets visible again.
     // https://github.com/swimlane/ngx-datatable/issues/193
     // https://github.com/swimlane/ngx-datatable/issues/193#issuecomment-329144543
-    if (this.table && this.table.element.clientWidth !== this.currentWidth) {
-      this.currentWidth = this.table.element.clientWidth;
-      // Recalculate the sizes of the grid.
-      this.table.recalculate();
-      // Mark the datatable as changed, Angular's change-detection will
-      // do the rest for us => the grid will be redrawn.
-      // Note, the ChangeDetectorRef variable is private, so we need to
-      // use this workaround to access it and make TypeScript happy.
-      const cdRef = _.get(this.table, 'cd');
-      cdRef.markForCheck();
-    }
+
+    // TODO: Decide what to do with this later. Probably remove altogether
+
+    // if (this.table && this.table.element.clientWidth !== this.currentWidth) {
+    //   this.currentWidth = this.table.element.clientWidth;
+    //   // Recalculate the sizes of the grid.
+    //   this.table.recalculate();
+    //   // Mark the datatable as changed, Angular's change-detection will
+    //   // do the rest for us => the grid will be redrawn.
+    //   // Note, the ChangeDetectorRef variable is private, so we need to
+    //   // use this workaround to access it and make TypeScript happy.
+    //   const cdRef = _.get(this.table, 'cd');
+    //   cdRef.markForCheck();
+    // }
   }
 
   _addTemplates() {
@@ -826,29 +831,29 @@ export class TableComponent
    */
   updateSelected() {
     // TODO: Update this method to work with new data struture
-    // if (this.updateSelectionOnRefresh === 'never') {
-    //   return;
-    // }
-    // if (!this.selection?.selected) return;
-    // const newSelected = new Set();
-    // this.selection.selected.forEach((selectedItem) => {
-    //   for (const row of this.data) {
-    //     if (selectedItem[this.identifier] === row[this.identifier]) {
-    //       // TODO: Create method that creates individual TableItem obj based on raw data
-    //       newSelected.add(row);
-    //     }
-    //   }
-    // });
-    // if (newSelected.size === 0) return;
-    // const newSelectedArray = Array.from(newSelected.values());
-    // if (
-    //   this.updateSelectionOnRefresh === 'onChange' &&
-    //   _.isEqual(this.selection.selected, newSelectedArray)
-    // ) {
-    //   return;
-    // }
-    // this.selection.selected = newSelectedArray;
-    // this.onSelect(this.selection);
+    if (this.updateSelectionOnRefresh === 'never') {
+      return;
+    }
+    if (!this.selection?.selected) return;
+    const newSelected = new Set();
+    this.selection.selected.forEach((selectedItem) => {
+      for (const row of this.data) {
+        if (selectedItem[this.identifier] === row[this.identifier]) {
+          // TODO: Create method that creates individual TableItem obj based on raw data
+          newSelected.add(row);
+        }
+      }
+    });
+    if (newSelected.size === 0) return;
+    const newSelectedArray = Array.from(newSelected.values());
+    if (
+      this.updateSelectionOnRefresh === 'onChange' &&
+      _.isEqual(this.selection.selected, newSelectedArray)
+    ) {
+      return;
+    }
+    this.selection.selected = newSelectedArray;
+    this.onSelect(this.selection);
   }
 
   updateExpanded() {
@@ -868,16 +873,23 @@ export class TableComponent
   }
 
   onSelect($event: any) {
-    const { selectedRowIndex } = $event;
+    const { selectedRowIndex, model: selectedModel } = $event;
     // TODO: Fix row selection to work with new data structure
-    // const selectedData = this.model.data[selectedRowIndex];
-    // this.selection.selected = [selectedData];
-    // this.updateSelection.emit(_.clone(this.selection));
-    this.model.rowsIndices.forEach((i: number) => {
-      if (i !== selectedRowIndex) {
-        this.model.expandRow(i, false);
-      }
-    });
+    if (!_.isNil(selectedRowIndex) && selectedModel) {
+      const selectedData = _.get(
+        selectedModel._data?.[selectedRowIndex], [0, 'selected']
+      );
+      this.selection.selected = [selectedData];
+    } else if (!_.isNil($event)) {
+      this.selection = $event;
+    }
+    const clonedSelection = _.clone(this.selection);
+    this.updateSelection.emit(clonedSelection);
+    // this.model.rowsIndices.forEach((i: number) => {
+    //   if (i !== selectedRowIndex) {
+    //     this.model.expandRow(i, false);
+    //   }
+    // });
   }
 
   toggleColumn(column: CdTableColumn) {
@@ -905,7 +917,8 @@ export class TableComponent
     if (!_.find(this.tableColumns, (c: CdTableColumn) => c.prop === sortProp)) {
       this.userConfig.sorts = this.createSortingDefinition(this.tableColumns[0].prop);
     }
-    this.table.recalculate();
+    // TODO: How to replace this? What does it do?
+    // this.table.recalculate();
     this.cdRef.detectChanges();
   }
 
@@ -1033,13 +1046,15 @@ export class TableComponent
     if (!isExpanded) {
       // If current row isn't expanded, collapse others
       this.expanded = row;
-      this.table.rowDetail.collapseAllRows();
+      // TODO: How to replace this? What does it do?
+      // this.table.rowDetail.collapseAllRows();
       this.setExpandedRow.emit(row);
     } else {
       // If all rows are closed, emit undefined
       this.expanded = undefined;
       this.setExpandedRow.emit(undefined);
     }
-    this.table.rowDetail.toggleExpandRow(row);
+    // TODO: How to replace this? What does it do?
+    // this.table.rowDetail.toggleExpandRow(row);
   }
 }
