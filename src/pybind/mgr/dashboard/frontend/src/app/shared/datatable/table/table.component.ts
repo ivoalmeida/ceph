@@ -272,7 +272,7 @@ export class TableComponent
 
   private _dataset = new BehaviorSubject<any[]>([]);
 
-  private _datasetSub!: Subscription;
+  private _subscriptions: Subscription = new Subscription();
 
   loadingIndicator = true;
   paginationClasses = {
@@ -318,7 +318,7 @@ export class TableComponent
   }
 
   ngAfterViewInit(): void {
-    this._datasetSub = this._dataset.subscribe({
+    const datasetSubscription = this._dataset.subscribe({
       next: (values: any[]) => {
         if (!values?.length) return;
 
@@ -350,10 +350,12 @@ export class TableComponent
 
           datasets.push(dataset);
         });
-
-        this.model.data = datasets;
+        if(!_.isEqual(this.model.data, datasets))
+          this.model.data = datasets;
       }
     });
+
+    this._subscriptions.add(datasetSubscription);
   }
 
   ngOnInit() {
@@ -422,7 +424,7 @@ export class TableComponent
       this.useData();
     }
   }
-
+  // TODO: Understand what this does
   initUserConfig() {
     if (this.autoSave) {
       this.tableName = this._calculateUniqueTableName(this.localColumns);
@@ -513,19 +515,20 @@ export class TableComponent
    * Add a column containing a checkbox if selectionType is 'multiClick'.
    */
   initCheckboxColumn() {
-    if (this.selectionType === 'multiClick') {
-      this.localColumns.unshift({
-        prop: undefined,
-        resizeable: false,
-        sortable: false,
-        draggable: false,
-        checkboxable: false,
-        canAutoResize: false,
-        cellClass: 'cd-datatable-checkbox',
-        cellTemplate: this.rowSelectionTpl,
-        width: 30
-      });
-    }
+    // TODO: remove this method
+    // if (this.selectionType === 'multiClick') {
+    //   this.localColumns.unshift({
+    //     prop: undefined,
+    //     resizeable: false,
+    //     sortable: false,
+    //     draggable: false,
+    //     checkboxable: false,
+    //     canAutoResize: false,
+    //     cellClass: 'cd-datatable-checkbox',
+    //     cellTemplate: this.rowSelectionTpl,
+    //     width: 30
+    //   });
+    // }
   }
 
   /**
@@ -665,7 +668,7 @@ export class TableComponent
     if (this.saveSubscriber) {
       this.saveSubscriber.unsubscribe();
     }
-    this._datasetSub.unsubscribe();
+    this._subscriptions.unsubscribe();
   }
 
   ngAfterContentChecked() {
@@ -704,7 +707,7 @@ export class TableComponent
     this.cellTemplates.timeAgo = this.timeAgoTpl;
     this.cellTemplates.path = this.pathTpl;
   }
-
+  // TODO: This doesn't seem to be used anymore. Remove it
   useCustomClass(value: any): string {
     if (!this.customCss) {
       throw new Error('Custom classes are not set!');
@@ -721,14 +724,6 @@ export class TableComponent
     if (changes.data && changes.data.currentValue) {
       this.useData();
     }
-    // this.model.header = this.tableColumns?.map?.(
-    //   (col: CdTableColumn) =>
-    //     new TableHeaderItem({
-    //       data: col.name,
-    //       title: col.name,
-    //       visible: !col.isHidden || !col.isInvisible
-    //     })
-    // );
   }
 
   setLimit(e: any) {
@@ -806,6 +801,7 @@ export class TableComponent
     this.reset();
     this.updateSelected();
     this.updateExpanded();
+    this.toggleExpandedRow();
   }
 
   /**
@@ -828,7 +824,8 @@ export class TableComponent
     if (this.updateSelectionOnRefresh === 'never') {
       return;
     }
-    if (!this.selection?.selected) return;
+    if (!this.selection?.selected?.length) return;
+    
     const newSelected = new Set();
     this.selection.selected.forEach((selectedItem) => {
       for (const row of this.data) {
@@ -850,7 +847,7 @@ export class TableComponent
     this.onSelect(this.selection);
   }
 
-  updateExpanded() {
+  updateExpanded() {    
     if (_.isUndefined(this.expanded) || this.updateExpandedOnRefresh === 'never') {
       return;
     }
@@ -866,6 +863,19 @@ export class TableComponent
     this.setExpandedRow.emit(newExpanded);
   }
 
+  private toggleExpandedRow() {
+    const rowId = this.model.data.findIndex((row: TableItem[]) => {
+      const rowSelectedId = _.get(row, [0, 'selected', this.identifier]);
+      const expandedId = this.expanded?.[this.identifier];
+      return _.isEqual(rowSelectedId, expandedId);
+    });
+
+    this.model.rowsIndices.forEach((i: number) => {
+      if (i === rowId) this.model.expandRow(i, true);
+      else this.model.expandRow(i, false);
+    });
+  }
+
   onSelect($event: any) {
     const { selectedRowIndex, model: selectedModel } = $event;
     // TODO: Fix row selection to work with new data structure
@@ -878,12 +888,10 @@ export class TableComponent
       this.selection = $event;
     }
     const clonedSelection = _.clone(this.selection);
+    this.expanded = clonedSelection?.selected?.[0];
     this.updateSelection.emit(clonedSelection);
-    // this.model.rowsIndices.forEach((i: number) => {
-    //   if (i !== selectedRowIndex) {
-    //     this.model.expandRow(i, false);
-    //   }
-    // });
+    
+    this.toggleExpandedRow();
   }
 
   toggleColumn(column: CdTableColumn) {
@@ -1034,7 +1042,7 @@ export class TableComponent
       };
     };
   }
-
+  // TODO: This method doesn't make sense with the new data table. Remove
   toggleExpandRow(row: any, isExpanded: boolean, event: any) {
     event.stopPropagation();
     if (!isExpanded) {
