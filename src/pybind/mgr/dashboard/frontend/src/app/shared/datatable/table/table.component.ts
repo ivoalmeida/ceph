@@ -791,6 +791,36 @@ export class TableComponent
       this.reloadData();
     }
   }
+
+  onPageChange(page: number){
+    debugger;
+    this.model.currentPage = page;
+    this.getData({page, size: this.model.totalDataLength});
+  }
+
+  getData({ page = 0, size = 10, filteredData = [] }) {
+    debugger;
+    setTimeout(() => {
+      let start = page;
+      let end = size;
+
+      if (start <= 1) {
+        start = 0;
+        end = size;
+      } else {
+        start = (start - 1) * size;
+        end = page * size;
+        if (end > this.data.length) {
+          end = this.data.length;
+        }
+      }
+
+      const source = filteredData || this.data;
+
+      this.rows = source.slice(start, end);
+    }, 250 * Math.random());
+  }
+
   rowIdentity() {
     return (row: any) => {
       const id = row[this.identifier];

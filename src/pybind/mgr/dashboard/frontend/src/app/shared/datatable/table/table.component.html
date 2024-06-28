@@ -65,6 +65,7 @@
              [isDataGrid]="false"
              (selectRow)="onSelect($event)">
 </cds-table>
+<cds-pagination [model]="model" (selectPage)="onPageChange($event)"></cds-pagination>
 </cds-table-container>
 
 <ng-template #rowDetailTpl
