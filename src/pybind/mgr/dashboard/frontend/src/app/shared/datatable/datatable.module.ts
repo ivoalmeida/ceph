@@ -118,7 +118,8 @@ import { TableDetailDirective } from './directives/table-detail.directive';
     TableActionsComponent,
     CRUDTableComponent,
     TablePaginationComponent,
-    CheckedTableFormComponent
+    CheckedTableFormComponent,
+    TableDetailDirective
   ]
 })
 export class DataTableModule {

@@ -877,6 +877,8 @@ export class TableComponent
       if (i === rowId) this.model.expandRow(i, true);
       else this.model.expandRow(i, false);
     });
+
+    this.setExpandedRow.emit(this.expanded);
   }
 
   onSelect($event: any) {

@@ -9,7 +9,7 @@
           (setExpandedRow)="setExpandedRow($event)"
           (updateSelection)="updateSelection($event)">
   <cd-cephfs-tabs *cdTableDetail
-                  [selection]="selection?.selected?.[0]">
+                  [selection]="expandedRow">
   </cd-cephfs-tabs>
   <div class="table-actions btn-toolbar">
     <cd-table-actions [permission]="permissions.cephfs"
