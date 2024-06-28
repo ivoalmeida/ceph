@@ -21,7 +21,7 @@
               placement="bottom">
         <svg cdsIcon="renew"
              size="20"
-             class="cds--toolbar-action__icon"></svg>
+             [ngClass]="{ 'cds--toolbar-action__icon': true, 'reload': updating || loadingIndicator }"></svg>
       </button>
       <!-- end refresh button -->
       <!-- show hide columns -->
