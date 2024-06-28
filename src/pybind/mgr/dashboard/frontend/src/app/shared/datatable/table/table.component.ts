@@ -337,10 +337,13 @@ export class TableComponent
             if (!_.isNil(value)) {
               let tableItem = new TableItem({
                 selected: val,
-                data: { value, row, column },
-                expandedData: val,
-                expandedTemplate: this.rowDetailTpl
+                data: { value, row, column },                
               });
+              
+              if (this.hasDetails) {
+                tableItem.expandedData = val,
+                tableItem.expandedTemplate = this.rowDetailTpl
+              }
 
               tableItem.template = column.cellTemplate || this.defaultValueTpl;
 
