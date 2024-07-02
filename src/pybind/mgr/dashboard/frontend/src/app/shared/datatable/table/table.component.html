@@ -69,8 +69,10 @@
 </cds-table-container>
 
 <ng-template #rowDetailTpl
-             let-row="data.row">
-  <ng-container [ngTemplateOutlet]="template"></ng-container>
+             let-row="data">
+  <div *ngIf="row[identifier] === expanded?.[identifier]">
+    <ng-template [ngTemplateOutlet]="template"></ng-template>
+  </div>
 </ng-template>
 
 <ng-template #defaultValueTpl
