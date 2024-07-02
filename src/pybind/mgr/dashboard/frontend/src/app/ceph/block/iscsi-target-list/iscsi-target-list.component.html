@@ -46,9 +46,9 @@
   </div>
 
   <ng-container *ngIf="expandedRow">
-    <cd-iscsi-target-details *cdTableDetail                           
-                            [cephIscsiConfigVersion]="cephIscsiConfigVersion"
-                            [selection]="expandedRow"
-                            [settings]="settings"></cd-iscsi-target-details>
+    <cd-iscsi-target-details *cdTableDetail
+                             [cephIscsiConfigVersion]="cephIscsiConfigVersion"
+                             [selection]="expandedRow"
+                             [settings]="settings"></cd-iscsi-target-details>
   </ng-container>
 </cd-table>
