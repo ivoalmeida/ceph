@@ -62,8 +62,9 @@
              [enableSingleSelect]="selectionType === 'single'"
              [stickyHeader]="false"
              [striped]="false"
-             [isDataGrid]="false"
-             (selectRow)="onSelect($event)">
+             [isDataGrid]="true"
+             (selectRow)="onSelect($event)"
+             (deselectRow)="onDeselect($event)">
 </cds-table>
 <cds-pagination [model]="model"
                 (selectPage)="onPageChange($event)">

@@ -331,13 +331,11 @@ export class TableComponent
 
           columnProps.forEach((column) => {
             const value = _.get(val, column.prop);
-            const propData = _.pick(val, column.prop);
-            const row = _.omit(val, propData);
 
             if (!_.isNil(value)) {
               let tableItem = new TableItem({
                 selected: val,
-                data: { value, row, column }
+                data: { value, row: val, column }
               });
 
               if (this.hasDetails) {
@@ -352,7 +350,9 @@ export class TableComponent
 
           datasets.push(dataset);
         });
-        if (!_.isEqual(this.model.data, datasets)) this.model.data = datasets;
+        if (!_.isEqual(this.model.data, datasets)) {
+          this.model.data = datasets;
+        }
       }
     });
 
@@ -908,10 +908,10 @@ export class TableComponent
   }
 
   onSelect($event: any) {
-    const { selectedRowIndex, model: selectedModel } = $event;
+    const { selectedRowIndex } = $event;
     // TODO: Fix row selection to work with new data structure
-    if (!_.isNil(selectedRowIndex) && selectedModel) {
-      const selectedData = _.get(selectedModel._data?.[selectedRowIndex], [0, 'selected']);
+    if (!_.isNil(selectedRowIndex)) {
+      const selectedData = _.get(this.model.data?.[selectedRowIndex], [0, 'selected']);
       this.selection.selected = [selectedData];
     } else if (!_.isNil($event)) {
       this.selection = $event;
@@ -921,6 +921,13 @@ export class TableComponent
     this.updateSelection.emit(clonedSelection);
 
     this.toggleExpandedRow();
+  }
+
+  onDeselect($event: any) {
+    const { deselectedRowIndex } = $event;
+    this.selection.selected = [];
+    this.expanded = undefined;
+    this.model.expandRow(deselectedRowIndex, false);
   }
 
   toggleColumn(column: CdTableColumn) {
