@@ -84,7 +84,7 @@ export class TableComponent
   @ViewChild('rowDetailTpl', { static: true })
   rowDetailTpl: TemplateRef<any>;
 
-  @ContentChild(TemplateRef<any>) template!: TemplateRef<any>;
+  @ContentChild(TemplateRef) template!: TemplateRef<any>;
 
   // This is the array with the items to be shown.
   @Input()
@@ -337,12 +337,11 @@ export class TableComponent
             if (!_.isNil(value)) {
               let tableItem = new TableItem({
                 selected: val,
-                data: { value, row, column },
+                data: { value, row, column }
               });
 
               if (this.hasDetails) {
-                tableItem.expandedData = val,
-                tableItem.expandedTemplate = this.rowDetailTpl
+                (tableItem.expandedData = val), (tableItem.expandedTemplate = this.rowDetailTpl);
               }
 
               tableItem.template = column.cellTemplate || this.defaultValueTpl;
@@ -353,8 +352,7 @@ export class TableComponent
 
           datasets.push(dataset);
         });
-        if(!_.isEqual(this.model.data, datasets))
-          this.model.data = datasets;
+        if (!_.isEqual(this.model.data, datasets)) this.model.data = datasets;
       }
     });
 
@@ -680,9 +678,7 @@ export class TableComponent
     // automatically if the tab gets visible again.
     // https://github.com/swimlane/ngx-datatable/issues/193
     // https://github.com/swimlane/ngx-datatable/issues/193#issuecomment-329144543
-
     // TODO: Decide what to do with this later. Probably remove altogether
-
     // if (this.table && this.table.element.clientWidth !== this.currentWidth) {
     //   this.currentWidth = this.table.element.clientWidth;
     //   // Recalculate the sizes of the grid.
@@ -786,10 +782,10 @@ export class TableComponent
     }
   }
 
-  onPageChange(page: number){
+  onPageChange(page: number) {
     debugger;
     this.model.currentPage = page;
-    this.getData({page, size: this.model.totalDataLength});
+    this.getData({ page, size: this.model.totalDataLength });
   }
 
   getData({ page = 0, size = 10, filteredData = [] }) {
@@ -858,7 +854,7 @@ export class TableComponent
       return;
     }
     if (!this.selection?.selected?.length) return;
-    
+
     const newSelected = new Set();
     this.selection.selected.forEach((selectedItem) => {
       for (const row of this.data) {
@@ -880,7 +876,7 @@ export class TableComponent
     this.onSelect(this.selection);
   }
 
-  updateExpanded() {    
+  updateExpanded() {
     if (_.isUndefined(this.expanded) || this.updateExpandedOnRefresh === 'never') {
       return;
     }
@@ -915,9 +911,7 @@ export class TableComponent
     const { selectedRowIndex, model: selectedModel } = $event;
     // TODO: Fix row selection to work with new data structure
     if (!_.isNil(selectedRowIndex) && selectedModel) {
-      const selectedData = _.get(
-        selectedModel._data?.[selectedRowIndex], [0, 'selected']
-      );
+      const selectedData = _.get(selectedModel._data?.[selectedRowIndex], [0, 'selected']);
       this.selection.selected = [selectedData];
     } else if (!_.isNil($event)) {
       this.selection = $event;
@@ -925,7 +919,7 @@ export class TableComponent
     const clonedSelection = _.clone(this.selection);
     this.expanded = clonedSelection?.selected?.[0];
     this.updateSelection.emit(clonedSelection);
-    
+
     this.toggleExpandedRow();
   }
 
