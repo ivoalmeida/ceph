@@ -1,5 +1,4 @@
 import {
-  AfterContentChecked,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -47,8 +46,7 @@ const TABLE_LIST_LIMIT = 10;
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent
-  implements AfterContentChecked, AfterViewInit, OnInit, OnChanges, OnDestroy {
+export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
   @ViewChild(DatatableComponent, { static: true })
   table: DatatableComponent;
   @ViewChild('tableCellBoldTpl', { static: true })
@@ -265,7 +263,12 @@ export class TableComponent
 
   set rows(value: any[]) {
     this._rows = value;
-    this._dataset.next(value);
+    this.doPagination({
+      page: this.model.currentPage,
+      size: this.model.pageLength,
+      filteredData: value
+    });
+    this.model.totalDataLength = value.length;
   }
 
   get rows() {
@@ -403,8 +406,6 @@ export class TableComponent
       }
     });
 
-    this.initExpandCollapseColumn(); // If rows have details, add a column to expand or collapse the rows
-    this.initCheckboxColumn();
     this.filterHiddenColumns();
     this.initColumnFilters();
     this.updateColumnFilterOptions();
@@ -514,46 +515,6 @@ export class TableComponent
       name: c.name,
       isHidden: !!c.isHidden
     }));
-  }
-
-  /**
-   * Add a column containing a checkbox if selectionType is 'multiClick'.
-   */
-  initCheckboxColumn() {
-    // TODO: remove this method
-    // if (this.selectionType === 'multiClick') {
-    //   this.localColumns.unshift({
-    //     prop: undefined,
-    //     resizeable: false,
-    //     sortable: false,
-    //     draggable: false,
-    //     checkboxable: false,
-    //     canAutoResize: false,
-    //     cellClass: 'cd-datatable-checkbox',
-    //     cellTemplate: this.rowSelectionTpl,
-    //     width: 30
-    //   });
-    // }
-  }
-
-  /**
-   * Add a column to expand and collapse the table row if it 'hasDetails'
-   */
-  initExpandCollapseColumn() {
-    // TODO: remove this method
-    // if (this.hasDetails) {
-    //   this.localColumns.unshift({
-    //     prop: undefined,
-    //     resizeable: false,
-    //     sortable: false,
-    //     draggable: false,
-    //     isHidden: false,
-    //     canAutoResize: false,
-    //     cellClass: 'cd-datatable-expand-collapse',
-    //     width: 40,
-    //     cellTemplate: this.rowDetailsTpl
-    //   });
-    // }
   }
 
   filterHiddenColumns() {
@@ -678,26 +639,6 @@ export class TableComponent
     this._subscriptions.unsubscribe();
   }
 
-  ngAfterContentChecked() {
-    // If the data table is not visible, e.g. another tab is active, and the
-    // browser window gets resized, the table and its columns won't get resized
-    // automatically if the tab gets visible again.
-    // https://github.com/swimlane/ngx-datatable/issues/193
-    // https://github.com/swimlane/ngx-datatable/issues/193#issuecomment-329144543
-    // TODO: Decide what to do with this later. Probably remove altogether
-    // if (this.table && this.table.element.clientWidth !== this.currentWidth) {
-    //   this.currentWidth = this.table.element.clientWidth;
-    //   // Recalculate the sizes of the grid.
-    //   this.table.recalculate();
-    //   // Mark the datatable as changed, Angular's change-detection will
-    //   // do the rest for us => the grid will be redrawn.
-    //   // Note, the ChangeDetectorRef variable is private, so we need to
-    //   // use this workaround to access it and make TypeScript happy.
-    //   const cdRef = _.get(this.table, 'cd');
-    //   cdRef.markForCheck();
-    // }
-  }
-
   _addTemplates() {
     this.cellTemplates.bold = this.tableCellBoldTpl;
     this.cellTemplates.checkIcon = this.checkIconTpl;
@@ -714,22 +655,12 @@ export class TableComponent
     this.cellTemplates.tooltip = this.tooltipTpl;
     this.cellTemplates.copy = this.copyTpl;
   }
-  // TODO: This doesn't seem to be used anymore. Remove it
-  useCustomClass(value: any): string {
-    if (!this.customCss) {
-      throw new Error('Custom classes are not set!');
-    }
-    const classes = Object.keys(this.customCss);
-    const css = Object.values(this.customCss)
-      .map((v, i) => ((_.isFunction(v) && v(value)) || v === value) && classes[i])
-      .filter((x) => x)
-      .join(' ');
-    return _.isEmpty(css) ? undefined : css;
-  }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.data && changes.data.currentValue) {
+    if (!_.isEqual(changes?.data?.previousValue, changes?.data?.currentValue)) {
       this.useData();
+    } else {
+      this.reset();
     }
   }
 
@@ -791,32 +722,32 @@ export class TableComponent
   }
 
   onPageChange(page: number) {
-    debugger;
     this.model.currentPage = page;
-    this.getData({ page, size: this.model.totalDataLength });
+    this.doPagination({});
   }
 
-  getData({ page = 0, size = 10, filteredData = [] }) {
-    debugger;
-    setTimeout(() => {
-      let start = page;
-      let end = size;
+  doPagination({
+    page = this.model.currentPage,
+    size = this.model.pageLength,
+    filteredData = this.rows
+  }): void {
+    let start = page;
+    let end = size;
 
-      if (start <= 1) {
-        start = 0;
-        end = size;
-      } else {
-        start = (start - 1) * size;
-        end = page * size;
-        if (end > this.data.length) {
-          end = this.data.length;
-        }
+    if (start <= 1) {
+      start = 0;
+      end = size;
+    } else {
+      start = (start - 1) * size;
+      end = page * size;
+      if (end > filteredData.length) {
+        end = filteredData.length;
       }
+    }
 
-      const source = filteredData || this.data;
+    const paginated = filteredData?.slice?.(start, end);
 
-      this.rows = source.slice(start, end);
-    }, 250 * Math.random());
+    this._dataset.next(paginated);
   }
 
   rowIdentity() {
