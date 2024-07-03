@@ -336,7 +336,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         values.forEach((val) => {
           let dataset: TableItem[] = [];
 
-          columnProps.forEach((column) => {
+          columnProps.forEach((column: CdTableColumn, i: number) => {
             const value = _.get(val, column.prop);
 
             if (!_.isNil(value)) {
@@ -345,8 +345,12 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
                 data: { value, row: val, column }
               });
 
-              if (this.hasDetails) {
-                (tableItem.expandedData = val), (tableItem.expandedTemplate = this.rowDetailTpl);
+              if (i === 0) {
+                tableItem.data = { ...tableItem.data, row: val };
+
+                if (this.hasDetails) {
+                  (tableItem.expandedData = val), (tableItem.expandedTemplate = this.rowDetailTpl);
+                }
               }
 
               tableItem.template = column.cellTemplate || this.defaultValueTpl;
@@ -657,7 +661,10 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!_.isEqual(changes?.data?.previousValue, changes?.data?.currentValue)) {
+    if (
+      changes?.data?.firstChange ||
+      !_.isEqual(changes?.data?.previousValue, changes?.data?.currentValue)
+    ) {
       this.useData();
     } else {
       this.reset();
