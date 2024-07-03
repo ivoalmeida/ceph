@@ -9,6 +9,20 @@
                                 (clear)="onClearSearch()">
       </cds-table-toolbar-search>
       <!-- end search -->
+      <!-- column filters -->
+      <cds-select (valueChange)="onSelectFilter($event)">
+        <ng-container *ngFor="let filter of columnFilters">
+          <option [value]="filter.column.name"
+                  [selected]="filter.column.name === selectedFilter.column.name">{{ filter.column.name }}</option>
+        </ng-container>
+      </cds-select>
+      <cds-select (valueChange)="onChangeFilter($event)">
+        <ng-container *ngFor="let option of selectedFilter.options">
+          <option [value]="option.raw"
+                  [selected]="option.raw === selectedFilter?.value?.raw">{{ option.formatted }}</option>
+        </ng-container>
+      </cds-select>
+      <!-- end column filters -->
       <!-- refresh button -->
       <button cdsButton="ghost"
               [disabled]="!fetchData?.observers?.length"

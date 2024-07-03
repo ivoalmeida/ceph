@@ -611,12 +611,14 @@ export class TableComponent
     });
   }
 
-  onSelectFilter(filter: CdTableColumnFilter) {
-    this.selectedFilter = filter;
+  onSelectFilter(filter: string) {
+    const value = this.columnFilters.find((x) => x.column.name === filter);
+    this.selectedFilter = value;
   }
 
-  onChangeFilter(filter: CdTableColumnFilter, option?: { raw: string; formatted: string }) {
-    filter.value = _.isEqual(filter.value, option) ? undefined : option;
+  onChangeFilter(filter: string) {
+    const option = this.selectedFilter.options.find((x) => x.raw === filter);
+    this.selectedFilter.value = _.isEqual(this.selectedFilter.value, option) ? undefined : option;
     this.updateFilter();
   }
 

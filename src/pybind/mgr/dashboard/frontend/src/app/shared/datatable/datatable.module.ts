@@ -14,7 +14,8 @@ import {
   CheckboxModule,
   PaginationModule,
   ThemeModule,
-  DialogModule
+  DialogModule,
+  SelectModule
 } from 'carbon-components-angular';
 import AddIcon from '@carbon/icons/es/add/16';
 import FilterIcon from '@carbon/icons/es/filter/20';
@@ -93,7 +94,8 @@ import { TableDetailDirective } from './directives/table-detail.directive';
     CheckboxModule,
     PaginationModule,
     DialogModule,
-    ThemeModule
+    ThemeModule,
+    SelectModule
   ],
   declarations: [
     TableComponent,
