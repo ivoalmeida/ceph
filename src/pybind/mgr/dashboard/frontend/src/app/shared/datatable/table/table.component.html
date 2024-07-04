@@ -14,14 +14,14 @@
         <svg cdsIcon="filter"
              size="20"
              class="align-self-center mb-2"></svg>
-        <cds-select (change)="onSelectFilter($event)"
+        <cds-select (valueChange)="onSelectFilter($event)"
                     display="inline">          
           <ng-container *ngFor="let filter of columnFilters">
             <option [value]="filter.column.name"
                     [selected]="filter.column.name === selectedFilter.column.name">{{ filter.column.name }}</option>
           </ng-container>
         </cds-select>
-        <cds-select (change)="onChangeFilter($event)"
+        <cds-select (valueChange)="onChangeFilter($event)"
                     display="inline">
           <option *ngIf="!selectedFilter.value" i18n>Any</option>
           <ng-container *ngFor="let option of selectedFilter.options">
@@ -77,12 +77,13 @@
   </cds-table-toolbar>
   <!-- filter chips for column filters -->
   <div class="d-flex justify-content-end align-items-center"
-       style="background-color: var(--cds-layer-accent);color: var(--cds-text-primary);"
+       style="background-color: var(--cds-layer-accent);color: var(--cds-text-primary);border-bottom: 1px solid var(--cds-layer-active);"
        *ngIf="toolHeader && columnFiltered">
   <div class="d-flex gap-2">
     <ng-container *ngFor="let filter of columnFilters">
       <cds-tag *ngIf="filter.value"
-               type="outline">
+               type="outline"
+               class="align-self-center">
         <span class="me-2">{{ filter.column.name }}: {{ filter.value.formatted }}</span>
         <button class="cds--tag__close-icon"
                 (click)="onChangeFilter(filter)">
