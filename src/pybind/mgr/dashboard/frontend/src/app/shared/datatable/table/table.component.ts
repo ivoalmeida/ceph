@@ -900,15 +900,40 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   changeSorting(columnIndex: number) {
-    // const prop = this.model.data[0][columnIndex]?.data?.column?.prop;
     const prop = this.tableColumns?.[columnIndex]?.prop;
+
+    if (this.model.header[columnIndex].sorted) {
+      this.model.header[columnIndex].descending = this.model.header[columnIndex].ascending;
+    } else {
+      const configDir = this.userConfig?.sorts?.find?.((x) => x.prop === prop)?.dir;
+      this.model.header[columnIndex].ascending = configDir === 'asc';
+      this.model.header[columnIndex].descending = configDir === 'desc';
+    }
+
     const dir = this.model.header[columnIndex].ascending ? SortDirection.asc : SortDirection.desc;
     const sorts = [{ dir, prop }];
+
     this.userConfig.sorts = sorts;
     if (this.serverSide) {
       this.userConfig.offset = 0;
       this.reloadData();
     }
+    const tmp = this.rows.slice();
+
+    tmp.sort((a, b) => {
+      const rowA = _.get(a, prop);
+      const rowB = _.get(b, prop);
+      if (rowA > rowB) {
+        return this.model.header[columnIndex].descending ? -1 : 1;
+      }
+      if (rowB > rowA) {
+        return this.model.header[columnIndex].descending ? 1 : -1;
+      }
+      return 0;
+    });
+
+    this.model.header[columnIndex].sorted = true;
+    this.rows = tmp.slice();
   }
 
   onClearSearch() {
