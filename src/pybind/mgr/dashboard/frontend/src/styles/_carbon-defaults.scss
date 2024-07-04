@@ -25,67 +25,67 @@ Once this component is removed we should be ok to remove the overrides below
 Side nav
 ******************************************/
 
-$sidenav-block-size: 2.7rem;
+// $sidenav-block-size: 2.7rem;
 
-.cds--side-nav__submenu {
-  block-size: $sidenav-block-size;
-}
+// .cds--side-nav__submenu {
+//   block-size: $sidenav-block-size;
+// }
 
-a.cds--side-nav__link {
-  min-block-size: $sidenav-block-size;
-}
+// a.cds--side-nav__link {
+//   min-block-size: $sidenav-block-size;
+// }
 
-.cds--side-nav__menu a.cds--side-nav__link {
-  block-size: $sidenav-block-size;
-}
+// .cds--side-nav__menu a.cds--side-nav__link {
+//   block-size: $sidenav-block-size;
+// }
 
-.cds--side-nav__submenu-title,
-a.cds--side-nav__link > .cds--side-nav__link-text {
-  font-size: calc(type.type-scale(4) + 0.5px);
-}
+// .cds--side-nav__submenu-title,
+// a.cds--side-nav__link > .cds--side-nav__link-text {
+//   font-size: calc(type.type-scale(4) + 0.5px);
+// }
 
-.cds--side-nav__icon > svg {
-  block-size: 20px;
-  inline-size: 20px;
-}
+// .cds--side-nav__icon > svg {
+//   block-size: 20px;
+//   inline-size: 20px;
+// }
 
-.cds--side-nav--expanded {
-  min-width: 20.8rem !important;
-}
+// .cds--side-nav--expanded {
+//   min-width: 20.8rem !important;
+// }
 
-.cds--side-nav__navigation {
-  min-width: 4.2rem;
-}
+// .cds--side-nav__navigation {
+//   min-width: 4.2rem;
+// }
 
-.cds--side-nav__navigation {
-  left: -4.8rem;
-  transition: 250ms ease;
-}
+// .cds--side-nav__navigation {
+//   left: -4.8rem;
+//   transition: 250ms ease;
+// }
 
-.cds--side-nav--expanded {
-  left: 0;
-  transition: 250ms ease;
-}
+// .cds--side-nav--expanded {
+//   left: 0;
+//   transition: 250ms ease;
+// }
 /******************************************
 Header
 ******************************************/
-$header-block-size: 3.9rem;
+// $header-block-size: 3.9rem;
 
-a.cds--header__menu-item,
-.cds--header__action,
-.cds--header {
-  block-size: $header-block-size;
-  font-size: calc(type.type-scale(4) + 0.5px);
-}
+// a.cds--header__menu-item,
+// .cds--header__action,
+// .cds--header {
+//   block-size: $header-block-size;
+//   font-size: calc(type.type-scale(4) + 0.5px);
+// }
 
-button.cds--header__menu-trigger.cds--header__action.cds--header__menu-toggle {
-  inline-size: $header-block-size;
-}
+// button.cds--header__menu-trigger.cds--header__action.cds--header__menu-toggle {
+//   inline-size: $header-block-size;
+// }
 
-button.cds--overflow-menu {
-  block-size: $header-block-size;
-  inline-size: calc($header-block-size - 1rem);
-}
+// button.cds--overflow-menu {
+//   block-size: $header-block-size;
+//   inline-size: calc($header-block-size - 1rem);
+// }
 
 /******************************************
 Modals
