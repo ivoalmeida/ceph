@@ -900,8 +900,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   changeSorting(columnIndex: number) {
-    const prop = this.model.data[0][columnIndex]?.data?.column?.prop;
-    this.userConfig.sorts = [{ dir: SortDirection.asc, prop }];
+    // const prop = this.model.data[0][columnIndex]?.data?.column?.prop;
+    const prop = this.tableColumns?.[columnIndex]?.prop;
+    const dir = this.model.header[columnIndex].ascending ? SortDirection.asc : SortDirection.desc;
+    const sorts = [{ dir, prop }];
+    this.userConfig.sorts = sorts;
     if (this.serverSide) {
       this.userConfig.offset = 0;
       this.reloadData();
