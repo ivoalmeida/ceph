@@ -961,6 +961,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         // TODO: Understand how this works and change appropriately
         // this.table.offset = 0;
       }
+      const cols = this.localColumns?.filter?.((x) => rows?.[0]?.hasOwnProperty(x.prop));
+      if (cols?.length) this.tableColumns = cols;
 
       this.rows = rows;
     }
