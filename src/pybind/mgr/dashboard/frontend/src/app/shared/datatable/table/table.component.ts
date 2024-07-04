@@ -17,7 +17,6 @@ import {
 } from '@angular/core';
 
 import {
-  DatatableComponent,
   getterForProp,
   SortDirection,
   SortPropDir,
@@ -47,8 +46,6 @@ const TABLE_LIST_LIMIT = 10;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
-  @ViewChild(DatatableComponent, { static: true })
-  table: DatatableComponent;
   @ViewChild('tableCellBoldTpl', { static: true })
   tableCellBoldTpl: TemplateRef<any>;
   @ViewChild('sparklineTpl', { static: true })
