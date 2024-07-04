@@ -108,6 +108,7 @@
              [stickyHeader]="false"
              [striped]="false"
              [isDataGrid]="true"
+             (sort)="changeSorting($event)"
              (selectRow)="onSelect($event)"
              (deselectRow)="onDeselect($event)">
 </cds-table>
