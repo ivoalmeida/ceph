@@ -3,21 +3,27 @@
     <cds-table-toolbar-content>
       <!-- search -->
       <cds-table-toolbar-search *ngIf="searchField"
-                                [expandable]="true"
+                                [expandable]="false"
                                 [(ngModel)]="search"
                                 (valueChange)="updateFilter($event)"
                                 (clear)="onClearSearch()">
       </cds-table-toolbar-search>
       <!-- end search -->
       <!-- column filters -->
-      <ng-container *ngIf="columnFiltered">
-        <cds-select (valueChange)="onSelectFilter($event)">
+      <ng-container *ngIf="columnFilters.length !== 0">
+        <svg cdsIcon="filter"
+             size="16"
+             class="align-self-center mb-2"></svg>
+        <cds-select (change)="onSelectFilter($event)"
+                    display="inline">          
           <ng-container *ngFor="let filter of columnFilters">
             <option [value]="filter.column.name"
                     [selected]="filter.column.name === selectedFilter.column.name">{{ filter.column.name }}</option>
           </ng-container>
         </cds-select>
-        <cds-select (valueChange)="onChangeFilter($event)">
+        <cds-select (change)="onChangeFilter($event)"
+                    display="inline">
+          <option *ngIf="!selectedFilter.value" i18n>Any</option>
           <ng-container *ngFor="let option of selectedFilter.options">
             <option [value]="option.raw"
                     [selected]="option.raw === selectedFilter?.value?.raw">{{ option.formatted }}</option>
@@ -69,6 +75,28 @@
       <!-- end actions -->
     </cds-table-toolbar-content>
   </cds-table-toolbar>
+  <!-- filter chips for column filters -->
+  <div class="d-flex justify-content-end align-items-center"
+       style="background-color: var(--cds-layer-accent);color: var(--cds-text-primary);"
+       *ngIf="toolHeader && columnFiltered">
+  <div class="d-flex gap-2">
+    <ng-container *ngFor="let filter of columnFilters">
+      <cds-tag *ngIf="filter.value"
+               type="outline">
+        <span class="me-2">{{ filter.column.name }}: {{ filter.value.formatted }}</span>
+        <button class="cds--tag__close-icon"
+                (click)="onChangeFilter(filter)">
+          <svg cdsIcon="close" size="16"></svg>
+        </button>
+      </cds-tag>
+    </ng-container>
+    <button cdsButton="ghost"
+            (click)="onClearFilters($event)">
+      <ng-container i18n>Clear filters</ng-container>
+    </button>
+  </div>
+  </div>
+  <!-- end filter chips for column filters -->
   <cds-table [model]="model"
              [sortable]="!!userConfig.sorts"
              size="md"

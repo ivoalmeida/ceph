@@ -15,13 +15,15 @@ import {
   PaginationModule,
   ThemeModule,
   DialogModule,
-  SelectModule
+  SelectModule,
+  TagModule
 } from 'carbon-components-angular';
 import AddIcon from '@carbon/icons/es/add/16';
-import FilterIcon from '@carbon/icons/es/filter/20';
+import FilterIcon from '@carbon/icons/es/filter/16';
 import ReloadIcon from '@carbon/icons/es/renew/20';
 import DataTableIcon from '@carbon/icons/es/data-table/20';
 import CheckIcon from '@carbon/icons/es/checkmark/20';
+import CloseIcon from '@carbon/icons/es/close/16';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
@@ -95,7 +97,8 @@ import { TableDetailDirective } from './directives/table-detail.directive';
     PaginationModule,
     DialogModule,
     ThemeModule,
-    SelectModule
+    SelectModule,
+    TagModule
   ],
   declarations: [
     TableComponent,
@@ -126,6 +129,13 @@ import { TableDetailDirective } from './directives/table-detail.directive';
 })
 export class DataTableModule {
   constructor(private iconService: IconService) {
-    this.iconService.registerAll([AddIcon, FilterIcon, ReloadIcon, DataTableIcon, CheckIcon]);
+    this.iconService.registerAll([
+      AddIcon,
+      FilterIcon,
+      ReloadIcon,
+      DataTableIcon,
+      CheckIcon,
+      CloseIcon
+    ]);
   }
 }
