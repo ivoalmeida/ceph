@@ -767,6 +767,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.updateSelected();
     this.updateExpanded();
     this.toggleExpandedRow();
+    this.doSorting();
   }
 
   /**
@@ -924,21 +925,38 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.userConfig.offset = 0;
       this.reloadData();
     }
+
+    this.doSorting(columnIndex);
+  }
+
+  doSorting(columnIndex?: number) {
+    const index =
+      columnIndex ||
+      this.tableColumns?.findIndex?.((x) => x.prop === this.userConfig?.sorts?.[0]?.prop);
+
+    if (_.isNil(index) || index < 0) return;
+
+    const prop = this.tableColumns?.[index]?.prop;
+
+    const configDir = this.userConfig?.sorts?.find?.((x) => x.prop === prop)?.dir;
+    this.model.header[index].ascending = configDir === 'asc';
+    this.model.header[index].descending = configDir === 'desc';
+
     const tmp = this.rows.slice();
 
     tmp.sort((a, b) => {
       const rowA = _.get(a, prop);
       const rowB = _.get(b, prop);
       if (rowA > rowB) {
-        return this.model.header[columnIndex].descending ? -1 : 1;
+        return this.model.header[index].descending ? -1 : 1;
       }
       if (rowB > rowA) {
-        return this.model.header[columnIndex].descending ? 1 : -1;
+        return this.model.header[index].descending ? 1 : -1;
       }
       return 0;
     });
 
-    this.model.header[columnIndex].sorted = true;
+    this.model.header[index].sorted = true;
     this.rows = tmp.slice();
   }
 
