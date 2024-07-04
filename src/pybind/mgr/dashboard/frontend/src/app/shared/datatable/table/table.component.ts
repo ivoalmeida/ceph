@@ -279,23 +279,21 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   private _subscriptions: Subscription = new Subscription();
 
   loadingIndicator = true;
+
+  // TODO: Investigate how this is being used and then removed it completely
   paginationClasses = {
     pagerLeftArrow: Icons.leftArrowDouble,
     pagerRightArrow: Icons.rightArrowDouble,
     pagerPrevious: Icons.leftArrow,
     pagerNext: Icons.rightArrow
   };
+  // TODO: Need to modify CdUserConfig so it doesn't depend on ngx-datatable anymore
   userConfig: CdUserConfig = {};
   tableName: string;
   localStorage = window.localStorage;
   private saveSubscriber: Subscription;
   private reloadSubscriber: Subscription;
   private updating = false;
-
-  // Internal variable to check if it is necessary to recalculate the
-  // table columns after the browser window has been resized.
-  // TODO: Probably won't need this anymore
-  // private currentWidth: number;
 
   columnFilters: CdTableColumnFilter[] = [];
   selectedFilter: CdTableColumnFilter;
@@ -509,7 +507,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   _saveUserConfig(config: any) {
     this.localStorage.setItem(this.tableName, JSON.stringify(config));
   }
-
+  // TODO: What does userConfig.columns do and why does it need to be updated?
   updateUserColumns() {
     this.userConfig.columns = this.localColumns.map((c) => ({
       prop: c.prop,
@@ -658,13 +656,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes?.data?.firstChange ||
-      !_.isEqual(changes?.data?.previousValue, changes?.data?.currentValue)
-    ) {
+    if (changes?.data?.currentValue) {
       this.useData();
-    } else {
-      this.reset();
     }
   }
 
@@ -912,8 +905,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     ];
   }
 
-  changeSorting({ sorts }: any) {
-    this.userConfig.sorts = sorts;
+  changeSorting(columnIndex: number) {
+    const prop = this.model.data[0][columnIndex]?.data?.column?.prop;
+    this.userConfig.sorts = [{ dir: SortDirection.asc, prop }];
     if (this.serverSide) {
       this.userConfig.offset = 0;
       this.reloadData();
