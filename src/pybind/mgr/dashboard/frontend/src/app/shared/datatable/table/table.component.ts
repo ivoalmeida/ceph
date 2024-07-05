@@ -231,6 +231,14 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   model: TableModel = new TableModel();
 
   set tableColumns(value: CdTableColumn[]) {
+    value.forEach((col) => {
+      if (!col?.name && col.prop) {
+        col.name = _.capitalize(_.toString(col.prop));
+      }
+      if (!col.name && !col.prop) {
+        col.name = '';
+      }
+    });
     this._tableColumns = value;
     this.model.header = value.map(
       (col: CdTableColumn) =>

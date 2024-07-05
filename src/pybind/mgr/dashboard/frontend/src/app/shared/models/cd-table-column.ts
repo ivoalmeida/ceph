@@ -41,4 +41,6 @@ export interface CdTableColumn extends TableColumn, Partial<TableHeaderItem> {
    * Hides a column from the 'toggle columns' drop down checkboxes
    */
   isInvisible?: boolean;
+
+  name?: string;
 }
