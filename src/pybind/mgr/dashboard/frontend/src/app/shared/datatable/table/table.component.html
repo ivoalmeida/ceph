@@ -11,9 +11,11 @@
       <!-- end search -->
       <!-- column filters -->
       <ng-container *ngIf="columnFilters.length !== 0">
-        <svg cdsIcon="filter"
-             size="20"
-             class="align-self-center mb-2"></svg>
+        <div class="d-inline-flex position-relative">
+          <svg cdsIcon="filter"
+               size="16"
+               class="align-self-center mb-2"></svg>
+        </div>
         <cds-select (valueChange)="onSelectFilter($event)"
                     display="inline">          
           <ng-container *ngFor="let filter of columnFilters">
