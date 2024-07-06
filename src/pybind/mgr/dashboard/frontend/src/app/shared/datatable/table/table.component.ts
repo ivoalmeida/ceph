@@ -343,11 +343,15 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           let dataset: TableItem[] = [];
 
           columnProps.forEach((column: CdTableColumn, i: number) => {
-            const value = _.get(val, column.prop);
+            const rowValue = _.get(val, column.prop);
 
             let tableItem = new TableItem({
               selected: val,
-              data: { value, row: val, column }
+              data: {
+                value: column.pipe ? column.pipe.transform(rowValue) : rowValue,
+                row: val,
+                column
+              }
             });
 
             if (i === 0) {
@@ -359,7 +363,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
             }
 
             if (column.cellClass && _.isFunction(column.cellClass)) {
-              this.model.header[i].className = column.cellClass({ row: val, column, value });
+              this.model.header[i].className = column.cellClass({
+                row: val,
+                column,
+                value: rowValue
+              });
             }
 
             tableItem.template = column.cellTemplate || this.defaultValueTpl;
@@ -1013,7 +1021,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       }
 
       if (this.columnFilters.length !== 0) {
-        const cols = this.localColumns?.filter?.((x) => rows?.[0]?.hasOwnProperty(x.prop));
+        const cols = this.localColumns?.filter?.((x) => _.has(rows?.[0], x.prop));
         if (cols?.length) this.tableColumns = cols;
       }
 
