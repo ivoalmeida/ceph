@@ -249,6 +249,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         new TableHeaderItem({
           data: col.name,
           title: col.name,
+          // if cellClass is a function it cannot be called here as it requires table data to execute
+          // instead if cellClass is a function it will be called and applied while parsing the data
+          className: _.isString(col.cellClass) ? col.cellClass : undefined,
           visible: !col.isHidden || !col.isInvisible
         })
     );
@@ -342,24 +345,26 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           columnProps.forEach((column: CdTableColumn, i: number) => {
             const value = _.get(val, column.prop);
 
-            if (!_.isNil(value)) {
-              let tableItem = new TableItem({
-                selected: val,
-                data: { value, row: val, column }
-              });
+            let tableItem = new TableItem({
+              selected: val,
+              data: { value, row: val, column }
+            });
 
-              if (i === 0) {
-                tableItem.data = { ...tableItem.data, row: val };
+            if (i === 0) {
+              tableItem.data = { ...tableItem.data, row: val };
 
-                if (this.hasDetails) {
-                  (tableItem.expandedData = val), (tableItem.expandedTemplate = this.rowDetailTpl);
-                }
+              if (this.hasDetails) {
+                (tableItem.expandedData = val), (tableItem.expandedTemplate = this.rowDetailTpl);
               }
-
-              tableItem.template = column.cellTemplate || this.defaultValueTpl;
-
-              dataset.push(tableItem);
             }
+
+            if (column.cellClass && _.isFunction(column.cellClass)) {
+              this.model.header[i].className = column.cellClass({ row: val, column, value });
+            }
+
+            tableItem.template = column.cellTemplate || this.defaultValueTpl;
+
+            dataset.push(tableItem);
           });
 
           datasets.push(dataset);
