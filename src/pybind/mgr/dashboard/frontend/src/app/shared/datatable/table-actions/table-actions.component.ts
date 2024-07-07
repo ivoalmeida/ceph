@@ -95,7 +95,8 @@ export class TableActionsComponent implements OnChanges, OnInit {
     if (!buttonAction && this.dropDownActions.length > 0) {
       buttonAction = this.dropDownActions[0];
     }
-    this.currentAction = buttonAction;
+    // TODO: Revise this logic and remove conditions that don't make sens anymore
+    this.currentAction = this.dropDownActions[0];
   }
 
   /**
