@@ -133,6 +133,26 @@
   <span ngClass="column?.cellClass">{{ value }}</span>
 </ng-template>
 
+<ng-template #tableActionTpl>
+  <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 1"
+                     [flip]="true"
+                     class="d-flex justify-content-end"
+                     (click)="$event.stopPropagation()">
+    <ng-container *ngFor="let action of tableActions?.dropDownActions">  
+      <cds-overflow-menu-option class="{{ tableActions.toClassName(action) }}"
+                                title="{{ tableActions.useDisableDesc(action) }}"
+                                (click)="tableActions.useClickAction(action)"
+                                [routerLink]="tableActions.useRouterLink(action)"
+                                [preserveFragment]="action.preserveFragment ? '' : null"
+                                [disabled]="tableActions.disableSelectionAction(action)"
+                                [attr.aria-label]="action.name"
+                                i18n>
+        {{ action.name }}
+      </cds-overflow-menu-option>
+    </ng-container>
+  </cds-overflow-menu>
+</ng-template>
+
 
 <!-- cell templates that can be accessed from outside -->
 <ng-template #tableCellBoldTpl
