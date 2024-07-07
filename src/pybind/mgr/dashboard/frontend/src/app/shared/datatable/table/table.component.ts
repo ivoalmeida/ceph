@@ -37,6 +37,7 @@ import { PageInfo } from '~/app/shared/models/cd-table-paging';
 import { CdTableSelection } from '~/app/shared/models/cd-table-selection';
 import { CdUserConfig } from '~/app/shared/models/cd-user-config';
 import { TimerService } from '~/app/shared/services/timer.service';
+import { TableActionsComponent } from '../table-actions/table-actions.component';
 
 const TABLE_LIST_LIMIT = 10;
 @Component({
@@ -82,8 +83,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   defaultValueTpl: TemplateRef<any>;
   @ViewChild('rowDetailTpl', { static: true })
   rowDetailTpl: TemplateRef<any>;
+  @ViewChild('tableActionTpl', { static: true })
+  tableActionTpl: TemplateRef<any>;
 
   @ContentChild(TemplateRef) template!: TemplateRef<any>;
+  @ContentChild(TableActionsComponent) tableActions!: TableActionsComponent;
 
   // This is the array with the items to be shown.
   @Input()
@@ -291,13 +295,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
   loadingIndicator = true;
 
-  // TODO: Investigate how this is being used and then removed it completely
-  paginationClasses = {
-    pagerLeftArrow: Icons.leftArrowDouble,
-    pagerRightArrow: Icons.rightArrowDouble,
-    pagerPrevious: Icons.leftArrow,
-    pagerNext: Icons.rightArrow
-  };
   // TODO: Need to modify CdUserConfig so it doesn't depend on ngx-datatable anymore
   userConfig: CdUserConfig = {};
   tableName: string;
@@ -331,6 +328,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   ngAfterViewInit(): void {
+    if (this.tableActions?.dropDownActions?.length) {
+      this.tableColumns = [
+        ...this.tableColumns,
+        {
+          name: '',
+          prop: '',
+          className: 'w25',
+          sortable: false,
+          cellTemplate: this.tableActionTpl
+        }
+      ];
+    }
     const datasetSubscription = this._dataset.subscribe({
       next: (values: any[]) => {
         if (!values?.length) return;
