@@ -38,6 +38,7 @@ import { CdTableSelection } from '~/app/shared/models/cd-table-selection';
 import { CdUserConfig } from '~/app/shared/models/cd-user-config';
 import { TimerService } from '~/app/shared/services/timer.service';
 import { TableActionsComponent } from '../table-actions/table-actions.component';
+import { TableDetailDirective } from '../directives/table-detail.directive';
 
 const TABLE_LIST_LIMIT = 10;
 @Component({
@@ -82,7 +83,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   @ViewChild('tableActionTpl', { static: true })
   tableActionTpl: TemplateRef<any>;
 
-  @ContentChild(TemplateRef) template!: TemplateRef<any>;
+  @ContentChild(TableDetailDirective) rowDetail!: TableDetailDirective;
   @ContentChild(TableActionsComponent) tableActions!: TableActionsComponent;
 
   // This is the array with the items to be shown.

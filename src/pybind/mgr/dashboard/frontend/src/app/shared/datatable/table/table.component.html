@@ -122,7 +122,7 @@
 <ng-template #rowDetailTpl
              let-row="data">
   <div *ngIf="row[identifier] === expanded?.[identifier]">
-    <ng-template [ngTemplateOutlet]="template"></ng-template>
+    <ng-template [ngTemplateOutlet]="rowDetail.template"></ng-template>
   </div>
 </ng-template>
 
