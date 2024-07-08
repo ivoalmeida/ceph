@@ -400,6 +400,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       }
     });
 
+    this.model.rowsSelectedChange.subscribe({
+      next: () => {
+        this.model.rowsSelected
+          .filter((x) => x)
+          .forEach((_selected, i: number) => {
+            const selectedData = _.get(this.model.data?.[i], [0, 'selected']);
+            this.selection.selected.push(selectedData);
+          });
+        this.updateSelection.emit(_.clone(this.selection));
+      }
+    });
+
     this._subscriptions.add(datasetSubscription);
     this._subscriptions.add(rowsExpandedSubscription);
   }
@@ -661,7 +673,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     _.forEach(this.selection.selected, (selectedItem) => {
       if (_.find(data, { [this.identifier]: selectedItem[this.identifier] }) === undefined) {
         this.selection = new CdTableSelection();
-        this.onSelect(this.selection);
+        this.updateSelection.emit(_.clone(this.selection));
       }
     });
     return data;
@@ -847,7 +859,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       return;
     }
     this.selection.selected = newSelectedArray;
-    this.onSelect(this.selection);
+    this.updateSelection.emit(_.clone(this.selection));
   }
 
   updateExpanded() {
@@ -864,18 +876,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
     this.expanded = newExpanded;
     this.setExpandedRow.emit(newExpanded);
-  }
-
-  onSelect($event: any) {
-    const { selectedRowIndex } = $event;
-    if (!_.isNil(selectedRowIndex)) {
-      const selectedData = _.get(this.model.data?.[selectedRowIndex], [0, 'selected']);
-      this.selection.selected = [selectedData];
-    } else if (!_.isNil($event)) {
-      this.selection = $event;
-    }
-    const clonedSelection = _.clone(this.selection);
-    this.updateSelection.emit(clonedSelection);
   }
 
   onDeselect() {

@@ -1,5 +1,29 @@
 <cds-table-container cdsTheme="white">
-  <cds-table-toolbar *ngIf="toolHeader">
+  <!-- multiselection batch actions -->
+  <cds-table-toolbar #toolbar
+                     *ngIf="toolHeader"
+                     [model]="selectionType === 'multiClick' ? model : []"
+                     [batchText]="{
+                      SINGLE: '1 item selected',
+                      MULTIPLE: '{{count}} items selected' }">
+    <cds-table-toolbar-actions *ngIf="tableActions?.dropDownActions.length > 1">
+      <ng-container *ngFor="let action of tableActions?.dropDownActions">  
+        <button *ngIf="tableActions.currentAction !== action"
+                cdsButton="primary"
+                [tabindex]="toolbar.selected ? 0 : -1"
+                class="{{ tableActions.toClassName(action) }}"
+                title="{{ tableActions.useDisableDesc(action) }}"
+                (click)="tableActions.useClickAction(action)"
+                [routerLink]="tableActions.useRouterLink(action)"
+                [preserveFragment]="action.preserveFragment ? '' : null"
+                [disabled]="tableActions.disableSelectionAction(action)"
+                [attr.aria-label]="action.name"
+                i18n>
+          {{ action.name }}
+        </button>
+      </ng-container>
+    </cds-table-toolbar-actions>
+    <!-- end multiselection batch actions -->
     <cds-table-toolbar-content>
       <!-- search -->
       <cds-table-toolbar-search *ngIf="searchField"
@@ -111,7 +135,6 @@
              [striped]="false"
              [isDataGrid]="true"
              (sort)="changeSorting($event)"
-             (selectRow)="onSelect($event)"
              (deselectRow)="onDeselect()">
 </cds-table>
 <cds-pagination [model]="model"
