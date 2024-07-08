@@ -3,6 +3,7 @@
   $flex-grid-columns: 16,
   $use-flexbox-grid: true,
 );
+@use './src/styles/vendor/variables' as vv;
 @use './themes/default';
 @use '@carbon/styles/scss/compat/themes' as compat;
 @use '@carbon/styles/scss/themes';
@@ -10,6 +11,10 @@
   $theme: default.$theme,
   $fallback: compat.$g90,
 );
+
+@use '@carbon/styles/scss/components/button/tokens' as button-tokens with
+  ($button-primary: vv.$primary, $button-secondary: vv.$secondary);
+
 @use '@carbon/styles';
 @use '@carbon/type';
 
