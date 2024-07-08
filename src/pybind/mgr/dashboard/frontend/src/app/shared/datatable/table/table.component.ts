@@ -252,8 +252,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           title: col.name,
           // if cellClass is a function it cannot be called here as it requires table data to execute
           // instead if cellClass is a function it will be called and applied while parsing the data
-          className: _.isString(col.cellClass) ? col.cellClass : undefined,
-          visible: !col.isHidden || !col.isInvisible
+          className: _.isString(col?.cellClass) ? col?.cellClass : col?.className,
+          visible: !col.isHidden || !col.isInvisible,
+          sortable: _.isNil(col.sortable) ? true : col.sortable
         })
     );
   }
@@ -389,7 +390,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       }
     });
 
+    const rowsExpandedSubscription = this.model.rowsExpandedChange.subscribe({
+      next: (index: number) => {
+        this.expanded = _.get(this.model.data?.[index], [0, 'selected']);
+        this.setExpandedRow.emit(this.expanded);
+        this.model.rowsExpanded = this.model.rowsExpanded.map(
+          (_, rowIndex: number) => rowIndex === index
+        );
+      }
+    });
+
     this._subscriptions.add(datasetSubscription);
+    this._subscriptions.add(rowsExpandedSubscription);
   }
 
   ngOnInit() {
@@ -791,7 +803,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.reset();
     this.updateSelected();
     this.updateExpanded();
-    this.toggleExpandedRow();
+    this.toggleExpandRow();
     this.doSorting();
   }
 
@@ -854,24 +866,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.setExpandedRow.emit(newExpanded);
   }
 
-  private toggleExpandedRow() {
-    const rowId = this.model.data.findIndex((row: TableItem[]) => {
-      const rowSelectedId = _.get(row, [0, 'selected', this.identifier]);
-      const expandedId = this.expanded?.[this.identifier];
-      return _.isEqual(rowSelectedId, expandedId);
-    });
-
-    this.model.rowsIndices.forEach((i: number) => {
-      if (i === rowId) this.model.expandRow(i, true);
-      else this.model.expandRow(i, false);
-    });
-
-    this.setExpandedRow.emit(this.expanded);
-  }
-
   onSelect($event: any) {
     const { selectedRowIndex } = $event;
-    // TODO: Fix row selection to work with new data structure
     if (!_.isNil(selectedRowIndex)) {
       const selectedData = _.get(this.model.data?.[selectedRowIndex], [0, 'selected']);
       this.selection.selected = [selectedData];
@@ -879,17 +875,13 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.selection = $event;
     }
     const clonedSelection = _.clone(this.selection);
-    this.expanded = clonedSelection?.selected?.[0];
     this.updateSelection.emit(clonedSelection);
-
-    this.toggleExpandedRow();
   }
 
-  onDeselect($event: any) {
-    const { deselectedRowIndex } = $event;
+  onDeselect() {
     this.selection.selected = [];
+    this.updateSelection.emit(this.selection);
     this.expanded = undefined;
-    this.model.expandRow(deselectedRowIndex, false);
   }
 
   toggleColumn(column: CdTableColumn) {
@@ -1091,21 +1083,22 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       };
     };
   }
-  // TODO: This method doesn't make sense with the new data table. Remove
-  toggleExpandRow(row: any, isExpanded: boolean, event: any) {
-    event.stopPropagation();
-    if (!isExpanded) {
-      // If current row isn't expanded, collapse others
-      this.expanded = row;
-      // TODO: How to replace this? What does it do?
-      // this.table.rowDetail.collapseAllRows();
-      this.setExpandedRow.emit(row);
-    } else {
-      // If all rows are closed, emit undefined
-      this.expanded = undefined;
-      this.setExpandedRow.emit(undefined);
+
+  toggleExpandRow() {
+    if (_.isNil(this.expanded)) {
+      return;
     }
-    // TODO: How to replace this? What does it do?
-    // this.table.rowDetail.toggleExpandRow(row);
+
+    const rowId = this.model.data.findIndex((row: TableItem[]) => {
+      const rowSelectedId = _.get(row, [0, 'selected', this.identifier]);
+      const expandedId = this.expanded?.[this.identifier];
+      return _.isEqual(rowSelectedId, expandedId);
+    });
+
+    if (rowId < 0) {
+      return;
+    }
+
+    this.model.rowsExpandedChange.emit(rowId);
   }
 }
