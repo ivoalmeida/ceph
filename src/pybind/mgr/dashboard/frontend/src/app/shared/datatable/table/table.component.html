@@ -112,7 +112,7 @@
              [isDataGrid]="true"
              (sort)="changeSorting($event)"
              (selectRow)="onSelect($event)"
-             (deselectRow)="onDeselect($event)">
+             (deselectRow)="onDeselect()">
 </cds-table>
 <cds-pagination [model]="model"
                 (selectPage)="onPageChange($event)">
@@ -136,8 +136,7 @@
 <ng-template #tableActionTpl>
   <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 1"
                      [flip]="true"
-                     class="d-flex justify-content-end"
-                     (click)="$event.stopPropagation()">
+                     class="d-flex justify-content-end">
     <ng-container *ngFor="let action of tableActions?.dropDownActions">  
       <cds-overflow-menu-option *ngIf="tableActions.currentAction !== action"
                                 class="{{ tableActions.toClassName(action) }}"
