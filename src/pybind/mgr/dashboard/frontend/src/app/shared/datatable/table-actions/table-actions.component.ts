@@ -96,7 +96,9 @@ export class TableActionsComponent implements OnChanges, OnInit {
       buttonAction = this.dropDownActions[0];
     }
     // TODO: Revise this logic and remove conditions that don't make sens anymore
-    this.currentAction = this.dropDownActions[0];
+    if (this.dropDownActions[0].permission === 'create') {
+      this.currentAction = this.dropDownActions[0];
+    }
   }
 
   /**
