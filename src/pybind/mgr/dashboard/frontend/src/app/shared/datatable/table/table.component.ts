@@ -396,6 +396,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
     const rowsExpandedSubscription = this.model.rowsExpandedChange.subscribe({
       next: (index: number) => {
+        if (this.model.rowsExpanded.every((x) => !x)) {
+          this.expanded = undefined;
+          this.setExpandedRow.emit(this.expanded);
+          return;
+        }
         this.expanded = _.get(this.model.data?.[index], [0, 'selected']);
         this.setExpandedRow.emit(this.expanded);
         this.model.rowsExpanded = this.model.rowsExpanded.map(
