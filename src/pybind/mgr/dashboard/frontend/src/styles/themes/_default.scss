@@ -1,6 +1,7 @@
 @use './src/styles/vendor/variables' as vv;
 
 $theme: (
+  background-brand: vv.$secondary,
   // hover
   //layer-hover: rgb(191, 0, 255),
   // layer-hover-01: rgb(54, 152, 74),
