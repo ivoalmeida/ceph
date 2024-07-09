@@ -26,12 +26,16 @@
 @use '@carbon/themes' as t;
 
 .navigation-theme {
-  @include t.theme(map.merge(compat.$g90, navigation.$theme));
+  @include t.theme(navigation.$theme);
 }
 
 tr.cds--expandable-row > td:first-of-type {
-  background-color: vv.$white !important; 
+  background-color: vv.$white !important;
   padding-inline-start: 1rem !important;
+}
+
+th {
+  padding-block: 0 !important;
 }
 /**********************************************************************************
 These are meant to be temporary style overrides.
