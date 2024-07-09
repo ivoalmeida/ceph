@@ -1,11 +1,11 @@
-<cds-table-container>
-  <!-- multiselection batch actions -->
+<cds-table-container>  
   <cds-table-toolbar #toolbar
                      *ngIf="toolHeader"
                      [model]="selectionType === 'multiClick' ? model : []"
                      [batchText]="{
                       SINGLE: '1 item selected',
                       MULTIPLE: '{{count}} items selected' }">
+    <!-- multiselection batch actions -->
     <cds-table-toolbar-actions *ngIf="tableActions?.dropDownActions.length > 1">
       <ng-container *ngFor="let action of tableActions?.dropDownActions">  
         <button *ngIf="tableActions.currentAction !== action"
@@ -86,12 +86,14 @@
       <ng-template #showHideColumnsRef>
         <div class="vstack gap-3 p-3"
              (click)="$event.stopPropagation()">
-          <cds-checkbox *ngFor="let column of model.header"
-                        id="{{ column.data }}"
-                        [name]="column.data"
-                        [checked]="column.visible"
-                        (checkedChange)="toggleColumn(column);">{{ column.data }}
+          <ng-container *ngFor="let column of model.header">
+            <cds-checkbox *ngIf="column?.data?.length" 
+                          id="{{ column.data }}"
+                          [name]="column.data"
+                          [checked]="column.visible"
+                          (checkedChange)="toggleColumn(column);">{{ column.data }}
           </cds-checkbox>
+          </ng-container>
         </div>
       </ng-template>
       <!-- end show hide columns -->
