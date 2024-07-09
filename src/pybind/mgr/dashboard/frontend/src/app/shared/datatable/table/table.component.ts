@@ -405,13 +405,17 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       }
     });
 
-    this.model.rowsSelectedChange.subscribe({
+    const rowsSelectedSubscription = this.model.rowsSelectedChange.subscribe({
       next: () => {
         this.model.rowsSelected
           .filter((x) => x)
           .forEach((_selected, i: number) => {
             const selectedData = _.get(this.model.data?.[i], [0, 'selected']);
-            this.selection.selected.push(selectedData);
+            if (this.selectionType === 'single') {
+              this.selection.selected = [selectedData];
+            } else {
+              this.selection.selected.push(selectedData);
+            }
           });
         this.updateSelection.emit(_.clone(this.selection));
       }
@@ -419,6 +423,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
     this._subscriptions.add(datasetSubscription);
     this._subscriptions.add(rowsExpandedSubscription);
+    this._subscriptions.add(rowsSelectedSubscription);
   }
 
   ngOnInit() {
@@ -485,9 +490,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.useData();
     }
   }
-  onRowDetailHover(event: any){
-    event.target.closest('tr').previousElementSibling.classList.remove("cds--expandable-row--hover");
-    event.target.closest('tr').previousElementSibling.classList.remove("cds--data-table--selected");
+  onRowDetailHover(event: any) {
+    event.target
+      .closest('tr')
+      .previousElementSibling.classList.remove('cds--expandable-row--hover');
+    event.target.closest('tr').previousElementSibling.classList.remove('cds--data-table--selected');
   }
   // TODO: Understand what this does
   initUserConfig() {
