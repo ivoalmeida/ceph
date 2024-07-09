@@ -1,21 +1,23 @@
 @use './src/styles/vendor/variables' as vv;
 
 $theme: (
-  text-disabled: vv.$gray-500,
-  text-error: vv.$danger,
-  text-helper: vv.$body-color,
-  text-inverse: vv.$black,
-  text-on-color: vv.$white,
-  text-on-color-disabled: vv.$gray-700,
-  text-placeholder: vv.$gray-700,
-  text-primary: vv.$body-bg-alt,
-  text-secondary: vv.$body-bg-alt,
-  btn-primary: vv.$primary,
-  border-interactive: vv.$primary,
-  background: vv.$secondary,
-  layer-01: vv.$secondary,
-  icon-primary: vv.$gray-100,
-  icon-secondary: vv.$gray-300,
-  link-primary: vv.$primary,
-  background-brand: vv.$primary
+  // hover
+  //layer-hover: rgb(191, 0, 255),
+  // layer-hover-01: rgb(54, 152, 74),
+  layer-hover-02: vv.$gray-100,
+  //layer-hover-03: rgb(123, 37, 37),
+  // table backgroud color
+  //layer: rgb(200, 139, 169),
+  // layer-01: red,
+  //layer-02: hsl(309, 22%, 39%),
+  //layer-03: hotpink,
+  // selected hover
+  // layer-selected-hover-01: hsl(199, 85%, 85%),
+  //layer-selected-hover-02: hsl(199, 85%, 65%),
+  //layer-selected-hover-03: hsl(199, 85%, 45%),
+  // selected
+  // layer-selected-01: hsl(16, 85%, 85%),
+  //layer-selected-02: hsl(16, 85%, 65%),
+  //layer-selected-03: hsl(16, 85%, 45%),
+  //layer-accent-01: rgb(255, 255, 255) // table header background color
 );

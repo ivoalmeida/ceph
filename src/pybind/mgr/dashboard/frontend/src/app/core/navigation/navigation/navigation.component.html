@@ -7,7 +7,7 @@
   <!-- HEADER                   -->
   <!-- ************************ -->
   <cds-header name="Ceph Dashboard"
-              class="cd-navbar-top"
+              class="cd-navbar-top navigation-theme"
               [brand]="brandTemplate">
     <cds-hamburger [active]="showMenuSidebar"
                    data-testid="main-menu-toggler"
@@ -75,7 +75,7 @@
   <!-- ************************ -->
   <ng-template #cd_menu>
     <ng-container *ngIf="enabledFeature$ | async as enabledFeature">
-    <div cdsTheme="theme">
+    <div class="navigation-theme">
       <cds-sidenav [expanded]="showMenuSidebar"
                    class="mt-5">
         <!-- Dashboard -->

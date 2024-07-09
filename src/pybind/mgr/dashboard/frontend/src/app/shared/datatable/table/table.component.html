@@ -1,4 +1,4 @@
-<cds-table-container cdsTheme="white">
+<cds-table-container>
   <!-- multiselection batch actions -->
   <cds-table-toolbar #toolbar
                      *ngIf="toolHeader"
@@ -85,7 +85,6 @@
       </button>
       <ng-template #showHideColumnsRef>
         <div class="vstack gap-3 p-3"
-             cdsTheme="white"
              (click)="$event.stopPropagation()">
           <cds-checkbox *ngFor="let column of model.header"
                         id="{{ column.data }}"
@@ -133,7 +132,7 @@
              [enableSingleSelect]="selectionType === 'single'"
              [stickyHeader]="false"
              [striped]="false"
-             [isDataGrid]="true"
+             [isDataGrid]="false"
              (sort)="changeSorting($event)"
              (deselectRow)="onDeselect()">
 </cds-table>
@@ -144,7 +143,8 @@
 
 <ng-template #rowDetailTpl
              let-row="data">
-  <div *ngIf="row[identifier] === expanded?.[identifier]">
+  <div *ngIf="row[identifier] === expanded?.[identifier]"
+       (mouseenter)="onRowDetailHover($event)">
     <ng-template [ngTemplateOutlet]="rowDetail.template"></ng-template>
   </div>
 </ng-template>

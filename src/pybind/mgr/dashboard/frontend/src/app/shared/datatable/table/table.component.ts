@@ -485,6 +485,10 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.useData();
     }
   }
+  onRowDetailHover(event: any){
+    event.target.closest('tr').previousElementSibling.classList.remove("cds--expandable-row--hover");
+    event.target.closest('tr').previousElementSibling.classList.remove("cds--data-table--selected");
+  }
   // TODO: Understand what this does
   initUserConfig() {
     if (this.autoSave) {
