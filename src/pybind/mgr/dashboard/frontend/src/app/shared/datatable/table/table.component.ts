@@ -1039,7 +1039,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
       if (this.columnFilters.length !== 0) {
         const cols = this.localColumns?.filter?.((x) => _.has(rows?.[0], x.prop));
-        if (cols?.length) this.tableColumns = cols;
+        if (cols?.length) {
+          this.tableColumns = cols;
+        }
       }
 
       this.rows = rows;
