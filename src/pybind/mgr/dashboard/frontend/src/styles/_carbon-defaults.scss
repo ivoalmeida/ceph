@@ -1,4 +1,3 @@
-@use 'sass:map';
 @use '@carbon/styles/scss/config' with (
   $font-path: '~@ibm/plex',
   $flex-grid-columns: 16,
@@ -6,13 +5,16 @@
 );
 @use './src/styles/vendor/variables' as vv;
 @use './themes/default';
-@use './themes/navigation';
 @use '@carbon/styles/scss/compat/themes' as compat;
 @use '@carbon/styles/scss/themes';
 @use '@carbon/styles/scss/theme' with (
   $theme: default.$theme,
-  $fallback: compat.$white,
+  $fallback: compat.$g90,
 );
+
+/******************************************
+Component token overrides should go here
+******************************************/
 
 @use '@carbon/styles/scss/components/button/tokens' as button-tokens with
   (
@@ -23,11 +25,10 @@
 
 @use '@carbon/styles';
 @use '@carbon/type';
-@use '@carbon/themes' as t;
 
-.navigation-theme {
-  @include t.theme(navigation.$theme);
-}
+/******************************************
+Datatable
+******************************************/
 
 tr.cds--expandable-row > td:first-of-type {
   background-color: vv.$white !important;
@@ -37,79 +38,6 @@ tr.cds--expandable-row > td:first-of-type {
 th {
   padding-block: 0 !important;
 }
-/**********************************************************************************
-These are meant to be temporary style overrides.
-The sizing of some Carbon components clash with a requirement
-of one third party component  - the data table - that needs
-to set the body's font-size at 12px.
-Once this component is removed we should be ok to remove the overrides below
-**********************************************************************************/
-
-/******************************************
-Side nav
-******************************************/
-
-// $sidenav-block-size: 2.7rem;
-
-// .cds--side-nav__submenu {
-//   block-size: $sidenav-block-size;
-// }
-
-// a.cds--side-nav__link {
-//   min-block-size: $sidenav-block-size;
-// }
-
-// .cds--side-nav__menu a.cds--side-nav__link {
-//   block-size: $sidenav-block-size;
-// }
-
-// .cds--side-nav__submenu-title,
-// a.cds--side-nav__link > .cds--side-nav__link-text {
-//   font-size: calc(type.type-scale(4) + 0.5px);
-// }
-
-// .cds--side-nav__icon > svg {
-//   block-size: 20px;
-//   inline-size: 20px;
-// }
-
-// .cds--side-nav--expanded {
-//   min-width: 20.8rem !important;
-// }
-
-// .cds--side-nav__navigation {
-//   min-width: 4.2rem;
-// }
-
-// .cds--side-nav__navigation {
-//   left: -4.8rem;
-//   transition: 250ms ease;
-// }
-
-// .cds--side-nav--expanded {
-//   left: 0;
-//   transition: 250ms ease;
-// }
-/******************************************
-Header
-******************************************/
-// $header-block-size: 3.9rem;
-
-// a.cds--header__menu-item,
-// .cds--header__action,
-// .cds--header {
-//   block-size: $header-block-size;
-//   font-size: calc(type.type-scale(4) + 0.5px);
-// }
-
-// button.cds--header__menu-trigger.cds--header__action.cds--header__menu-toggle {
-//   inline-size: $header-block-size;
-// }
-
-// button.cds--overflow-menu {
-//   block-size: $header-block-size;
-//   inline-size: calc($header-block-size - 1rem);
-// }
 
 /******************************************
 Modals

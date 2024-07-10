@@ -1,4 +1,19 @@
+@use 'sass:map';
+@use '@carbon/styles/scss/theme' as t;
+@use '@carbon/styles/scss/compat/themes' as compat;
 @use './src/styles/vendor/variables' as vv;
+
+$content-theme: map-merge(
+  compat.$white,
+  (
+    background-brand: vv.$secondary,
+    layer-hover-02: vv.$gray-100
+  )
+);
+
+.content-theme {
+  @include t.theme($content-theme);
+}
 
 /* --------------------------------------------------
    MAIN NAVBAR STYLE
