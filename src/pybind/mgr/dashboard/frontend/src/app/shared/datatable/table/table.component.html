@@ -136,7 +136,10 @@
              [striped]="false"
              [isDataGrid]="false"
              (sort)="changeSorting($event)"
-             (deselectRow)="onDeselect()">
+             (selectRow)="onSelect($event)"
+             (selectAll)="onSelectAll($event)"
+             (deselectRow)="onDeselect($event)"
+             (deselectAll)="onDeselectAll($event)">
 </cds-table>
 <cds-pagination [model]="model"
                 (selectPage)="onPageChange($event)">

@@ -404,25 +404,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       }
     });
 
-    const rowsSelectedSubscription = this.model.rowsSelectedChange.subscribe({
-      next: () => {
-        this.model.rowsSelected
-          .filter((x) => x)
-          .forEach((_selected, i: number) => {
-            const selectedData = _.get(this.model.data?.[i], [0, 'selected']);
-            if (this.selectionType === 'single') {
-              this.selection.selected = [selectedData];
-            } else {
-              this.selection.selected.push(selectedData);
-            }
-          });
-        this.updateSelection.emit(_.clone(this.selection));
-      }
-    });
-
     this._subscriptions.add(datasetSubscription);
     this._subscriptions.add(rowsExpandedSubscription);
-    this._subscriptions.add(rowsSelectedSubscription);
   }
 
   ngOnInit() {
@@ -851,9 +834,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
    */
   updateSelected() {
     // TODO: Update this method to work with new data struture
-    if (this.updateSelectionOnRefresh === 'never') {
-      return;
-    }
+    // if (this.updateSelectionOnRefresh === 'never') {
+    //   return;
+    // }
     if (!this.selection?.selected?.length) return;
 
     const newSelected = new Set();
@@ -873,6 +856,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     ) {
       return;
     }
+
+    newSelectedArray.forEach((_selection, index: number) => this.model.selectRow(index, true));
     this.selection.selected = newSelectedArray;
     this.updateSelection.emit(_.clone(this.selection));
   }
@@ -893,10 +878,42 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.setExpandedRow.emit(newExpanded);
   }
 
-  onDeselect() {
-    this.selection.selected = [];
+  private _toggleSelection(rowIndex: number, isSelected: boolean) {
+    const selectedData = _.get(this.model.data?.[rowIndex], [0, 'selected']);
+    if (isSelected) {
+      this.selection.selected.push(selectedData);
+    } else {
+      this.selection.selected = this.selection.selected.filter(
+        (s) => s[this.identifier] === selectedData[this.identifier]
+      );
+    }
+  }
+
+  onSelect($event: any) {
+    const { selectedRowIndex } = $event;
+    const selectedData = _.get(this.model.data?.[selectedRowIndex], [0, 'selected']);
+    this.selection.selected.push(selectedData);
     this.updateSelection.emit(this.selection);
-    this.expanded = undefined;
+  }
+
+  onSelectAll($event: TableModel) {
+    $event.rowsSelected.forEach((isSelected: boolean, rowIndex: number) =>
+      this._toggleSelection(rowIndex, isSelected)
+    );
+    this.updateSelection.emit(this.selection);
+  }
+
+  onDeselect($event: any) {
+    const { deselectedRowIndex } = $event;
+    this._toggleSelection(deselectedRowIndex, false);
+    this.updateSelection.emit(this.selection);
+  }
+
+  onDeselectAll($event: TableModel) {
+    $event.rowsSelected.forEach((isSelected: boolean, rowIndex: number) =>
+      this._toggleSelection(rowIndex, isSelected)
+    );
+    this.updateSelection.emit(this.selection);
   }
 
   toggleColumn(column: CdTableColumn) {
