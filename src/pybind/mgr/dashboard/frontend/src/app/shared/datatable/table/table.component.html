@@ -1,11 +1,12 @@
 <cds-table-container>  
   <cds-table-toolbar #toolbar
                      *ngIf="toolHeader"
+                     (cancel)="onBatchActionsCancel()"
                      [model]="selectionType === 'multiClick' ? model : []"
                      [batchText]="{
                       SINGLE: '1 item selected',
                       MULTIPLE: '{{count}} items selected' }">
-    <!-- multiselection batch actions -->
+    <!-- batch actions -->
     <cds-table-toolbar-actions *ngIf="tableActions?.dropDownActions.length > 1">
       <ng-container *ngFor="let action of tableActions?.dropDownActions">  
         <button *ngIf="tableActions.currentAction !== action"
@@ -23,7 +24,7 @@
         </button>
       </ng-container>
     </cds-table-toolbar-actions>
-    <!-- end multiselection batch actions -->
+    <!-- end batch actions -->
     <cds-table-toolbar-content>
       <!-- search -->
       <cds-table-toolbar-search *ngIf="searchField"
@@ -163,7 +164,7 @@
 
 <ng-template #tableActionTpl>
   <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 1"
-                     [flip]="true"
+                     [flip]="true"                     
                      class="d-flex justify-content-end">
     <ng-container *ngFor="let action of tableActions?.dropDownActions">  
       <cds-overflow-menu-option *ngIf="tableActions.currentAction !== action"

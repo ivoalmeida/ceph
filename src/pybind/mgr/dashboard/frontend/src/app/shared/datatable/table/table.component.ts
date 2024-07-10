@@ -395,12 +395,10 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         if (this.model.rowsExpanded.every((x) => !x)) {
           this.expanded = undefined;
           this.setExpandedRow.emit(this.expanded);
+        } else {
+          this.expanded = _.get(this.model.data?.[index], [0, 'selected']);
+          this.setExpandedRow.emit(this.expanded);
         }
-        this.expanded = _.get(this.model.data?.[index], [0, 'selected']);
-        this.setExpandedRow.emit(this.expanded);
-        this.model.rowsExpanded = this.model.rowsExpanded.map(
-          (_, rowIndex: number) => rowIndex === index
-        );
       }
     });
 
@@ -916,6 +914,13 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.updateSelection.emit(this.selection);
   }
 
+  onBatchActionsCancel() {
+    this.model.selectAll(false);
+    this.model.rowsSelected.forEach((_isSelected: boolean, rowIndex: number) =>
+      this._toggleSelection(rowIndex, _isSelected)
+    );
+  }
+
   toggleColumn(column: CdTableColumn) {
     // TODO: Understand what this mean and modify appropriately
     // const prop: TableColumnProp = column.prop;
@@ -1133,6 +1138,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       return;
     }
 
-    this.model.rowsExpandedChange.emit(rowId);
+    this.model.expandRow(rowId, true);
   }
 }
