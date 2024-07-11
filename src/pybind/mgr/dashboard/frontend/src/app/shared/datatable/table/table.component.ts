@@ -399,8 +399,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           this.model.rowsExpanded = this.model.rowsExpanded.map(
             (_, rowIndex: number) => rowIndex === index
           );
+          this.setExpandedRow.emit(this.expanded);
         }
-        this.setExpandedRow.emit(this.expanded);
       }
     });
 
@@ -1147,18 +1147,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       return;
     }
 
-    const rowId = this.model.data.findIndex((row: TableItem[]) => {
+    const rowIndex = this.model.data.findIndex((row: TableItem[]) => {
       const rowSelectedId = _.get(row, [0, 'selected', this.identifier]);
       const expandedId = this.expanded?.[this.identifier];
       return _.isEqual(rowSelectedId, expandedId);
     });
 
-    if (rowId < 0) {
+    if (rowIndex < 0) {
       return;
     }
 
     this.model.rowsExpanded = this.model.rowsExpanded.map(
-      (_, rowIndex: number) => rowIndex === rowId
+      (_, rowIndex: number) => rowIndex === rowIndex
     );
   }
 }

@@ -17,9 +17,8 @@ $base: (
   layer: vv.$secondary,
   icon-primary: vv.$gray-100,
   icon-secondary: vv.$gray-300,
-  link-primary: vv.$primary,
+  link-primary: vv.$primary
 );
-
 
 $layers: (
   background-brand: red,
@@ -43,6 +42,5 @@ $layers: (
   //layer-selected-03: hsl(16, 85%, 45%),
   //layer-accent-01: rgb(255, 255, 255) // table header background color
 );
-
 
 $theme: map-merge($base, $layers);
