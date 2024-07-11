@@ -141,10 +141,19 @@
              (selectAll)="onSelectAll($event)"
              (deselectRow)="onDeselect($event)"
              (deselectAll)="onDeselectAll($event)">
-</cds-table>
-<cds-pagination [model]="model"
-                (selectPage)="onPageChange($event)">
-</cds-pagination>
+    <tbody>
+      <tr>
+        <td class="no-data" 
+            [attr.colspan]="tableColumns.length">
+          <span class="d-flex justify-content-center align-items-center" 
+                i18n>No data to display</span>
+        </td>
+      </tr>
+    </tbody>
+  </cds-table>
+  <cds-pagination [model]="model"
+                  (selectPage)="onPageChange($event)">
+  </cds-pagination>
 </cds-table-container>
 
 <ng-template #rowDetailTpl
