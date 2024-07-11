@@ -24,7 +24,7 @@ import {
 } from '@swimlane/ngx-datatable';
 import { TableHeaderItem, TableItem, TableModel } from 'carbon-components-angular';
 import _ from 'lodash';
-import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
 
 import { TableStatus } from '~/app/shared/classes/table-status';
 import { CellTemplate } from '~/app/shared/enum/cell-template.enum';
@@ -39,6 +39,7 @@ import { CdUserConfig } from '~/app/shared/models/cd-user-config';
 import { TimerService } from '~/app/shared/services/timer.service';
 import { TableActionsComponent } from '../table-actions/table-actions.component';
 import { TableDetailDirective } from '../directives/table-detail.directive';
+import { filter, map } from 'rxjs/operators';
 
 const TABLE_LIST_LIMIT = 10;
 @Component({
@@ -287,7 +288,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
   private _rows: any[] = [];
 
-  private _dataset = new BehaviorSubject<any[]>([]);
+  private _dataset = new Subject<any[]>();
 
   private _subscriptions: Subscription = new Subscription();
 
@@ -338,57 +339,55 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         }
       ];
     }
-    const datasetSubscription = this._dataset.subscribe({
-      next: (values: any[]) => {
-        if (!values?.length) return;
+    const datasetSubscription = this._dataset
+      .pipe(
+        filter((values: any[]) => !!values?.length),
+        map((values: any[]) => ({
+          values,
+          columnProps: this.tableColumns.filter((x) => !x.isHidden || !x.isInvisible)
+        }))
+      )
+      .subscribe({
+        next: ({ values, columnProps }) => {
+          const datasets: TableItem[][] = values.map((val) => {
+            return columnProps.map((column: CdTableColumn, i: number) => {
+              const rowValue = _.get(val, column.prop);
 
-        const columnProps = this.tableColumns.filter((x) => !x.isHidden || !x.isInvisible);
-
-        let datasets: TableItem[][] = [];
-
-        values.forEach((val) => {
-          let dataset: TableItem[] = [];
-
-          columnProps.forEach((column: CdTableColumn, i: number) => {
-            const rowValue = _.get(val, column.prop);
-
-            let tableItem = new TableItem({
-              selected: val,
-              data: {
-                value: column.pipe ? column.pipe.transform(rowValue) : rowValue,
-                row: val,
-                column
-              }
-            });
-
-            if (i === 0) {
-              tableItem.data = { ...tableItem.data, row: val };
-
-              if (this.hasDetails) {
-                (tableItem.expandedData = val), (tableItem.expandedTemplate = this.rowDetailTpl);
-              }
-            }
-
-            if (column.cellClass && _.isFunction(column.cellClass)) {
-              this.model.header[i].className = column.cellClass({
-                row: val,
-                column,
-                value: rowValue
+              let tableItem = new TableItem({
+                selected: val,
+                data: {
+                  value: column.pipe ? column.pipe.transform(rowValue) : rowValue,
+                  row: val,
+                  column
+                }
               });
-            }
 
-            tableItem.template = column.cellTemplate || this.defaultValueTpl;
+              if (i === 0) {
+                tableItem.data = { ...tableItem.data, row: val };
 
-            dataset.push(tableItem);
+                if (this.hasDetails) {
+                  (tableItem.expandedData = val), (tableItem.expandedTemplate = this.rowDetailTpl);
+                }
+              }
+
+              if (column.cellClass && _.isFunction(column.cellClass)) {
+                this.model.header[i].className = column.cellClass({
+                  row: val,
+                  column,
+                  value: rowValue
+                });
+              }
+
+              tableItem.template = column.cellTemplate || this.defaultValueTpl;
+
+              return tableItem;
+            });
           });
-
-          datasets.push(dataset);
-        });
-        if (!_.isEqual(this.model.data, datasets)) {
-          this.model.data = datasets;
+          if (!_.isEqual(this.model.data, datasets)) {
+            this.model.data = datasets;
+          }
         }
-      }
-    });
+      });
 
     const rowsExpandedSubscription = this.model.rowsExpandedChange.subscribe({
       next: (index: number) => {
@@ -399,6 +398,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           this.expanded = _.get(this.model.data?.[index], [0, 'selected']);
           this.setExpandedRow.emit(this.expanded);
         }
+        this.model.rowsExpanded = this.model.rowsExpanded.map(
+          (_, rowIndex: number) => rowIndex === index
+        );
       }
     });
 
@@ -857,11 +859,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
     newSelectedArray.forEach((_selection, index: number) => this.model.selectRow(index, true));
     this.selection.selected = newSelectedArray;
-    
+
     if (this.updateSelectionOnRefresh === 'never') {
       return;
     }
-    
+
     this.updateSelection.emit(_.clone(this.selection));
   }
 
