@@ -857,6 +857,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
     newSelectedArray.forEach((_selection, index: number) => this.model.selectRow(index, true));
     this.selection.selected = newSelectedArray;
+    
+    if (this.updateSelectionOnRefresh === 'never') {
+      return;
+    }
+    
     this.updateSelection.emit(_.clone(this.selection));
   }
 
@@ -1138,6 +1143,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       return;
     }
 
-    this.model.expandRow(rowId, true);
+    this.model.rowsExpanded = this.model.rowsExpanded.map(
+      (_, rowIndex: number) => rowIndex === rowId
+    );
   }
 }
