@@ -1153,18 +1153,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       return;
     }
 
-    const rowIndex = this.model.data.findIndex((row: TableItem[]) => {
+    const expandedRowIndex = this.model.data.findIndex((row: TableItem[]) => {
       const rowSelectedId = _.get(row, [0, 'selected', this.identifier]);
       const expandedId = this.expanded?.[this.identifier];
       return _.isEqual(rowSelectedId, expandedId);
     });
 
-    if (rowIndex < 0) {
+    if (expandedRowIndex < 0) {
       return;
     }
 
     this.model.rowsExpanded = this.model.rowsExpanded.map(
-      (_, rowIndex: number) => rowIndex === rowIndex
+      (_, rowIndex: number) => rowIndex === expandedRowIndex
     );
   }
 }
