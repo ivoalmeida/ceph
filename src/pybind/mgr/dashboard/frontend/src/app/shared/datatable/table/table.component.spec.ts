@@ -5,7 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import _ from 'lodash';
 import { NgxPipeFunctionModule } from 'ngx-pipe-function';
 
@@ -43,7 +42,6 @@ describe('TableComponent', () => {
     declarations: [TableComponent, TablePaginationComponent],
     imports: [
       BrowserAnimationsModule,
-      NgxDatatableModule,
       NgxPipeFunctionModule,
       FormsModule,
       ComponentsModule,
