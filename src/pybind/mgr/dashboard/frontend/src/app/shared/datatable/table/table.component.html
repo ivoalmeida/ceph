@@ -163,7 +163,7 @@
 </ng-template>
 
 <ng-template #tableActionTpl>
-  <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 1"
+  <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 1 && selectionType !== 'multiClick'"
                      [flip]="true"                     
                      class="d-flex justify-content-end">
     <ng-container *ngFor="let action of tableActions?.dropDownActions">  
