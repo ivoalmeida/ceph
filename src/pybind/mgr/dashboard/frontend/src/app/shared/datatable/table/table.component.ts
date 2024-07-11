@@ -39,7 +39,7 @@ import { CdUserConfig } from '~/app/shared/models/cd-user-config';
 import { TimerService } from '~/app/shared/services/timer.service';
 import { TableActionsComponent } from '../table-actions/table-actions.component';
 import { TableDetailDirective } from '../directives/table-detail.directive';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, throttleTime } from 'rxjs/operators';
 
 const TABLE_LIST_LIMIT = 10;
 @Component({
@@ -342,6 +342,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     const datasetSubscription = this._dataset
       .pipe(
         filter((values: any[]) => !!values?.length),
+        throttleTime(2 * 1000, undefined, { leading: true, trailing: false }),
         map((values: any[]) => ({
           values,
           columnProps: this.tableColumns.filter((x) => !x.isHidden || !x.isInvisible)
