@@ -393,14 +393,13 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       next: (index: number) => {
         if (this.model.rowsExpanded.every((x) => !x)) {
           this.expanded = undefined;
-          this.setExpandedRow.emit(this.expanded);
         } else {
           this.expanded = _.get(this.model.data?.[index], [0, 'selected']);
-          this.setExpandedRow.emit(this.expanded);
+          this.model.rowsExpanded = this.model.rowsExpanded.map(
+            (_, rowIndex: number) => rowIndex === index
+          );
         }
-        this.model.rowsExpanded = this.model.rowsExpanded.map(
-          (_, rowIndex: number) => rowIndex === index
-        );
+        this.setExpandedRow.emit(this.expanded);
       }
     });
 
