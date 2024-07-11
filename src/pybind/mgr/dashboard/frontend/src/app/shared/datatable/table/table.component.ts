@@ -350,7 +350,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       .subscribe({
         next: ({ values, columnProps }) => {
           const datasets: TableItem[][] = values.map((val) => {
-            return columnProps.map((column: CdTableColumn, i: number) => {
+            return columnProps.map((column: CdTableColumn, colIndex: number) => {
               const rowValue = _.get(val, column.prop);
 
               let tableItem = new TableItem({
@@ -362,7 +362,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
                 }
               });
 
-              if (i === 0) {
+              if (colIndex === 0) {
                 tableItem.data = { ...tableItem.data, row: val };
 
                 if (this.hasDetails) {
@@ -371,7 +371,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
               }
 
               if (column.cellClass && _.isFunction(column.cellClass)) {
-                this.model.header[i].className = column.cellClass({
+                this.model.header[colIndex].className = column.cellClass({
                   row: val,
                   column,
                   value: rowValue
@@ -850,6 +850,15 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     });
     if (newSelected.size === 0) return;
     const newSelectedArray = Array.from(newSelected.values());
+
+    newSelectedArray?.forEach?.((selection: any) => {
+      const rowIndex = this.model.data.findIndex(
+        (row: TableItem[]) =>
+          _.get(row, [0, 'selected', this.identifier]) === selection[this.identifier]
+      );
+      this.model.selectRow(rowIndex, true);
+    });
+
     if (
       this.updateSelectionOnRefresh === 'onChange' &&
       _.isEqual(this.selection.selected, newSelectedArray)
@@ -857,7 +866,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       return;
     }
 
-    newSelectedArray.forEach((_selection, index: number) => this.model.selectRow(index, true));
     this.selection.selected = newSelectedArray;
 
     if (this.updateSelectionOnRefresh === 'never') {
@@ -889,7 +897,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.selection.selected.push(selectedData);
     } else {
       this.selection.selected = this.selection.selected.filter(
-        (s) => s[this.identifier] === selectedData[this.identifier]
+        (s) => s[this.identifier] !== selectedData[this.identifier]
       );
     }
   }
@@ -897,7 +905,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   onSelect($event: any) {
     const { selectedRowIndex } = $event;
     const selectedData = _.get(this.model.data?.[selectedRowIndex], [0, 'selected']);
-    this.selection.selected.push(selectedData);
+    if (this.selectionType === 'single') {
+      this.selection.selected = [selectedData];
+    } else {
+      this.selection.selected.push(selectedData);
+    }
     this.updateSelection.emit(this.selection);
   }
 
@@ -924,7 +936,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   onBatchActionsCancel() {
     this.model.selectAll(false);
     this.model.rowsSelected.forEach((_isSelected: boolean, rowIndex: number) =>
-      this._toggleSelection(rowIndex, _isSelected)
+      this._toggleSelection(rowIndex, false)
     );
   }
 
