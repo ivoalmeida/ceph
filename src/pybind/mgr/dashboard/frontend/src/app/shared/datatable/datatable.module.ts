@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPipeFunctionModule } from 'ngx-pipe-function';
 
 import {
@@ -50,7 +49,6 @@ import { TableDetailDirective } from './directives/table-detail.directive';
 @NgModule({
   imports: [
     CommonModule,
-    NgxDatatableModule,
     NgxPipeFunctionModule,
     FormsModule,
     NgbDropdownModule,
@@ -120,7 +118,6 @@ import { TableDetailDirective } from './directives/table-detail.directive';
   ],
   exports: [
     TableComponent,
-    NgxDatatableModule,
     TableKeyValueComponent,
     TableActionsComponent,
     CRUDTableComponent,

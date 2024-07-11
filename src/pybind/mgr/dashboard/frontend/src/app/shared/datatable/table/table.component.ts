@@ -16,12 +16,6 @@ import {
   ViewChild
 } from '@angular/core';
 
-import {
-  getterForProp,
-  SortDirection,
-  SortPropDir,
-  TableColumnProp
-} from '@swimlane/ngx-datatable';
 import { TableHeaderItem, TableItem, TableModel } from 'carbon-components-angular';
 import _ from 'lodash';
 import { Observable, of, Subject, Subscription } from 'rxjs';
@@ -40,6 +34,8 @@ import { TimerService } from '~/app/shared/services/timer.service';
 import { TableActionsComponent } from '../table-actions/table-actions.component';
 import { TableDetailDirective } from '../directives/table-detail.directive';
 import { filter, map, throttleTime } from 'rxjs/operators';
+import { CdSortDirection } from '../../enum/cd-sort-direction';
+import { CdSortPropDir } from '../../models/cd-sort-prop-dir';
 
 const TABLE_LIST_LIMIT = 10;
 @Component({
@@ -95,7 +91,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   columns: CdTableColumn[];
   // Each item -> { prop: 'attribute name', dir: 'asc'||'desc'}
   @Input()
-  sorts?: SortPropDir[];
+  sorts?: CdSortPropDir[];
   // Method used for setting column widths.
   @Input()
   columnMode? = 'flex';
@@ -646,9 +642,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       });
       // Separate data to filtered and filtered-out parts.
       const parts = _.partition(data, (row) => {
-        // Use getter from ngx-datatable to handle props like 'sys_api.size'
-        const valueGetter = getterForProp(filter.column.prop);
-        const value = valueGetter(row, filter.column.prop);
+        const value = _.get(row, filter.column.prop);
         if (_.isUndefined(filter.column.filterPredicate)) {
           // By default, test string equal
           return `${value}` === filter.value.raw;
@@ -970,11 +964,11 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.cdRef.detectChanges();
   }
 
-  createSortingDefinition(prop: TableColumnProp): SortPropDir[] {
+  createSortingDefinition(prop: string | number): CdSortPropDir[] {
     return [
       {
         prop: prop,
-        dir: SortDirection.asc
+        dir: CdSortDirection.asc
       }
     ];
   }
@@ -990,7 +984,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.model.header[columnIndex].descending = configDir === 'desc';
     }
 
-    const dir = this.model.header[columnIndex].ascending ? SortDirection.asc : SortDirection.desc;
+    const dir = this.model.header[columnIndex].ascending ? CdSortDirection.asc : CdSortDirection.desc;
     const sorts = [{ dir, prop }];
 
     this.userConfig.sorts = sorts;
