@@ -20,10 +20,11 @@ import {
 } from 'carbon-components-angular';
 import AddIcon from '@carbon/icons/es/add/16';
 import FilterIcon from '@carbon/icons/es/filter/16';
-import ReloadIcon from '@carbon/icons/es/renew/20';
-import DataTableIcon from '@carbon/icons/es/data-table/20';
-import CheckIcon from '@carbon/icons/es/checkmark/20';
+import ReloadIcon from '@carbon/icons/es/renew/16';
+import DataTableIcon from '@carbon/icons/es/data-table/16';
+import CheckIcon from '@carbon/icons/es/checkmark/16';
 import CloseIcon from '@carbon/icons/es/close/16';
+import MaximizeIcon from '@carbon/icons/es/maximize/16';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
@@ -134,7 +135,8 @@ export class DataTableModule {
       ReloadIcon,
       DataTableIcon,
       CheckIcon,
-      CloseIcon
+      CloseIcon,
+      MaximizeIcon
     ]);
   }
 }

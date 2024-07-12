@@ -319,3 +319,8 @@
   height: 5rem;
   font-size: 1.1rem;
 }
+
+::ng-deep .table-actions {
+  display: flex;
+  gap: 0.1em;
+}
