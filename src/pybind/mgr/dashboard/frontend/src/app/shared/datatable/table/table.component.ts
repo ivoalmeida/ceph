@@ -888,7 +888,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   private _toggleSelection(rowIndex: number, isSelected: boolean) {
     const selectedData = _.get(this.model.data?.[rowIndex], [0, 'selected']);
     if (isSelected) {
-      this.selection.selected.push(selectedData);
+      this.selection.selected = [...this.selection.selected, selectedData];
     } else {
       this.selection.selected = this.selection.selected.filter(
         (s) => s[this.identifier] !== selectedData[this.identifier]
@@ -902,7 +902,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     if (this.selectionType === 'single') {
       this.selection.selected = [selectedData];
     } else {
-      this.selection.selected.push(selectedData);
+      this.selection.selected = [...this.selection.selected, selectedData];
     }
     this.updateSelection.emit(this.selection);
   }
