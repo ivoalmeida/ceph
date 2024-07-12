@@ -12,7 +12,10 @@ $content-theme: map-merge(
     link-primary-hover: vv.$secondary,
     link-secondary: vv.$secondary,
     link-inverse: vv.$secondary,
-    link-visited: vv.$secondary
+    link-visited: vv.$secondary,
+    focus: vv.$primary,
+    focus-inset: lighten(vv.$primary, 45%),
+    focus-inverse: lighten(vv.$primary, 25%)
   )
 );
 

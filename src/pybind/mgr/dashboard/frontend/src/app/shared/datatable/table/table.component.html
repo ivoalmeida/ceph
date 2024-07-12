@@ -7,7 +7,7 @@
                       SINGLE: '1 item selected',
                       MULTIPLE: '{{count}} items selected' }">
     <!-- batch actions -->
-    <cds-table-toolbar-actions *ngIf="tableActions?.dropDownActions.length > 1">
+    <cds-table-toolbar-actions *ngIf="tableActions?.dropDownActions.length > 0">
       <ng-container *ngFor="let action of tableActions?.dropDownActions">  
         <button *ngIf="tableActions.currentAction !== action"
                 cdsButton="primary"
@@ -69,7 +69,7 @@
               class="toolbar-action"
               placement="bottom">
         <svg cdsIcon="renew"
-             size="20"
+             size="16"
              [ngClass]="{ 'cds--toolbar-action__icon': true, 'reload': loadingIndicator }"></svg>
       </button>
       <!-- end refresh button -->
@@ -81,7 +81,7 @@
               [flip]="true"
               [offset]="{ x: 3, y: 0 }">
         <svg cdsIcon="data-table"
-             size="20"
+             size="16"
              class="cds--toolbar-action__icon"></svg>
       </button>
       <ng-template #showHideColumnsRef>
@@ -172,7 +172,7 @@
 </ng-template>
 
 <ng-template #tableActionTpl>
-  <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 1 && selectionType !== 'multiClick'"
+  <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 0 && selectionType !== 'multiClick'"
                      [flip]="true"                     
                      class="d-flex justify-content-end">
     <ng-container *ngFor="let action of tableActions?.dropDownActions">  
