@@ -395,8 +395,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           this.model.rowsExpanded = this.model.rowsExpanded.map(
             (_, rowIndex: number) => rowIndex === index
           );
-          this.setExpandedRow.emit(this.expanded);
         }
+        this.setExpandedRow.emit(this.expanded);
       }
     });
 

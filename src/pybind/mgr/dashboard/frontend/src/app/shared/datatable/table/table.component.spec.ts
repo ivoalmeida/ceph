@@ -134,9 +134,7 @@ describe('TableComponent', () => {
       component.search = search;
       _.forEach(changes, (change) => {
         component.onSelectFilter(change.filter.column.name);
-        component.onChangeFilter(
-          change.value || undefined
-        );
+        component.onChangeFilter(change.value || undefined);
       });
       expect(component.rows).toEqual(results);
       component.onClearSearch();
@@ -579,7 +577,7 @@ describe('TableComponent', () => {
     });
   });
 
-  describe.skip('reload data', () => {
+  describe('reload data', () => {
     beforeEach(() => {
       component.ngOnInit();
       component.data = [];
@@ -660,7 +658,7 @@ describe('TableComponent', () => {
     });
   });
 
-  describe.skip('useCustomClass', () => {
+  describe('useCustomClass', () => {
     beforeEach(() => {
       component.customCss = {
         'badge badge-danger': 'active',
@@ -698,7 +696,7 @@ describe('TableComponent', () => {
     });
   });
 
-  describe.skip('test expand and collapse feature', () => {
+  describe('test expand and collapse feature', () => {
     beforeEach(() => {
       spyOn(component.setExpandedRow, 'emit');
       component.table = {
@@ -713,7 +711,7 @@ describe('TableComponent', () => {
       component.expanded = _.clone(component.data[1]);
     });
 
-    describe.skip('update expanded on refresh', () => {
+    describe('update expanded on refresh', () => {
       const updateExpendedOnState = (state: 'always' | 'never' | 'onChange') => {
         component.updateExpandedOnRefresh = state;
         component.updateExpanded();
@@ -757,14 +755,16 @@ describe('TableComponent', () => {
       fixture.detectChanges();
       component.toggleExpandRow();
       expect(component.expanded).toEqual({ a: 1, b: 10, c: true });
-      expect(component.model.rowsExpanded.every(x=>x)).toBeTruthy();
+      expect(component.model.rowsExpanded.every((x) => x)).toBeTruthy();
     });
 
     it('should close the current table details expansion', () => {
-      component.toggleExpandRow(component.expanded, true, new Event('click'));
+      component.useData();
+      component.model.rowsExpanded = component.model.rowsIndices.map((_) => false);
+      component.model.rowsIndices.forEach((i) => component.model.expandRow(i, false));
       expect(component.expanded).toBeUndefined();
       expect(component.setExpandedRow.emit).toHaveBeenCalledWith(undefined);
-      expect(component.table.rowDetail.toggleExpandRow).toHaveBeenCalled();
+      expect(component.model.rowsExpanded.every((x) => x)).toBeFalsy();
     });
 
     it('should not select the row when the row is expanded', () => {
@@ -774,10 +774,12 @@ describe('TableComponent', () => {
     });
 
     it('should not change selection when expanding different row', () => {
+      component.useData();
       expect(component.selection.selected).toEqual([]);
       expect(component.expanded).toEqual(component.data[1]);
       component.selection.selected = [component.data[2]];
-      component.toggleExpandRow(component.data[3], false, new Event('click'));
+      component.model.rowsExpanded = component.model.rowsIndices.map((i) => i === 3);
+      component.model.expandRow(3, true);
       expect(component.selection.selected).toEqual([component.data[2]]);
       expect(component.expanded).toEqual(component.data[3]);
     });
