@@ -86,7 +86,8 @@
       </button>
       <ng-template #showHideColumnsRef>
         <div class="vstack gap-3 p-3"
-             (click)="$event.stopPropagation()">
+             (click)="$event.stopPropagation()"
+             cdsTheme="white">
           <ng-container *ngFor="let column of columns">
             <cds-checkbox *ngIf="!column?.isInvisible" 
                           id="{{ column.prop }}{{ tableName }}"
