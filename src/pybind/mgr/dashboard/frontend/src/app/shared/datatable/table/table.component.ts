@@ -947,21 +947,14 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   toggleColumn(column: CdTableColumn) {
-    // TODO: Understand what this mean and modify appropriately
-    // const prop: TableColumnProp = column.prop;
-    // const hide = !column.isHidden;
-    // if (hide && this.tableColumns.length === 1) {
-    //   column.isHidden = true;
-    //   return;
-    // }
-    // _.find(this.localColumns, (c: CdTableColumn) => c.prop === prop).isHidden = hide;
-    // this.updateColumns();
-    this.model.header.forEach((col) => {
-      const shouldHide = !col.visible;
-      if (column.data === col.data) {
-        col.visible = shouldHide;
-      }
-    });
+    const prop: string | number = column.prop;
+    const hide = !column.isHidden;
+    if (hide && this.tableColumns.length === 1) {
+      column.isHidden = true;
+      return;
+    }
+    _.find(this.localColumns, (c: CdTableColumn) => c.prop === prop).isHidden = hide;
+    this.updateColumns();
   }
 
   updateColumns() {
@@ -996,7 +989,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.model.header[columnIndex].descending = configDir === 'desc';
     }
 
-    const dir = this.model.header[columnIndex].ascending ? CdSortDirection.asc : CdSortDirection.desc;
+    const dir = this.model.header[columnIndex].ascending
+      ? CdSortDirection.asc
+      : CdSortDirection.desc;
     const sorts = [{ dir, prop }];
 
     this.userConfig.sorts = sorts;
@@ -1119,18 +1114,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
             return false;
           }
 
+          if (_.isArray(cellValue)) {
+            cellValue = cellValue.join(' ');
+          } else if (_.isNumber(cellValue) || _.isBoolean(cellValue)) {
+            cellValue = cellValue.toString();
+          }
+
           if (_.isObjectLike(cellValue)) {
             if (this.searchableObjects) {
               cellValue = JSON.stringify(cellValue);
             } else {
               return false;
             }
-          }
-
-          if (_.isArray(cellValue)) {
-            cellValue = cellValue.join(' ');
-          } else if (_.isNumber(cellValue) || _.isBoolean(cellValue)) {
-            cellValue = cellValue.toString();
           }
 
           return cellValue.toLowerCase().indexOf(searchTerm) !== -1;
