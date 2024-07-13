@@ -702,6 +702,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.cellTemplates.copy = this.copyTpl;
   }
 
+  useCustomClass(value: any): string {
+    if (!this.customCss) {
+      throw new Error('Custom classes are not set!');
+    }
+    const classes = Object.keys(this.customCss);
+    const css = Object.values(this.customCss)
+      .map((v, i) => ((_.isFunction(v) && v(value)) || v === value) && classes[i])
+      .filter((x) => x)
+      .join(' ');
+    return _.isEmpty(css) ? undefined : css;
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes?.data?.currentValue) {
       this.useData();
@@ -856,7 +868,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         (row: TableItem[]) =>
           _.get(row, [0, 'selected', this.identifier]) === selection[this.identifier]
       );
-      this.model.selectRow(rowIndex, true);
+      rowIndex > -1 && this.model.selectRow(rowIndex, true);
     });
 
     if (
@@ -891,7 +903,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     this.setExpandedRow.emit(newExpanded);
   }
 
-  private _toggleSelection(rowIndex: number, isSelected: boolean) {
+  _toggleSelection(rowIndex: number, isSelected: boolean) {
     const selectedData = _.get(this.model.data?.[rowIndex], [0, 'selected']);
     if (isSelected) {
       this.selection.selected = [...this.selection.selected, selectedData];
