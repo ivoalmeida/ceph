@@ -174,7 +174,8 @@
 
 <ng-template #tableActionTpl>
   <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 0 && selectionType !== 'multiClick'"
-                     [flip]="true"                     
+                     [flip]="true"
+                     data-testid="table-action-btn"
                      class="d-flex justify-content-end">
     <ng-container *ngFor="let action of tableActions?.dropDownActions">  
       <cds-overflow-menu-option *ngIf="tableActions.currentAction !== action"
