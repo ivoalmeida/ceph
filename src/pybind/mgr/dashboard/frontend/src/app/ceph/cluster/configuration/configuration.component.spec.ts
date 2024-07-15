@@ -39,8 +39,8 @@ describe('ConfigurationComponent', () => {
   });
 
   it('should check header text', () => {
-    expect(fixture.debugElement.query(By.css('.datatable-header')).nativeElement.textContent).toBe(
-      ['Name', 'Description', 'Current value', 'Default', 'Editable'].join('')
-    );
+    const actual = fixture.debugElement.query(By.css('thead')).nativeElement.textContent.trim();
+    const expected = 'Name  Description  Current value  Default  Editable';
+    expect(actual).toBe(expected);
   });
 });
