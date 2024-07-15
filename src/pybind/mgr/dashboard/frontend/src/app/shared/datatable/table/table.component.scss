@@ -322,5 +322,6 @@
 
 ::ng-deep .table-actions {
   display: flex;
+  flex-flow: row-reverse;
   gap: 0.1em;
 }
