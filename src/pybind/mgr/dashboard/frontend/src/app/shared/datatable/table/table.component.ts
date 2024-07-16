@@ -297,7 +297,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
   loadingIndicator = true;
 
-  // TODO: Need to modify CdUserConfig so it doesn't depend on ngx-datatable anymore
   userConfig: CdUserConfig = {};
   tableName: string;
   localStorage = window.localStorage;
@@ -481,7 +480,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       .previousElementSibling.classList.remove('cds--expandable-row--hover');
     event.target.closest('tr').previousElementSibling.classList.remove('cds--data-table--selected');
   }
-  // TODO: Understand what this does
   initUserConfig() {
     if (this.autoSave) {
       this.tableName = this._calculateUniqueTableName(this.localColumns);
@@ -492,8 +490,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       this.userConfig.limit = this.limit;
     }
     if (!(this.userConfig.offset >= 0)) {
-      // TODO: How to replace this? What does it do?
-      // this.userConfig.offset = this.table.offset;
+      // this.userConfig.offset = this.model.currentPage;
     }
     if (!this.userConfig.search) {
       this.userConfig.search = this.search;
@@ -559,7 +556,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   _saveUserConfig(config: any) {
     this.localStorage.setItem(this.tableName, JSON.stringify(config));
   }
-  // TODO: What does userConfig.columns do and why does it need to be updated?
   updateUserColumns() {
     this.userConfig.columns = this.localColumns.map((c) => ({
       prop: c.prop,
@@ -853,17 +849,12 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
    * or some selected items may have been removed.
    */
   updateSelected() {
-    // TODO: Update this method to work with new data struture
-    // if (this.updateSelectionOnRefresh === 'never') {
-    //   return;
-    // }
     if (!this.selection?.selected?.length) return;
 
     const newSelected = new Set();
     this.selection.selected.forEach((selectedItem) => {
       for (const row of this.data) {
         if (selectedItem[this.identifier] === row[this.identifier]) {
-          // TODO: Create method that creates individual TableItem obj based on raw data
           newSelected.add(row);
         }
       }
@@ -978,8 +969,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     if (!_.find(this.tableColumns, (c: CdTableColumn) => c.prop === sortProp)) {
       this.userConfig.sorts = this.createSortingDefinition(this.tableColumns[0].prop);
     }
-    // TODO: How to replace this? What does it do?
-    // this.table.recalculate();
     this.cdRef.detectChanges();
   }
 
@@ -1082,9 +1071,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         );
         // update the rows
         rows = this.subSearch(rows, TableComponent.prepareSearch(this.search), columns);
-        // Whenever the filter changes, always go back to the first page
-        // TODO: Understand how this works and change appropriately
-        // this.table.offset = 0;
       }
 
       this.rows = rows;
