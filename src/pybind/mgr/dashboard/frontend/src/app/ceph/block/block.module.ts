@@ -6,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { NgbNavModule, NgbPopoverModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPipeFunctionModule } from 'ngx-pipe-function';
+import { ButtonModule, IconModule, IconService } from 'carbon-components-angular';
+import CloseIcon from '@carbon/icons/es/close/16';
 
 import { ActionLabels, URLVerbs } from '~/app/shared/constants/app.constants';
 import { FeatureTogglesGuardService } from '~/app/shared/services/feature-toggles-guard.service';
@@ -51,7 +53,9 @@ import { RbdTrashRestoreModalComponent } from './rbd-trash-restore-modal/rbd-tra
     NgxPipeFunctionModule,
     SharedModule,
     RouterModule,
-    TreeModule
+    TreeModule,
+    ButtonModule,
+    IconModule
   ],
   declarations: [
     RbdListComponent,
@@ -204,4 +208,8 @@ const routes: Routes = [
 @NgModule({
   imports: [BlockModule, RouterModule.forChild(routes)]
 })
-export class RoutedBlockModule {}
+export class RoutedBlockModule {
+  constructor(private iconService: IconService) {
+    this.iconService.registerAll([CloseIcon]);
+  }
+}
