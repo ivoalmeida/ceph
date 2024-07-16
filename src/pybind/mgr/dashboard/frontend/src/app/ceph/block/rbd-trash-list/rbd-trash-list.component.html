@@ -16,14 +16,15 @@
                       [selection]="selection"
                       [tableActions]="tableActions">
     </cd-table-actions>
-    <button class="btn btn-light"
+    <button cdsButton="tertiary"
             type="button"
             (click)="purgeModal()"
             [disabled]="disablePurgeBtn"
-            *ngIf="permission.delete">
-      <i [ngClass]="[icons.destroy]"
-         aria-hidden="true"></i>
+            *ngIf="permission.delete">    
       <ng-container i18n>Purge Trash</ng-container>
+      <svg class="cds--btn__icon"
+         cdsIcon="close"
+         size="16"></svg>
     </button>
   </div>
 </cd-table>
