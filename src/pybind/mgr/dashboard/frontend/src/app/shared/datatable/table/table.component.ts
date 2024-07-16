@@ -38,6 +38,9 @@ import { CdSortDirection } from '../../enum/cd-sort-direction';
 import { CdSortPropDir } from '../../models/cd-sort-prop-dir';
 
 const TABLE_LIST_LIMIT = 10;
+type TPaginationInput = { page: number; size: number; filteredData: any[] };
+type TPaginationOutput = { start: number; end: number };
+
 @Component({
   selector: 'cd-table',
   templateUrl: './table.component.html',
@@ -787,24 +790,29 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     size = this.model.pageLength,
     filteredData = this.rows
   }): void {
-    let start = page;
-    let end = size;
-
-    if (start <= 1) {
-      start = 0;
-      end = size;
-    } else {
-      start = (start - 1) * size;
-      end = page * size;
-      if (end > filteredData.length) {
-        end = filteredData.length;
-      }
-    }
+    const { start, end } = this.paginate({ page, size, filteredData });
 
     const paginated = filteredData?.slice?.(start, end);
 
     this._dataset.next(paginated);
   }
+
+  /**
+   * Pagination function
+   */
+  paginate = _.cond<TPaginationInput, TPaginationOutput>([
+    [(x) => x.page <= 1, (x) => ({ start: 0, end: x.size })],
+    [(x) => x.page >= x.filteredData.length, (x) => ({ start: 0, end: x.filteredData.length })],
+    [
+      (x) => x.page >= x.filteredData.length && x.page * x.size > x.filteredData.length,
+      (x) => ({ start: 0, end: x.filteredData.length })
+    ],
+    [
+      (x) => x.page * x.size > x.filteredData.length,
+      (x) => ({ start: (x.page - 1) * x.size, end: x.filteredData.length })
+    ],
+    [_.stubTrue, (x) => ({ start: (x.page - 1) * x.size, end: x.page * x.size })]
+  ]);
 
   rowIdentity() {
     return (row: any) => {
