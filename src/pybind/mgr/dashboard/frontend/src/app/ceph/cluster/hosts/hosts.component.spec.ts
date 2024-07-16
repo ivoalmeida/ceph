@@ -334,6 +334,7 @@ describe('HostsComponent', () => {
       await fixture.whenStable();
 
       component.getHosts(new CdTableFetchDataContext(() => undefined));
+      fixture.detectChanges();
       hostListSpy.and.callFake(() => of(fakeHosts));
       fixture.detectChanges();
       for (const test of tests) {
