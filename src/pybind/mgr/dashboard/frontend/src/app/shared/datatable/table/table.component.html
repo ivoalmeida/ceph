@@ -173,7 +173,7 @@
 </ng-template>
 
 <ng-template #tableActionTpl>
-  <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 0 && selectionType !== 'multiClick'"
+  <cds-overflow-menu *ngIf="tableActions?.dropDownActions.length > 1 && selectionType !== 'multiClick'"
                      [flip]="true"
                      data-testid="table-action-btn"
                      class="d-flex justify-content-end">
