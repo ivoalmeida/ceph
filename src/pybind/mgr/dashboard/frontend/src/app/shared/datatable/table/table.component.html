@@ -30,6 +30,7 @@
       <cds-table-toolbar-search *ngIf="searchField"
                                 [expandable]="false"
                                 [(ngModel)]="search"
+                                aria-label="search"
                                 (valueChange)="updateFilter($event)"
                                 (clear)="onClearSearch()">
       </cds-table-toolbar-search>
@@ -143,8 +144,9 @@
              (deselectRow)="onDeselect($event)"
              (deselectAll)="onDeselectAll($event)">
     <tbody>
-      <tr>
+      <tr cdstablerow>
         <td class="no-data" 
+            cdstabledata
             [attr.colspan]="tableColumns.length">
           <span class="d-flex justify-content-center align-items-center" 
                 i18n>No data to display</span>
@@ -169,7 +171,7 @@
              let-value="data.value"
              let-expanded="expanded"
              let-column="data.column">
-  <span ngClass="column?.cellClass">{{ value }}</span>
+  <span [ngClass]="column?.cellClass">{{ value }}</span>
 </ng-template>
 
 <ng-template #tableActionTpl>
@@ -186,6 +188,7 @@
                                 [preserveFragment]="action.preserveFragment ? '' : null"
                                 [disabled]="tableActions.disableSelectionAction(action)"
                                 [attr.aria-label]="action.name"
+                                data-testid="table-action-option-btn"
                                 i18n>
         {{ action.name }}
       </cds-overflow-menu-option>

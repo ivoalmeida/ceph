@@ -34,7 +34,7 @@ export class ConfigurationPageHelper extends PageHelper {
     cy.contains('button', 'Submit').click();
     this.getTableCell(this.columnIndex.address, new_address)
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.address})`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.address})`)
       .should(($elements) => {
         const address = $elements.text();
         expect(address).to.eq(new_address);

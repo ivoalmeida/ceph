@@ -25,7 +25,7 @@ export class ManagerModulesPageHelper extends PageHelper {
     this.getExpandCollapseElement(name).should('be.visible').click();
 
     for (const input of inputs) {
-      cy.get('.datatable-body').last().contains(input.newValue);
+      cy.get('cds-table table body').last().contains(input.newValue);
     }
 
     // Clear mgr module of all edits made to it
@@ -47,7 +47,7 @@ export class ManagerModulesPageHelper extends PageHelper {
     this.getExpandCollapseElement(name).should('be.visible').click();
     for (const input of inputs) {
       if (input.oldValue) {
-        cy.get('.datatable-body')
+        cy.get('cds-table table body')
           .eq(1)
           .should('contain', input.id)
           .and('not.contain', input.newValue);

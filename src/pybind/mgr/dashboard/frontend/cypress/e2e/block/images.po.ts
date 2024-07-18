@@ -45,13 +45,13 @@ export class ImagesPageHelper extends PageHelper {
   // checks that it is present in the trash table
   moveToTrash(name: string) {
     // wait for image to be created
-    cy.get('.datatable-body').first().should('not.contain.text', '(Creating...)');
+    cy.get('cds-table table tbody').first().should('not.contain.text', '(Creating...)');
 
     this.getFirstTableCell(name).click();
 
     // click on the drop down and selects the move to trash option
-    cy.get('.table-actions button.dropdown-toggle').first().click();
-    cy.get('button.move-to-trash').click();
+    cy.get('[data-testid="table-action-btn"] button').first().click({ multiple: true });
+    cy.get('button.move-to-trash').click({ force: true });
 
     cy.get('[data-cy=submitBtn]').should('be.visible').click();
 
@@ -68,6 +68,8 @@ export class ImagesPageHelper extends PageHelper {
 
     // wait for table to load
     this.getFirstTableCell(name).click();
+    cy.get('[data-testid="table-action-btn"] button').first().click({ multiple: true });
+    cy.get('[data-testid="table-action-option-btn"] button').click({ multiple: true });
     cy.contains('button', 'Restore').click();
 
     // wait for pop-up to be visible (checks for title of pop-up)

@@ -66,7 +66,7 @@ export class BucketsPageHelper extends PageHelper {
 
       this.getTableCell(this.columnIndex.name, name)
         .parent()
-        .find(`datatable-body-cell:nth-child(${this.columnIndex.owner})`)
+        .find(`[cdstabledata]:nth-child(${this.columnIndex.owner})`)
         .should(($elements) => {
           const bucketName = $elements.text();
           expect(bucketName).to.eq(new_owner);
@@ -92,7 +92,7 @@ export class BucketsPageHelper extends PageHelper {
     // Check if the owner is updated
     this.getTableCell(this.columnIndex.name, name)
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.owner})`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.owner})`)
       .should(($elements) => {
         const bucketName = $elements.text();
         expect(bucketName).to.eq(new_owner);

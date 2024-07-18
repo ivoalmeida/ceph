@@ -546,7 +546,7 @@ describe('TableComponent', () => {
       fixture.detectChanges();
 
       const elements = fixture.debugElement
-        .query(By.css('datatable-body-row datatable-body-cell'))
+        .query(By.css('[cdstablerow] [cdstabledata]'))
         .queryAll(By.css('span'));
       expect(elements.length).toBe(2);
 

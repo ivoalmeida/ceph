@@ -43,7 +43,7 @@ export class MultisitePageHelper extends PageHelper {
     cy.contains('button', 'Edit Sync Policy Group').click();
 
     this.searchTable(group_id);
-    cy.get(`datatable-body-cell:nth-child(${this.columnIndex.status})`)
+    cy.get(`[cdstabledata]:nth-child(${this.columnIndex.status})`)
       .find('.badge-warning')
       .should('contain', status);
   }

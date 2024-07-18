@@ -49,7 +49,7 @@ export class HostsPageHelper extends PageHelper {
   checkExist(hostname: string, exist: boolean) {
     this.getTableCell(this.columnIndex.hostname, hostname, true)
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.hostname}) span`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.hostname}) span`)
       .should(($elements) => {
         const hosts = $elements.toArray().map((v) => v.innerText);
         if (exist) {
@@ -93,7 +93,7 @@ export class HostsPageHelper extends PageHelper {
     this.getTableCell(this.columnIndex.hostname, hostname, true)
       .click()
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.labels}) .badge`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.labels}) .badge`)
       .should(($ele) => {
         const newLabels = $ele.toArray().map((v) => v.innerText);
         for (const label of labels) {
@@ -119,7 +119,7 @@ export class HostsPageHelper extends PageHelper {
 
       this.getTableCell(this.columnIndex.hostname, hostname, true)
         .parent()
-        .find(`datatable-body-cell:nth-child(${this.columnIndex.status}) .badge`)
+        .find(`[cdstabledata]:nth-child(${this.columnIndex.status}) .badge`)
         .should(($ele) => {
           const status = $ele.toArray().map((v) => v.innerText);
           expect(status).to.include('maintenance');
@@ -129,7 +129,7 @@ export class HostsPageHelper extends PageHelper {
       this.getTableCell(this.columnIndex.hostname, hostname, true)
         .click()
         .parent()
-        .find(`datatable-body-cell:nth-child(${this.columnIndex.status})`)
+        .find(`[cdstabledata]:nth-child(${this.columnIndex.status})`)
         .then(($ele) => {
           const status = $ele.toArray().map((v) => v.innerText);
           if (status[0].includes('maintenance')) {
@@ -139,7 +139,7 @@ export class HostsPageHelper extends PageHelper {
 
       this.getTableCell(this.columnIndex.hostname, hostname, true)
         .parent()
-        .find(`datatable-body-cell:nth-child(${this.columnIndex.status})`)
+        .find(`[cdstabledata]:nth-child(${this.columnIndex.status})`)
         .should(($ele) => {
           const status = $ele.toArray().map((v) => v.innerText);
           expect(status).to.not.include('maintenance');
@@ -150,7 +150,7 @@ export class HostsPageHelper extends PageHelper {
 
       this.getTableCell(this.columnIndex.hostname, hostname, true)
         .parent()
-        .find(`datatable-body-cell:nth-child(${this.columnIndex.status}) .badge`)
+        .find(`[cdstabledata]:nth-child(${this.columnIndex.status}) .badge`)
         .should(($ele) => {
           const status = $ele.toArray().map((v) => v.innerText);
           expect(status).to.include('maintenance');
@@ -175,7 +175,7 @@ export class HostsPageHelper extends PageHelper {
   checkServiceInstancesExist(hostname: string, instances: string[]) {
     this.getTableCell(this.columnIndex.hostname, hostname, true)
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.services}) .badge`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.services}) .badge`)
       .should(($ele) => {
         const serviceInstances = $ele.toArray().map((v) => v.innerText);
         for (const instance of instances) {

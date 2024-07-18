@@ -71,7 +71,7 @@ describe('Mirroring page', () => {
           cy.get('cd-pool-list').should('exist');
 
           cy.visit('#/block/mirroring').wait(1000);
-          cy.get('.table-actions button.dropdown-toggle').first().click();
+          cy.get('[data-testid="table-action-btn"] button').first().click();
           cy.get('[aria-label="Import Bootstrap Token"]').click();
           cy.get('cd-bootstrap-import-modal').within(() => {
             cy.get(`label[for=${name}]`).click();

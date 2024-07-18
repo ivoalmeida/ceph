@@ -148,7 +148,7 @@ export class ServicesPageHelper extends PageHelper {
       cy.get('cd-service-daemon-list').within(() => {
         this.getTableCell(daemonNameIndex, daemon, true)
           .parent()
-          .find(`datatable-body-cell:nth-child(${statusIndex}) .badge`)
+          .find(`[cdstabledata]:nth-child(${statusIndex}) .badge`)
           .should(($ele) => {
             const status = $ele.toArray().map((v) => v.innerText);
             expect(status).to.include(expectedStatus);
@@ -160,7 +160,7 @@ export class ServicesPageHelper extends PageHelper {
   expectPlacementCount(serviceName: string, expectedCount: string) {
     this.getTableCell(this.columnIndex.service_name, serviceName)
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.placement})`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.placement})`)
       .should(($ele) => {
         const running = $ele.text().split(';');
         expect(running).to.include(`count:${expectedCount}`);
@@ -181,7 +181,7 @@ export class ServicesPageHelper extends PageHelper {
   isUnmanaged(serviceName: string, unmanaged: boolean) {
     this.getTableCell(this.columnIndex.service_name, serviceName)
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.placement})`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.placement})`)
       .should(($ele) => {
         const placement = $ele.text().split(';');
         unmanaged

@@ -15,13 +15,13 @@ export class UsersPageHelper extends PageHelper {
   };
 
   checkForUsers() {
-    this.getTableCount('total').should('not.be.eq', 0);
+    this.getTableCount('item').should('not.be.eq', 0);
   }
 
   verifyKeysAreHidden() {
     this.getTableCell(this.columnIndex.entity, 'osd.0')
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.key}) span`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.key}) span`)
       .should(($ele) => {
         const serviceInstances = $ele.toArray().map((v) => v.innerText);
         expect(serviceInstances).not.contains(/^[a-z0-9]+$/i);
@@ -48,7 +48,7 @@ export class UsersPageHelper extends PageHelper {
     this.getTableCell(this.columnIndex.entity, entityName)
       .click()
       .parent()
-      .find(`datatable-body-cell:nth-child(${this.columnIndex.capabilities}) .badge`)
+      .find(`[cdstabledata]:nth-child(${this.columnIndex.capabilities}) .badge`)
       .should(($ele) => {
         const newCaps = $ele.toArray().map((v) => v.innerText);
         for (const cap of capabilities) {

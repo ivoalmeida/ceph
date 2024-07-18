@@ -52,7 +52,7 @@ export class OSDsPageHelper extends PageHelper {
   checkStatus(id: number, status: string[]) {
     this.searchTable(`id:${id}`);
     this.expectTableCount('found', 1);
-    cy.get(`datatable-body-cell:nth-child(${this.columnIndex.status}) .badge`).should(($ele) => {
+    cy.get(`[cdstabledata]:nth-child(${this.columnIndex.status}) .badge`).should(($ele) => {
       const allStatus = $ele.toArray().map((v) => v.innerText);
       for (const s of status) {
         expect(allStatus).to.include(s);
@@ -71,7 +71,7 @@ export class OSDsPageHelper extends PageHelper {
   deleteByIDs(osdIds: number[], replace?: boolean) {
     this.getTableRows().each(($el) => {
       const rowOSD = Number(
-        $el.find('datatable-body-cell .datatable-body-cell-label').get(this.columnIndex.id - 1)
+        $el.find('[cdstabledata][cdstablerow]').get(this.columnIndex.id - 1)
           .textContent
       );
       if (osdIds.includes(rowOSD)) {

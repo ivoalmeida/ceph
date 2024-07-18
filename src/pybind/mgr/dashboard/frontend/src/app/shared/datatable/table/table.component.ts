@@ -343,7 +343,13 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     }
     const datasetSubscription = this._dataset
       .pipe(
-        filter((values: any[]) => !!values?.length),
+        filter((values: any[]) => {
+          if (!values?.length) {
+            this.model.data = [];
+            return false;
+          }
+          return true;
+        }),
         throttleTime(2 * 1000, undefined, { leading: true, trailing: false }),
         map((values: any[]) => ({
           values,
@@ -932,6 +938,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   onDeselect($event: any) {
+    if (this.selectionType === 'single') {
+      return;
+    }
     const { deselectedRowIndex } = $event;
     this._toggleSelection(deselectedRowIndex, false);
     this.updateSelection.emit(this.selection);

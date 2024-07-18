@@ -58,7 +58,7 @@ export abstract class PageHelper {
       this.getFirstTableCell(name).click();
     }
     cy.contains('Creating...').should('not.exist');
-    cy.contains('button', 'Edit').click();
+    cy.contains('button', 'Edit').click({ force: true });
     if (breadcrumb) {
       this.expectBreadcrumbText('Edit');
     }
@@ -133,21 +133,21 @@ export abstract class PageHelper {
    */
   private waitDataTableToLoad() {
     cy.get('cd-table').should('exist');
-    cy.get('datatable-scroller, .empty-row');
+    cy.get('cds-table table tbody').should('exist');
   }
 
   getDataTables() {
     this.waitDataTableToLoad();
 
-    return cy.get('cd-table .dataTables_wrapper');
+    return cy.get('cd-table cds-table');
   }
 
-  private getTableCountSpan(spanType: 'selected' | 'found' | 'total') {
-    return cy.contains('.datatable-footer-inner .page-count span', spanType);
+  private getTableCountSpan(_spanType: 'selected' | 'found' | 'total' | 'item' | 'items') {
+    return cy.contains('.cds--pagination__text.cds--pagination__items-count', /item|items/ig);
   }
 
   // Get 'selected', 'found', or 'total' row count of a table.
-  getTableCount(spanType: 'selected' | 'found' | 'total') {
+  getTableCount(spanType: 'selected' | 'found' | 'total' | 'item' | 'items') {
     this.waitDataTableToLoad();
     return this.getTableCountSpan(spanType).then(($elem) => {
       const text = $elem
@@ -155,16 +155,16 @@ export abstract class PageHelper {
         .first()
         .text();
 
-      return Number(text.match(/(\d+)\s+\w*/)[1]);
+      return Number(text.match(/\b\d+(?= items\b)/)[0]);
     });
   }
 
   // Wait until selected', 'found', or 'total' row count of a table equal to a number.
-  expectTableCount(spanType: 'selected' | 'found' | 'total', count: number) {
+  expectTableCount(spanType: 'selected' | 'found' | 'total' | 'item' | 'items', count: number) {
     this.waitDataTableToLoad();
     this.getTableCountSpan(spanType).should(($elem) => {
       const text = $elem.first().text();
-      expect(Number(text.match(/(\d+)\s+\w*/)[1])).to.equal(count);
+      expect(Number(text.match(/\b\d+(?= items\b)/)[0])).to.equal(count);
     });
   }
 
@@ -172,7 +172,7 @@ export abstract class PageHelper {
     this.waitDataTableToLoad();
 
     this.searchTable(content);
-    return cy.contains('.datatable-body-row', content);
+    return cy.contains('[cdstablerow]', content);
   }
 
   getTableRows() {
@@ -190,9 +190,9 @@ export abstract class PageHelper {
 
     if (content) {
       this.searchTable(content);
-      return cy.contains('.datatable-body-cell-label', content);
+      return cy.contains('[cdstabledata] span', content);
     } else {
-      return cy.get('.datatable-body-cell-label').first();
+      return cy.get('[cdstabledata] span').first();
     }
   }
 
@@ -202,12 +202,12 @@ export abstract class PageHelper {
     this.searchTable(exactContent);
     if (partialMatch) {
       return cy.contains(
-        `datatable-body-row datatable-body-cell:nth-child(${columnIndex})`,
+        `[cdstablerow] [cdstabledata]:nth-child(${columnIndex})`,
         exactContent
       );
     }
     return cy.contains(
-      `datatable-body-row datatable-body-cell:nth-child(${columnIndex})`,
+      `[cdstablerow] [cdstabledata]:nth-child(${columnIndex})`,
       new RegExp(`^${exactContent}$`)
     );
   }
@@ -217,14 +217,14 @@ export abstract class PageHelper {
     this.getFirstTableCell(name).should(waitRule);
   }
 
-  getExpandCollapseElement(content?: string) {
+  getExpandCollapseElement(_content?: string) {
     this.waitDataTableToLoad();
 
-    if (content) {
-      return cy.contains('.datatable-body-row', content).find('.tc_expand-collapse');
-    } else {
-      return cy.get('.tc_expand-collapse').first();
-    }
+    return cy.get('[cdstableexpandbutton] button');
+    // if (content) {
+    // } else {
+    //   return cy.get('.tc_expand-collapse').first();
+    // }
   }
 
   /**
@@ -233,7 +233,7 @@ export abstract class PageHelper {
   getDataTableHeaders(index = 0) {
     this.waitDataTableToLoad();
 
-    return cy.get('.datatable-header').its(index).find('.datatable-header-cell');
+    return cy.get('.datatable-header').its(index).find('[cdstabledata]');
   }
 
   /**
@@ -254,26 +254,26 @@ export abstract class PageHelper {
   }
 
   setPageSize(size: string) {
-    cy.get('cd-table .dataTables_paginate input').first().clear({ force: true }).type(size);
+    cy.get('.cds--select__item-count .cds--select-input').select(size, { force: true });
   }
 
   searchTable(text: string) {
     this.waitDataTableToLoad();
 
     this.setPageSize('10');
-    cy.get('[aria-label=search]').first().clear({ force: true }).type(text);
+    cy.get('.cds--search-input').first().clear({ force: true }).type(text);
   }
 
   clearTableSearchInput() {
     this.waitDataTableToLoad();
 
-    return cy.get('cd-table .search button').first().click();
+    return cy.get('.cds--search-close').first().click();
   }
 
   // Click the action button
   clickActionButton(action: string) {
-    cy.get('.table-actions button.dropdown-toggle').first().click(); // open submenu
-    cy.get(`button.${action}`).click(); // click on "action" menu item
+    cy.get('[data-testid="table-action-btn"] button').click(); // open submenu
+    cy.get(`[data-testid="table-action-option-btn"].${action} button`).click(); // click on "action" menu item
   }
 
   /**
