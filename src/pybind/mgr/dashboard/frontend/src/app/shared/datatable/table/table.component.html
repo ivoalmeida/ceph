@@ -130,7 +130,7 @@
   <!-- end filter chips for column filters -->
   <cds-table [model]="model"
              [sortable]="!!userConfig.sorts"
-             size="md"
+             [size]="size"
              class="overflow-y-hidden"
              [skeleton]="false"
              [showSelectionColumn]="selectionType === 'multiClick'"

@@ -16,9 +16,9 @@ import {
   ViewChild
 } from '@angular/core';
 
-import { TableHeaderItem, TableItem, TableModel } from 'carbon-components-angular';
+import { TableHeaderItem, TableItem, TableModel, TableRowSize } from 'carbon-components-angular';
 import _ from 'lodash';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 
 import { TableStatus } from '~/app/shared/classes/table-status';
 import { CellTemplate } from '~/app/shared/enum/cell-template.enum';
@@ -177,6 +177,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   @Input()
   serverSide = false;
 
+  @Input()
+  size: TableRowSize = 'md';
+
   /*
   Only required when serverSide is enabled.
   It should be provided by the server via "X-Total-Count" HTTP Header
@@ -291,7 +294,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
   private _rows: any[] = [];
 
-  private _dataset = new Subject<any[]>();
+  private _dataset = new BehaviorSubject<any[]>([]);
 
   private _subscriptions: Subscription = new Subscription();
 
