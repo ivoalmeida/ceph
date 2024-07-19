@@ -155,7 +155,7 @@ export abstract class PageHelper {
         .first()
         .text();
 
-      return Number(text.match(/\b\d+(?= items\b)/)[0]);
+      return Number(text.match(/\b\d+(?= item|items\b)/)[0]);
     });
   }
 
@@ -164,7 +164,7 @@ export abstract class PageHelper {
     this.waitDataTableToLoad();
     this.getTableCountSpan(spanType).should(($elem) => {
       const text = $elem.first().text();
-      expect(Number(text.match(/\b\d+(?= items\b)/)[0])).to.equal(count);
+      expect(Number(text.match(/\b\d+(?= item|items\b)/)[0])).to.equal(count);
     });
   }
 

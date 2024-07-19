@@ -22,7 +22,7 @@ When('I click on {string} button from the table actions in the expanded row', (b
 });
 
 When('I expand the row {string}', (row: string) => {
-  cy.contains('.[cdstablerow]', row).first().find('.tc_expand-collapse').click();
+  cy.contains('[cdstablerow]', row).first().find('.tc_expand-collapse').click();
 });
 
 /**
@@ -84,7 +84,7 @@ And('I should see row {string} of the expanded row to have a usage bar', (row: s
   cy.get('.datatable-row-detail').within(() => {
     cy.get('.cds--search-input').first().clear().type(row);
     cy.contains(`[cdstablerow] [cdstabledata] span`, row).should('exist');
-    cy.get('.[cdstablerow] .[cdstabledata][cdstablerow] .progress').should('exist');
+    cy.get('[cdstablerow] [cdstabledata] cd-usage-bar .progress').should('exist');
   });
 });
 
