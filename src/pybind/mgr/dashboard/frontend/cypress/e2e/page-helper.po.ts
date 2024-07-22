@@ -143,7 +143,7 @@ export abstract class PageHelper {
   }
 
   private getTableCountSpan(_spanType: 'selected' | 'found' | 'total' | 'item' | 'items') {
-    return cy.contains('.cds--pagination__text.cds--pagination__items-count', /item|items/ig);
+    return cy.contains('.cds--pagination__text.cds--pagination__items-count', /item|items/gi);
   }
 
   // Get 'selected', 'found', or 'total' row count of a table.
@@ -201,10 +201,7 @@ export abstract class PageHelper {
     this.clearTableSearchInput();
     this.searchTable(exactContent);
     if (partialMatch) {
-      return cy.contains(
-        `[cdstablerow] [cdstabledata]:nth-child(${columnIndex})`,
-        exactContent
-      );
+      return cy.contains(`[cdstablerow] [cdstabledata]:nth-child(${columnIndex})`, exactContent);
     }
     return cy.contains(
       `[cdstablerow] [cdstabledata]:nth-child(${columnIndex})`,
@@ -272,8 +269,8 @@ export abstract class PageHelper {
 
   // Click the action button
   clickActionButton(action: string) {
-    cy.get('[data-testid="table-action-btn"] button').click(); // open submenu
-    cy.get(`[data-testid="table-action-option-btn"].${action} button`).click(); // click on "action" menu item
+    cy.get('[data-testid="table-action-btn"]').click({ multiple: true }); // open submenu
+    cy.get(`button.${action}`).click({ force: true }); // click on "action" menu item
   }
 
   /**

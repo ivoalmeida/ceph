@@ -50,10 +50,10 @@ export class ImagesPageHelper extends PageHelper {
     this.getFirstTableCell(name).click();
 
     // click on the drop down and selects the move to trash option
-    cy.get('[data-testid="table-action-btn"] button').first().click({ multiple: true });
+    cy.get('[data-testid="table-action-btn"]').click({ multiple: true });
     cy.get('button.move-to-trash').click({ force: true });
 
-    cy.get('[data-cy=submitBtn]').should('be.visible').click();
+    cy.get('[data-cy=submitBtn] button').should('be.visible').click({ force: true });
 
     // Clicks trash tab
     cy.contains('.nav-link', 'Trash').click();
@@ -68,9 +68,8 @@ export class ImagesPageHelper extends PageHelper {
 
     // wait for table to load
     this.getFirstTableCell(name).click();
-    cy.get('[data-testid="table-action-btn"] button').first().click({ multiple: true });
-    cy.get('[data-testid="table-action-option-btn"] button').click({ multiple: true });
-    cy.contains('button', 'Restore').click();
+    cy.get('[data-testid="table-action-btn"]').click({ multiple: true });
+    cy.get('button.restore').click({ force: true });
 
     // wait for pop-up to be visible (checks for title of pop-up)
     cy.get('cd-modal #name').should('be.visible');

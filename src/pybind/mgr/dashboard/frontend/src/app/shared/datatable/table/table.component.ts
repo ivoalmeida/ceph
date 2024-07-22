@@ -344,7 +344,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           }
           return true;
         }),
-        throttleTime(2 * 1000, undefined, { leading: true, trailing: false }),
+        throttleTime(2 * 100, undefined, { leading: true, trailing: false }),
         map((values: any[]) => ({
           values,
           columnProps: this.tableColumns.filter((x) => !x.isHidden || !x.isInvisible)
