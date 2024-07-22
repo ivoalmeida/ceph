@@ -155,7 +155,9 @@
     </tbody>
   </cds-table>
   <cds-pagination [model]="model"
-                  (selectPage)="onPageChange($event)">
+                  (selectPage)="onPageChange($event)"
+                  [disabled]="limit === 0"
+                  [pageInputDisabled]="limit === 0">
   </cds-pagination>
 </cds-table-container>
 

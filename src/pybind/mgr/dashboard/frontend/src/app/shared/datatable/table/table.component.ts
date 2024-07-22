@@ -252,18 +252,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       }
     });
     this._tableColumns = value;
-    this.model.header = value.map(
-      (col: CdTableColumn) =>
-        new TableHeaderItem({
-          data: col.name,
-          title: col.name,
-          // if cellClass is a function it cannot be called here as it requires table data to execute
-          // instead if cellClass is a function it will be called and applied while parsing the data
-          className: _.isString(col?.cellClass) ? col?.cellClass : col?.className,
-          visible: !col.isHidden || !col.isInvisible,
-          sortable: _.isNil(col.sortable) ? true : col.sortable
-        })
-    );
+    this._tableHeaders.next(value);
   }
 
   get tableColumns() {
@@ -295,6 +284,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   private _rows: any[] = [];
 
   private _dataset = new BehaviorSubject<any[]>([]);
+
+  private _tableHeaders = new BehaviorSubject<CdTableColumn[]>([]);
 
   private _subscriptions: Subscription = new Subscription();
 
@@ -401,6 +392,28 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
         }
       });
 
+    const tableHeadersSubscription = this._tableHeaders
+      .pipe(
+        map((values: CdTableColumn[]) =>
+          values.map(
+            (col: CdTableColumn) =>
+              new TableHeaderItem({
+                data: col?.headerTemplate ? { ...col } : col.name,
+                title: col.name,
+                template: col?.headerTemplate,
+                // if cellClass is a function it cannot be called here as it requires table data to execute
+                // instead if cellClass is a function it will be called and applied while parsing the data
+                className: _.isString(col?.cellClass) ? col?.cellClass : col?.className,
+                visible: !col.isHidden || !col.isInvisible,
+                sortable: _.isNil(col.sortable) ? true : col.sortable
+              })
+          )
+        )
+      )
+      .subscribe({
+        next: (values: TableHeaderItem[]) => (this.model.header = values)
+      });
+
     const rowsExpandedSubscription = this.model.rowsExpandedChange.subscribe({
       next: (index: number) => {
         if (this.model.rowsExpanded.every((x) => !x)) {
@@ -417,6 +430,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
 
     this._subscriptions.add(datasetSubscription);
     this._subscriptions.add(rowsExpandedSubscription);
+    this._subscriptions.add(tableHeadersSubscription);
   }
 
   ngOnInit() {
@@ -795,6 +809,12 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
     size = this.model.pageLength,
     filteredData = this.rows
   }): void {
+    if (this.limit === 0) {
+      this.model.currentPage = 1;
+      this.model.pageLength = filteredData.length;
+      this._dataset.next(filteredData);
+      return;
+    }
     const { start, end } = this.paginate({ page, size, filteredData });
 
     const paginated = filteredData?.slice?.(start, end);
