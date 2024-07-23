@@ -699,9 +699,6 @@ describe('TableComponent', () => {
   describe('test expand and collapse feature', () => {
     beforeEach(() => {
       spyOn(component.setExpandedRow, 'emit');
-      component.table = {
-        rowDetail: { collapseAllRows: jest.fn(), toggleExpandRow: jest.fn() }
-      } as any;
 
       // Setup table
       component.identifier = 'a';
@@ -769,7 +766,7 @@ describe('TableComponent', () => {
 
     it('should not select the row when the row is expanded', () => {
       expect(component.selection.selected).toEqual([]);
-      component.toggleExpandRow(component.data[1], false, new Event('click'));
+      component.toggleExpandRow();
       expect(component.selection.selected).toEqual([]);
     });
 

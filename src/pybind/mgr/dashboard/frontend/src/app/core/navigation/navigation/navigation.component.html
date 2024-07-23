@@ -78,7 +78,7 @@
   <ng-template #cd_menu>
     <ng-container *ngIf="enabledFeature$ | async as enabledFeature">
     <cds-sidenav [expanded]="showMenuSidebar"
-                  class="mt-5">
+                 class="mt-5">
       <!-- Dashboard -->
       <cds-sidenav-item route="/dashboard"
                         [useRouter]="true"
@@ -86,8 +86,8 @@
                         i18n-title
                         class="nav-item tc_menuitem_dashboard">
         <svg cdsIcon="template"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <span i18n>
           Dashboard</span>
       </cds-sidenav-item>
@@ -95,8 +95,8 @@
       <cds-sidenav-menu title="Multi-Cluster"
                         i18n-title>
         <svg cdsIcon="edge-cluster"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <cds-sidenav-item route="/multi-cluster/overview"
                           title="Overview"
                           i18n-title
@@ -114,8 +114,8 @@
                         *ngIf="permissions.hosts.read || permissions.monitor.read || permissions.osd.read || permissions.pool.read"
                         class="tc_menuitem_cluster">
         <svg cdsIcon="web-services--cluster"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <cds-sidenav-item route="/pool"
                           [useRouter]="true"
                           title="Pools"
@@ -159,8 +159,8 @@
                         *ngIf="(permissions.rbdImage.read || permissions.rbdMirroring.read|| permissions.iscsi.read) && (enabledFeature.rbd || enabledFeature.mirroring || enabledFeature.iscsi)"
                         class="tc_menuitem_block">
         <svg cdsIcon="datastore"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <cds-sidenav-item route="/block/rbd"
                           [useRouter]="true"
                           title="Images"
@@ -175,9 +175,9 @@
                           class="tc_submenuitem tc_submenuitem_block_mirroring">
           <span i18n>Mirroring
             <small *ngIf="summaryData?.rbd_mirroring?.warnings !== 0"
-                    class="badge badge-warning">{{ summaryData?.rbd_mirroring?.warnings }}</small>
+                   class="badge badge-warning">{{ summaryData?.rbd_mirroring?.warnings }}</small>
             <small *ngIf="summaryData?.rbd_mirroring?.errors !== 0"
-                    class="badge badge-danger">{{ summaryData?.rbd_mirroring?.errors }}</small>
+                   class="badge badge-danger">{{ summaryData?.rbd_mirroring?.errors }}</small>
           </span>
         </cds-sidenav-item>
         <cds-sidenav-item route="/block/iscsi"
@@ -193,8 +193,8 @@
                         *ngIf="permissions.rgw.read && enabledFeature.rgw"
                         class="nav-item tc_menuitem_rgw">
         <svg cdsIcon="object-storage"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <cds-sidenav-item route="/rgw/overview"
                           title="Overview"
                           i18n-title
@@ -233,8 +233,8 @@
                         *ngIf="permissions.nfs.read && enabledFeature.nfs || permissions.cephfs.read && enabledFeature.cephfs"
                         class="tc_menuitem_file">
         <svg cdsIcon="file-storage"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <cds-sidenav-item route="/cephfs/fs"
                           [useRouter]="true"
                           title="File Systems"
@@ -254,8 +254,8 @@
                         *ngIf="permissions.log.read || permissions.prometheus.read"
                         class="tc_menuitem_observe">
         <svg cdsIcon="observed--hail"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <cds-sidenav-item route="/logs"
                           [useRouter]="true"
                           title="Logs"
@@ -283,8 +283,8 @@
                         *ngIf="permissions.configOpt.read || permissions.hosts.read"
                         class="tc_menuitem_admin">
         <svg cdsIcon="network--admin-control"
-              icon
-              size="20"></svg>
+             icon
+             size="20"></svg>
         <cds-sidenav-item route="/services/"
                           [useRouter]="true"
                           title="Services"

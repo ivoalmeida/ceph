@@ -1,15 +1,13 @@
 <cds-table-container [cdsLayer]="layer"
-                     [cdsTheme]="theme">  
+                     [cdsTheme]="theme">
   <cds-table-toolbar #toolbar
                      *ngIf="toolHeader"
                      (cancel)="onBatchActionsCancel()"
                      [model]="selectionType === 'multiClick' ? model : []"
-                     [batchText]="{
-                      SINGLE: '1 item selected',
-                      MULTIPLE: '{{count}} items selected' }">
+                     [batchText]="{ SINGLE: '1 item selected', MULTIPLE: '{{count}} items selected' }">
     <!-- batch actions -->
     <cds-table-toolbar-actions *ngIf="tableActions?.dropDownActions.length > 0">
-      <ng-container *ngFor="let action of tableActions?.dropDownActions">  
+      <ng-container *ngFor="let action of tableActions?.dropDownActions">
         <button *ngIf="tableActions.currentAction !== action"
                 cdsButton="primary"
                 [tabindex]="toolbar.selected ? 0 : -1"
@@ -54,7 +52,8 @@
         <cds-select (valueChange)="onChangeFilter($event)"
                     display="inline"
                     id="filter_option">
-          <option *ngIf="!selectedFilter.value" i18n>Any</option>
+          <option *ngIf="!selectedFilter.value"
+                  i18n>Any</option>
           <ng-container *ngFor="let option of selectedFilter.options">
             <option [value]="option.raw"
                     [selected]="option.raw === selectedFilter?.value?.raw">{{ option.formatted }}</option>
@@ -93,7 +92,7 @@
              (click)="$event.stopPropagation()"
              cdsTheme="white">
           <ng-container *ngFor="let column of columns">
-            <cds-checkbox *ngIf="!column?.isInvisible" 
+            <cds-checkbox *ngIf="!column?.isInvisible"
                           id="{{ column.prop }}{{ tableName }}"
                           name="{{ column.prop }}{{ tableName }}"
                           [checked]="!column?.isHidden"
@@ -109,8 +108,7 @@
     </cds-table-toolbar-content>
   </cds-table-toolbar>
   <!-- filter chips for column filters -->
-  <div class="d-flex justify-content-end align-items-center"
-       style="background-color: var(--cds-layer-accent);color: var(--cds-text-primary);border-bottom: 1px solid var(--cds-layer-active);"
+  <div class="d-flex justify-content-end align-items-center filter-tags"
        *ngIf="toolHeader && columnFiltered">
   <div class="d-flex gap-2">
     <ng-container *ngFor="let filter of columnFilters">
@@ -120,7 +118,8 @@
         <span class="me-2">{{ filter.column.name }}: {{ filter.value.formatted }}</span>
         <button class="cds--tag__close-icon"
                 (click)="onChangeFilter(filter)">
-          <svg cdsIcon="close" size="16"></svg>
+          <svg cdsIcon="close"
+               size="16"></svg>
         </button>
       </cds-tag>
     </ng-container>
@@ -148,10 +147,10 @@
              (deselectAll)="onDeselectAll($event)">
     <tbody>
       <tr cdstablerow>
-        <td class="no-data" 
+        <td class="no-data"
             cdstabledata
             [attr.colspan]="tableColumns.length">
-          <span class="d-flex justify-content-center align-items-center" 
+          <span class="d-flex justify-content-center align-items-center"
                 i18n>No data to display</span>
         </td>
       </tr>
@@ -184,7 +183,7 @@
                      [flip]="true"
                      data-testid="table-action-btn"
                      class="d-flex justify-content-end">
-    <ng-container *ngFor="let action of tableActions?.dropDownActions">  
+    <ng-container *ngFor="let action of tableActions?.dropDownActions">
       <cds-overflow-menu-option *ngIf="tableActions.currentAction !== action"
                                 class="{{ tableActions.toClassName(action) }}"
                                 title="{{ tableActions.useDisableDesc(action) }}"

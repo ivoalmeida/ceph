@@ -19,19 +19,19 @@
                 (setExpandedRow)="setExpandedRow($event)"
                 (updateSelection)="updateSelection($event)"
                 [toolHeader]="!hideToolHeader">
-        <div class="table-actions">          
+        <div class="table-actions">
           <cd-table-actions [permission]="permissions.hosts"
                             [selection]="selection"
                             class="btn-group"
                             id="host-actions"
                             [tableActions]="tableActions">
-          </cd-table-actions>        
+          </cd-table-actions>
           <cd-table-actions [permission]="permissions.hosts"
                             [selection]="selection"
                             btnColor="light"
                             class="btn-group"
                             [tableActions]="expandClusterActions">
-          </cd-table-actions>  
+          </cd-table-actions>
         </div>
         <cd-host-details *cdTableDetail
                          [permissions]="permissions"

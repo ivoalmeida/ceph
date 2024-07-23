@@ -672,7 +672,7 @@ export class TableActionHelper {
       if (expectResult[action.name]) {
         actions[action.name] = {
           disabled: tableActionComponent.disableSelectionAction(action),
-          disableDesc: tableActionComponent.useDisableDesc(action) || ""
+          disableDesc: tableActionComponent.useDisableDesc(action) || ''
         };
       }
     });

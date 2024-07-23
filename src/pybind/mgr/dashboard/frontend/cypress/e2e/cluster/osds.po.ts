@@ -71,8 +71,7 @@ export class OSDsPageHelper extends PageHelper {
   deleteByIDs(osdIds: number[], replace?: boolean) {
     this.getTableRows().each(($el) => {
       const rowOSD = Number(
-        $el.find('[cdstabledata][cdstablerow]').get(this.columnIndex.id - 1)
-          .textContent
+        $el.find('[cdstabledata][cdstablerow]').get(this.columnIndex.id - 1).textContent
       );
       if (osdIds.includes(rowOSD)) {
         cy.wrap($el).click();
