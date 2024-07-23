@@ -150,11 +150,7 @@ export abstract class PageHelper {
   getTableCount(spanType: 'selected' | 'found' | 'total' | 'item' | 'items') {
     this.waitDataTableToLoad();
     return this.getTableCountSpan(spanType).then(($elem) => {
-      const text = $elem
-        .filter((_i, e) => e.innerText.includes(spanType))
-        .first()
-        .text();
-
+      const text = $elem.first().text();
       return Number(text.match(/\b\d+(?= item|items\b)/)[0]);
     });
   }
@@ -216,12 +212,7 @@ export abstract class PageHelper {
 
   getExpandCollapseElement(_content?: string) {
     this.waitDataTableToLoad();
-
-    return cy.get('[cdstableexpandbutton] button');
-    // if (content) {
-    // } else {
-    //   return cy.get('.tc_expand-collapse').first();
-    // }
+    return cy.get('.cds--table-expand__button').first();
   }
 
   /**
@@ -242,12 +233,8 @@ export abstract class PageHelper {
 
   filterTable(name: string, option: string) {
     this.waitDataTableToLoad();
-
-    cy.get('.tc_filter_name > button').click();
-    cy.contains(`.tc_filter_name .dropdown-item`, name).click();
-
-    cy.get('.tc_filter_option > button').click();
-    cy.contains(`.tc_filter_option .dropdown-item`, option).click();
+    cy.get('select#filter_name').select(name);
+    cy.get('select#filter_option').select(option);
   }
 
   setPageSize(size: string) {
@@ -264,7 +251,7 @@ export abstract class PageHelper {
   clearTableSearchInput() {
     this.waitDataTableToLoad();
 
-    return cy.get('.cds--search-close').first().click();
+    return cy.get('.cds--search-close').first().click({ force: true });
   }
 
   // Click the action button
