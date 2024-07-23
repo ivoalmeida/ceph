@@ -43,14 +43,16 @@
                class="align-self-center mb-2"></svg>
         </div>
         <cds-select (valueChange)="onSelectFilter($event)"
-                    display="inline">          
+                    display="inline"
+                    id="filter_name">
           <ng-container *ngFor="let filter of columnFilters">
             <option [value]="filter.column.name"
                     [selected]="filter.column.name === selectedFilter.column.name">{{ filter.column.name }}</option>
           </ng-container>
         </cds-select>
         <cds-select (valueChange)="onChangeFilter($event)"
-                    display="inline">
+                    display="inline"
+                    id="filter_option">
           <option *ngIf="!selectedFilter.value" i18n>Any</option>
           <ng-container *ngFor="let option of selectedFilter.options">
             <option [value]="option.raw"
