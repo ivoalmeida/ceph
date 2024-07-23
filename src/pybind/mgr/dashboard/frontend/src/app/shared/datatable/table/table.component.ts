@@ -188,6 +188,18 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   count = 0;
 
   /**
+   * Use to change the colour layer you want to render the table at
+   */
+  @Input()
+  layer: number;
+
+  /**
+   * Use to render table with a different theme than default one
+   */
+  @Input()
+  theme: string;
+
+  /**
    * Should be a function to update the input data if undefined nothing will be triggered
    *
    * Sometimes it's useful to only define fetchData once.
@@ -344,7 +356,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
           }
           return true;
         }),
-        throttleTime(2 * 100, undefined, { leading: true, trailing: false }),
+        throttleTime(2 * 250, undefined, { leading: true, trailing: false }),
         map((values: any[]) => ({
           values,
           columnProps: this.tableColumns.filter((x) => !x.isHidden || !x.isInvisible)
@@ -1014,6 +1026,10 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
   }
 
   changeSorting(columnIndex: number) {
+    if (!this.model?.header?.[columnIndex]) {
+      return;
+    }
+
     const prop = this.tableColumns?.[columnIndex]?.prop;
 
     if (this.model.header[columnIndex].sorted) {
@@ -1043,7 +1059,9 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges, OnDestr
       columnIndex ||
       this.tableColumns?.findIndex?.((x) => x.prop === this.userConfig?.sorts?.[0]?.prop);
 
-    if (_.isNil(index) || index < 0) return;
+    if (_.isNil(index) || index < 0 || !this.model?.header?.[index]) {
+      return;
+    }
 
     const prop = this.tableColumns?.[index]?.prop;
 

@@ -4,6 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { NgbNavModule, NgbProgressbarModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { ButtonModule, IconModule, IconService } from 'carbon-components-angular';
+import DocumentAddIcon from '@carbon/icons/es/document--add/16';
+import DocumentImportIcon from '@carbon/icons/es/document--import/16';
 
 import { SharedModule } from '~/app/shared/shared.module';
 import { BootstrapCreateModalComponent } from './bootstrap-create-modal/bootstrap-create-modal.component';
@@ -25,7 +28,9 @@ import { PoolListComponent } from './pool-list/pool-list.component';
     FormsModule,
     ReactiveFormsModule,
     NgbProgressbarModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    ButtonModule,
+    IconModule
   ],
   declarations: [
     BootstrapCreateModalComponent,
@@ -40,4 +45,8 @@ import { PoolListComponent } from './pool-list/pool-list.component';
   ],
   exports: [OverviewComponent]
 })
-export class MirroringModule {}
+export class MirroringModule {
+  constructor(private iconService: IconService) {
+    this.iconService.registerAll([DocumentAddIcon, DocumentImportIcon]);
+  }
+}

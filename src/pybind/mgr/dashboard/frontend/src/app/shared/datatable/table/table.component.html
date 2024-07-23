@@ -1,4 +1,5 @@
-<cds-table-container>  
+<cds-table-container [cdsLayer]="layer"
+                     [cdsTheme]="theme">  
   <cds-table-toolbar #toolbar
                      *ngIf="toolHeader"
                      (cancel)="onBatchActionsCancel()"
