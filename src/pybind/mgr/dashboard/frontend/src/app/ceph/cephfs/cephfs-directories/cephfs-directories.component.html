@@ -11,13 +11,18 @@
         </button>
       </div>
       <div class="card-body card-tree">
-        <tree-root *ngIf="nodes"
+        <!-- <tree-root *ngIf="nodes"
                    [nodes]="nodes"
                    [options]="treeOptions">
           <ng-template #loadingTemplate>
             <i [ngClass]="[icons.spinner, icons.spin]"></i>
           </ng-template>
-        </tree-root>
+        </tree-root> -->
+        <cds-tree-view [tree]="nodes" (select)="selectNode($event)">
+          <ng-template #loadingTemplate>
+            <i [ngClass]="[icons.spinner, icons.spin]"></i>
+          </ng-template>
+        </cds-tree-view>
       </div>
     </div>
   </div>
