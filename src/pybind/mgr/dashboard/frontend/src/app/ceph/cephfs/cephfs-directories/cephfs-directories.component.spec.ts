@@ -172,7 +172,7 @@ describe('CephfsDirectoriesComponent', () => {
       spyOn(global, 'setTimeout').and.callFake((fn) => fn());
       component.id = id;
       component.ngOnChanges();
-      mockData.nodes = component.nodes.concat(mockData.nodes);
+      mockData.nodes = component.cache.concat(mockData.nodes);
     },
     selectNode: (path: string) => {
       component.treeOptions.actionMapping.mouse.click(undefined, mockLib.useNode(path), undefined);
