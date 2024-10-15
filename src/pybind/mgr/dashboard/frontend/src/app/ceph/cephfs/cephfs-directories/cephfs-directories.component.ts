@@ -101,29 +101,24 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
 
   set nodes(value: Node[]) {
     console.log('value being set to nodes:', value);
-    let nodeTree = value;
-    // const root = value.find((x) => x.value === '/');
-    // if (!root) {
-    //   const rootChildren = value.filter((x) => x?.parent === '/');
-    //   nodeTree = [
-    //     {
-    //       id: '/',
-    //       label: '/',
-    //       value: '/',
-    //       name: '/',
-    //       parent: null,
-    //       children: rootChildren
-    //     }
-    //   ];
-    // }
-    this._nodes = nodeTree;
+    this._nodes = this._nodes.concat(value);
+    this.cache = this._nodes;
   }
 
   get nodes() {
     return this._nodes;
   }
 
-  private _nodes!: Node[];
+  set cache(value: Node[]) {
+    const tree = this.createTreeFromNodes(value);
+    this._cache = tree;
+  }
+  get cache(): Node[] {
+    return this._cache;
+  }
+  private _cache: Node[] = [];
+
+  private _nodes: Node[] = [];
 
   alreadyExists: boolean;
 
@@ -148,17 +143,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     if (node.id === '/') {
       return;
     }
-    const c = await this.updateDirectory(node.value);
-    this.nodes = this.createTreeFromNodes([
-      {
-        id: '/',
-        label: '/',
-        value: '/',
-        name: '/',
-        parent: null
-      },
-      ...c
-    ]);
+    this.nodes = await this.updateDirectory(node.value);
     this.setSettings(node);
   }
 
@@ -305,8 +290,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     const path = '/';
     setTimeout(async () => {
       // this.getNode(path).loadNodeChildren();
-      const c = await this.updateDirectory(path);
-      this.nodes = c;
+      this.nodes = await this.updateDirectory(path);
     }, 10);
   }
 
@@ -408,14 +392,14 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     let nextMaxValue = value;
     let nextMaxPath = dir.path;
     if (tree.id === currentPath) {
-      const parent = this.nodes.find((x) => x.value === tree?.parent);
-      console.log('tree:', tree);
-      console.log('parent:', parent);
-      if (parent?.value === '/') {
+      if (tree?.parent === '/') {
         // The value will never inherit any other value, so it has no maximum.
         nextMaxValue = 0;
       } else {
-        const nextMaxDir = this.getDirectory(this.getOrigin(tree.parent, quotaKey));
+        const parent = this.getParent(tree?.parent);
+        console.log('tree:', tree);
+        console.log('parent:', parent);
+        const nextMaxDir = this.getDirectory(this.getOrigin(parent, quotaKey));
         nextMaxValue = nextMaxDir.quotas[quotaKey];
         nextMaxPath = nextMaxDir.path;
       }
@@ -821,23 +805,45 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     <T extends { parent?: string }>(node: T, path: string): boolean => node?.parent === path
   );
 
+  getParent(dir: CephfsDir) {
+    const parentNode = this.dirs?.find?.((x) => x.path === dir?.parent);
+    return parentNode ? this.toNode(parentNode) : null;
+  }
+
   createTree(directories: CephfsDir[]): Node[] {
     return directories.reduce((tree, directory, _index, directoryArr) => {
       const children = directoryArr.filter(this.getChildrenNodes(directory.path)).map(this.toNode);
       const node = this.toNode(directory);
-      node.children = children;
+      node.children = _.uniq([...node?.children, ...children]);
       const exists = this.findNode(node.value, tree);
       if (!exists) tree.push(node);
       return tree;
     }, []);
   }
 
+  /*
+  v.reduce((tree, node, _index, arr)=>{
+    var children = arr.filter(x => x.parent === node?.value) || [];
+    console.log('children found?', children);
+    node.children = children;
+    var exists = findNode(node.value, tree);
+    console.log('already exists?', exists);
+    if(!exists && !node?.parent){
+        tree.push(node);
+    }
+    return tree;
+},[])
+*/
   createTreeFromNodes(nodes: Node[]): Node[] {
     return nodes.reduce((tree, node, _index, nodeArr) => {
-      const children = nodeArr.filter(this.getChildrenNodes(node.path));
+      const children = nodeArr.filter((x) => x.parent === node?.value) || [];
+      console.log('children found?', children);
       node.children = children;
-      const exists = this.findNode(node.value, tree);
-      if (!exists) tree.push(node);
+      var exists = this.findNode(node.value, tree);
+      console.log('already exists?', exists);
+      if (!exists && !node?.parent) {
+        tree.push(node);
+      }
       return tree;
     }, []);
   }

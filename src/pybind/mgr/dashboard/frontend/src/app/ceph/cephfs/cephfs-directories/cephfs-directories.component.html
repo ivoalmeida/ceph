@@ -18,7 +18,7 @@
             <i [ngClass]="[icons.spinner, icons.spin]"></i>
           </ng-template>
         </tree-root> -->
-        <cds-tree-view [tree]="nodes" (select)="selectNode($event)">
+        <cds-tree-view [tree]="cache" (select)="selectNode($event)">
           <ng-template #loadingTemplate>
             <i [ngClass]="[icons.spinner, icons.spin]"></i>
           </ng-template>
