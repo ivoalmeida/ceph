@@ -100,7 +100,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   };
 
   set cache(value: Node[]) {
-    this._cache = this._cache.concat(value);
+    this._cache = value;
     this.nodes = this._cache;
   }
 
@@ -112,9 +112,11 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     const tree = this.createTreeFromNodes(value);
     this._nodes = tree;
   }
+
   get nodes(): Node[] {
     return this._nodes;
   }
+
   private _nodes: Node[] = [];
 
   private _cache: Node[] = [];
@@ -142,7 +144,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     if (node.id === '/') {
       return;
     }
-    this.cache = await this.updateDirectory(node.value);
+    await this.updateDirectory(node.value);
     this.setSettings(node);
   }
 
@@ -280,7 +282,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
         label: '/',
         value: '/',
         name: '/',
-        isExpanded: true
+        expanded: true
       }
     ];
   }
@@ -289,7 +291,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     const path = '/';
     setTimeout(async () => {
       // this.getNode(path).loadNodeChildren();
-      this.cache = await this.updateDirectory(path);
+      await this.updateDirectory(path);
     }, 10);
   }
 
@@ -354,6 +356,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
       label: dir.name,
       id: dir.path,
       value: dir.path,
+      expanded: true,
       parent: dir?.parent,
       children: children,
       hasChildren: children.length > 0
@@ -396,8 +399,6 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
         nextMaxValue = 0;
       } else {
         const parent = this.getParent(tree?.parent);
-        console.log('tree:', tree);
-        console.log('parent:', parent);
         const nextMaxDir = this.getDirectory(this.getOrigin(parent, quotaKey));
         nextMaxValue = nextMaxDir.quotas[quotaKey];
         nextMaxPath = nextMaxDir.path;
@@ -537,7 +538,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
 
   private updateQuota(values: CephfsQuotas, onSuccess?: Function) {
     const path = this.selectedDir.path;
-    const key = this.quota.selection.first().quotaKey;
+    const key = this.quota.selection.first().quotaKey as TQuotaSettings;
     const action =
       this.selectedDir.quotas[key] === 0
         ? this.actionLabels.SET
@@ -699,6 +700,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     this.dirs.push(newDir);
     this.nodeIds[newDir.path] = newDir;
     this.updateDirectoriesParentNode(newDir);
+    this.cache = this.dirs.map(this.toNode);
   }
 
   private updateExistingDirectory(source: CephfsDir[], updatedDir: CephfsDir) {
@@ -796,50 +798,49 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
       label: directory.name,
       value: directory.path,
       children: [],
+      expanded: true,
       parent: directory?.parent
     };
   }
 
-  getChildrenNodes = _.curry(
-    <T extends { parent?: string }>(node: T, path: string): boolean => node?.parent === path
-  );
-
-  getParent(dir: CephfsDir) {
+  private getParent(dir: CephfsDir) {
     const parentNode = this.dirs?.find?.((x) => x.path === dir?.parent);
     return parentNode ? this.toNode(parentNode) : null;
   }
 
   createTree(directories: CephfsDir[]): Node[] {
     return directories.reduce((tree, directory, _index, directoryArr) => {
-      const children = directoryArr.filter(this.getChildrenNodes(directory.path)).map(this.toNode);
       const node = this.toNode(directory);
-      node.children = _.uniq([...node?.children, ...children]);
+      const children =
+        _.uniq(directoryArr)
+          .filter((x) => x.parent === node?.value)
+          .map(this.toNode) || [];
+      node.children = children;
       const exists = this.findNode(node.value, tree);
-      if (!exists) tree.push(node);
+      if (!exists && !node?.parent) {
+        tree.push(node);
+      }
       return tree;
     }, []);
   }
-
-  /*
-  v.reduce((tree, node, _index, arr)=>{
-    var children = arr.filter(x => x.parent === node?.value) || [];
-    console.log('children found?', children);
-    node.children = children;
-    var exists = findNode(node.value, tree);
-    console.log('already exists?', exists);
-    if(!exists && !node?.parent){
-        tree.push(node);
-    }
-    return tree;
-},[])
-*/
   createTreeFromNodes(nodes: Node[]): Node[] {
     return nodes.reduce((tree, node, _index, nodeArr) => {
-      const children = nodeArr.filter((x) => x.parent === node?.value) || [];
-      console.log('children found?', children);
-      node.children = children;
+      const children = _.uniq(nodeArr).filter((x) => x.parent === node?.value) || [];
+      // node.children = children;
+      console.log('node', node);
+      console.log('nodeArr', nodeArr);
+      console.log('children', children);
+      if (!node?.children?.length) {
+        node.children = children;
+      } else {
+        for (const child of children) {
+          const childExists = node?.children?.find((x) => x?.value === child?.value);
+          if (!childExists) {
+            node.children.push(child);
+          }
+        }
+      }
       var exists = this.findNode(node.value, tree);
-      console.log('already exists?', exists);
       if (!exists && !node?.parent) {
         tree.push(node);
       }

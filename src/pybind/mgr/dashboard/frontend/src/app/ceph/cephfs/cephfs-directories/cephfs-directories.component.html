@@ -19,9 +19,9 @@
           </ng-template>
         </tree-root> -->
         <cds-tree-view [tree]="nodes" (select)="selectNode($event)">
-          <ng-template #loadingTemplate>
+          <div *ngIf="loadingIndicator">
             <i [ngClass]="[icons.spinner, icons.spin]"></i>
-          </ng-template>
+          </div>
         </cds-tree-view>
       </div>
     </div>
