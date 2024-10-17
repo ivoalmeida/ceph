@@ -639,7 +639,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
       path = dir.parent ? dir.parent : dir.path;
     }
     const node = this.getNode(path);
-    node.loadNodeChildren();
+    this.treeComponent.select.emit(node);
   }
 
   private updateTreeStructure(dirs: CephfsDir[]) {
@@ -780,16 +780,11 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   }
 
   findNode(path: string, nodes: Node[]): Node | null {
-    for (const node of nodes) {
-      if (node.value === path) {
-        return node;
-      } else if (node?.children?.length) {
-        return this.findNode(path, node.children);
-      } else {
-        continue;
-      }
-    }
-    return null;
+    let result: Node | null = null;
+    nodes.some(
+      (node: Node) => (result = node.id === path ? node : this.findNode(path, node.children || []))
+    );
+    return result;
   }
 
   toNode(directory: CephfsDir): Node {
@@ -826,10 +821,6 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   createTreeFromNodes(nodes: Node[]): Node[] {
     return nodes.reduce((tree, node, _index, nodeArr) => {
       const children = _.uniq(nodeArr).filter((x) => x.parent === node?.value) || [];
-      // node.children = children;
-      console.log('node', node);
-      console.log('nodeArr', nodeArr);
-      console.log('children', children);
       if (!node?.children?.length) {
         node.children = children;
       } else {
