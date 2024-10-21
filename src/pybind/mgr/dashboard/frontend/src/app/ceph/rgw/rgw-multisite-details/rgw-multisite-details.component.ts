@@ -1,11 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import {
-  TreeComponent,
-  ITreeOptions,
-  TreeModel,
-  TreeNode,
-  TREE_ACTIONS
-} from '@circlon/angular-tree-component';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Node } from 'carbon-components-angular/treeview/tree-node.types';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import _ from 'lodash';
 
@@ -50,8 +44,7 @@ const BASE_URL = 'rgw/multisite/configuration';
 })
 export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
   private sub = new Subscription();
-
-  @ViewChild('tree') tree: TreeComponent;
+  @ViewChild('treeNodeTemplate') labelTpl: TemplateRef<any>;
   @ViewChild(RgwMultisiteSyncPolicyComponent) syncPolicyComp: RgwMultisiteSyncPolicyComponent;
 
   messages = {
@@ -73,17 +66,29 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
   exportAction: CdTableAction[];
   multisiteReplicationActions: CdTableAction[];
   loadingIndicator = true;
-  nodes: object[] = [];
-  treeOptions: ITreeOptions = {
-    useVirtualScroll: true,
-    nodeHeight: 22,
-    levelPadding: 20,
-    actionMapping: {
-      mouse: {
-        click: this.onNodeSelected.bind(this)
-      }
-    }
-  };
+
+  toNode(values: any[]): Node[] {
+    return values.map((value) => ({
+      label: this.labelTpl,
+      labelContext: { data: { ...value } },
+      id: value.id,
+      value: { ...value },
+      expanded: true,
+      name: value.name,
+      ...(value?.children?.length ? { children: this.toNode(value.children) } : {})
+    }));
+  }
+
+  set nodes(values: any[]) {
+    this._nodes = this.toNode(values);
+  }
+
+  get nodes() {
+    return this._nodes;
+  }
+
+  private _nodes: Node[] = [];
+
   modalRef: NgbModalRef;
 
   realms: RgwRealm[] = [];
@@ -107,6 +112,7 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
   restartGatewayMessage = false;
   rgwModuleData: string | any[] = [];
   activeId: string;
+  activeNodeId?: string;
 
   constructor(
     private modalService: ModalService,
@@ -126,8 +132,8 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
     this.permission = this.authStorageService.getPermissions().rgw;
   }
 
-  openModal(entity: any, edit = false) {
-    const entityName = edit ? entity.data.type : entity;
+  openModal(entity: any | string, edit = false) {
+    const entityName = edit ? entity?.value?.type : entity;
     const action = edit ? 'edit' : 'create';
     const initialState = {
       resource: entityName,
@@ -307,8 +313,8 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
     this.sub.unsubscribe();
   }
 
-  private abstractTreeData(multisiteInfo: [object, object, object]): any[] {
-    let allNodes: object[] = [];
+  private abstractTreeData(multisiteInfo: [object, object, object]): Node[] {
+    let allNodes: Node[] = [];
     let rootNodes = {};
     let firstChildNodes = {};
     let allFirstChildNodes = [];
@@ -358,7 +364,7 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
           }
         }
         rootNodes['children'] = allFirstChildNodes;
-        allNodes.push(rootNodes);
+        allNodes.push({ ...rootNodes, label: rootNodes?.['name'] || rootNodes?.['id'] });
         firstChildNodes = {};
         secondChildNodes = {};
         rootNodes = {};
@@ -384,7 +390,7 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
             firstChildNodes = {};
           }
           rootNodes['children'] = allFirstChildNodes;
-          allNodes.push(rootNodes);
+          allNodes.push({ ...rootNodes, label: rootNodes?.['name'] || rootNodes?.['id'] });
           firstChildNodes = {};
           rootNodes = {};
           allFirstChildNodes = [];
@@ -397,7 +403,7 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
         if (this.zoneIds.length > 0 && !this.zoneIds.includes(zone.id)) {
           const zoneResult = this.rgwZoneService.getZoneTree(zone, this.defaultZoneId, this.zones);
           rootNodes = zoneResult['nodes'];
-          allNodes.push(rootNodes);
+          allNodes.push({ ...rootNodes, label: rootNodes?.['name'] || rootNodes?.['id'] });
           rootNodes = {};
         }
       }
@@ -405,7 +411,8 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
     if (this.realms.length < 1 && this.zonegroups.length < 1 && this.zones.length < 1) {
       return [
         {
-          name: 'No nodes!'
+          name: 'No nodes!',
+          label: 'No nodes!'
         }
       ];
     }
@@ -448,15 +455,10 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
     };
   }
 
-  onNodeSelected(tree: TreeModel, node: TreeNode) {
-    TREE_ACTIONS.ACTIVATE(tree, node, true);
-    this.metadataTitle = node.data.name;
-    this.metadata = node.data.info;
-    node.data.show = true;
-  }
-
-  onUpdateData() {
-    this.tree.treeModel.expandAll();
+  onNodeSelected(node: Node) {
+    this.metadataTitle = node.name;
+    this.metadata = node.info;
+    node.expanded = true;
   }
 
   getDisable() {
@@ -495,21 +497,21 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
     return this.showMigrateAndReplicationActions;
   }
 
-  isDeleteDisabled(node: TreeNode): boolean {
+  isDeleteDisabled(node: Node): boolean {
     let disable: boolean = false;
     let masterZonegroupCount: number = 0;
-    if (node.data.type === 'realm' && node.data.is_default && this.realms.length < 2) {
+    if (node?.value?.type === 'realm' && node?.value?.is_default && this.realms.length < 2) {
       disable = true;
     }
 
-    if (node.data.type === 'zonegroup') {
+    if (node?.value?.type === 'zonegroup') {
       if (this.zonegroups.length < 2) {
         this.deleteTitle = 'You can not delete the only zonegroup available';
         disable = true;
-      } else if (node.data.is_default) {
+      } else if (node?.value?.is_default) {
         this.deleteTitle = 'You can not delete the default zonegroup';
         disable = true;
-      } else if (node.data.is_master) {
+      } else if (node?.value?.is_master) {
         for (let zonegroup of this.zonegroups) {
           if (zonegroup.is_master === true) {
             masterZonegroupCount++;
@@ -523,14 +525,14 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
       }
     }
 
-    if (node.data.type === 'zone') {
+    if (node?.value?.type === 'zone') {
       if (this.zones.length < 2) {
         this.deleteTitle = 'You can not delete the only zone available';
         disable = true;
-      } else if (node.data.is_default) {
+      } else if (node?.value?.is_default) {
         this.deleteTitle = 'You can not delete the default zone';
         disable = true;
-      } else if (node.data.is_master && node.data.zone_zonegroup.zones.length < 2) {
+      } else if (node?.value?.is_master && node?.value?.zone_zonegroup.zones.length < 2) {
         this.deleteTitle =
           'You can not delete the master zone as there are no more zones in this zonegroup';
         disable = true;
@@ -544,18 +546,18 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
     return disable;
   }
 
-  delete(node: TreeNode) {
-    if (node.data.type === 'realm') {
+  delete(node: Node) {
+    if (node?.value?.type === 'realm') {
       this.modalRef = this.modalService.show(CriticalConfirmationModalComponent, {
-        itemDescription: $localize`${node.data.type} ${node.data.name}`,
-        itemNames: [`${node.data.name}`],
+        itemDescription: $localize`${node?.value?.type} ${node?.value?.name}`,
+        itemNames: [`${node?.value?.name}`],
         submitAction: () => {
-          this.rgwRealmService.delete(node.data.name).subscribe(
+          this.rgwRealmService.delete(node?.value?.name).subscribe(
             () => {
               this.modalRef.close();
               this.notificationService.show(
                 NotificationType.success,
-                $localize`Realm: '${node.data.name}' deleted successfully`
+                $localize`Realm: '${node?.value?.name}' deleted successfully`
               );
             },
             () => {
@@ -564,11 +566,11 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
           );
         }
       });
-    } else if (node.data.type === 'zonegroup') {
+    } else if (node?.value?.type === 'zonegroup') {
       this.modalRef = this.modalService.show(RgwMultisiteZonegroupDeletionFormComponent, {
         zonegroup: node.data
       });
-    } else if (node.data.type === 'zone') {
+    } else if (node?.value?.type === 'zone') {
       this.modalRef = this.modalService.show(RgwMultisiteZoneDeletionFormComponent, {
         zone: node.data
       });
@@ -615,5 +617,13 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
         fnWaitUntilReconnected();
       }
     );
+  }
+
+  onNodeMouseHover(_event: Event, node: { data: Record<string, any> }) {
+    this.activeNodeId = node?.data?.id;
+  }
+
+  onNodeMouseLeave(_event: Event) {
+    this.activeNodeId = null;
   }
 }
