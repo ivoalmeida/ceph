@@ -70,18 +70,6 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   icons = Icons;
   loadingIndicator = false;
   loading: Record<string, boolean> = {};
-  // treeOptions: ITreeOptions = {
-  //   useVirtualScroll: true,
-  //   getChildren: (node: TreeNode): Promise<any[]> => {
-  //     return this.updateDirectory(node.id);
-  //   },
-  //   actionMapping: {
-  //     mouse: {
-  //       click: this.selectAndShowNode.bind(this),
-  //       expanderClick: this.selectAndShowNode.bind(this)
-  //     }
-  //   }
-  // };
 
   permission: Permission;
   selectedDir: CephfsDir;
@@ -109,7 +97,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   }
 
   set nodes(value: Node[]) {
-    const tree = this.createTreeFromNodes(value);
+    const tree = this.createTree(value);
     this._nodes = tree;
   }
 
@@ -133,13 +121,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     private dimlessBinaryPipe: DimlessBinaryPipe
   ) {}
 
-  // private selectAndShowNode(tree: TreeModel, node: TreeNode, $event: any) {
-  //   TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
-  //   this.selectNode(node);
-  // }
-
   async selectNode(node: Node) {
-    // TREE_ACTIONS.TOGGLE_ACTIVE(undefined, node, undefined);
     this.selectedDir = this.getDirectory(node);
     if (node.id === '/') {
       return;
@@ -290,7 +272,6 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   private firstCall() {
     const path = '/';
     setTimeout(async () => {
-      // this.getNode(path).loadNodeChildren();
       await this.updateDirectory(path);
     }, 10);
   }
@@ -307,13 +288,11 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
       this.cephfsService.lsDir(this.id, path).subscribe((dirs) => {
         this.updateTreeStructure(dirs);
         this.updateQuotaTable();
-        // this.updateTree();
         resolve(this.getChildren(path));
         this.setLoadingIndicator(path, false);
 
-        // if (path === '/' && this.treeComponent.treeModel.activeNodes?.length === 0) {
-        if (path === '/' && this.cache.some((x) => x.active)) {
-          // this.selectNode(this.getNode('/'));
+        const hasActiveNodes = !!this.findNode(true, this.cache, 'active');
+        if (path === '/' && hasActiveNodes) {
           this.treeComponent.select.emit(this.getNode('/'));
         }
       });
@@ -343,10 +322,8 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     }
 
     if (dir.path === '/volumes') {
-      // const innerNode = this.treeComponent.treeModel.getNodeById('/volumes');
       const innerNode = this.findNode('/volumes', this.cache);
       if (innerNode) {
-        // innerNode.expand();
         this.treeComponent.select.emit(innerNode);
       }
     }
@@ -458,12 +435,10 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   }
 
   selectOrigin(path: string) {
-    // this.selectNode(this.getNode(path));
     this.treeComponent.select.emit(this.getNode(path));
   }
 
   private getNode(path: string): Node {
-    // return this.treeComponent.treeModel.getNodeById(path);
     return this.findNode(path, this.cache);
   }
 
@@ -693,7 +668,6 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     const children = this.getChildren(parent);
     node.children = children;
     node.hasChildren = children.length > 0;
-    // this.treeComponent.treeModel.update();
   }
 
   private addNewDirectory(newDir: CephfsDir) {
@@ -713,17 +687,6 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     if (node && node.id !== '/') {
       this.setSettings(node);
     }
-  }
-
-  private updateTree(force: boolean = false) {
-    if (this.loadingIndicator && !force) {
-      // In order to make the page scrollable during load, the render cycle for each node
-      // is omitted and only be called if all updates were loaded.
-      return;
-    }
-    // this.treeComponent.treeModel.update();
-    // this.nodes = [...this.nodes];
-    // this.treeComponent.sizeChanged();
   }
 
   deleteSnapshotModal() {
@@ -755,7 +718,6 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     this.loadingIndicator = true;
     this.requestedPaths.map((path) => this.forceDirRefresh(path));
     const interval = setInterval(() => {
-      this.updateTree(true);
       if (!this.loadingIndicator) {
         clearInterval(interval);
       }
@@ -773,20 +735,32 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
         return this.unsetLoadingIndicator();
       }
       this.loadingIndicator = false;
-      this.updateTree();
       // The problem is that we can't subscribe to an useful updated tree event and the time
       // between fetching all calls and rebuilding the tree can take some time
     }, 3000);
   }
 
-  findNode(path: string, nodes: Node[]): Node | null {
+  /**
+   * Find a node in a given nodes array
+   * @param value value you want to match against
+   * @param nodes the Node[] array to search into
+   * @param property property to match value against. default is 'id'
+   * @returns Node object if is found or null otherwise
+   */
+  findNode<T>(value: T, nodes: Node[], property = 'id'): Node | null {
     let result: Node | null = null;
     nodes.some(
-      (node: Node) => (result = node.id === path ? node : this.findNode(path, node.children || []))
+      (node: Node) =>
+        (result = node?.[property] === value ? node : this.findNode(value, node.children || []))
     );
     return result;
   }
 
+  /**
+   * Converts a CephfsDir object to Node type
+   * @param directory CephfsDir object
+   * @returns Converted Node object
+   */
   toNode(directory: CephfsDir): Node {
     return {
       id: directory.path,
@@ -798,40 +772,31 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
     };
   }
 
-  private getParent(dir: CephfsDir) {
-    const parentNode = this.dirs?.find?.((x) => x.path === dir?.parent);
+  /**
+   * Get parent node for a given CephfsDir directory
+   * @param directory CephfsDir object
+   * @returns Parent node
+   */
+  private getParent(directory: CephfsDir): Node {
+    const parentNode = this.dirs?.find?.((dir: CephfsDir) => dir.path === directory?.parent);
     return parentNode ? this.toNode(parentNode) : null;
   }
 
-  createTree(directories: CephfsDir[]): Node[] {
-    return directories.reduce((tree, directory, _index, directoryArr) => {
-      const node = this.toNode(directory);
-      const children =
-        _.uniq(directoryArr)
-          .filter((x) => x.parent === node?.value)
-          .map(this.toNode) || [];
-      node.children = children;
+  /**
+   * Creates a tree structure to be used in Carbon Tree component
+   * @param nodes Node[] array to create tree structure from
+   * @returns Tree structure
+   */
+  createTree(nodes: Node[]): Node[] {
+    return nodes.reduce((tree: Node[], node: Node, _index: number, nodeArr: Node[]) => {
+      const children = _.uniq(nodeArr)
+        .filter((x: Node) => x.parent === node?.value)
+        ?.filter((child: Node) => {
+          const childExists = node?.children?.find((x: Node) => x?.value === child?.value);
+          return !childExists;
+        });
+      node.children = children || node.children;
       const exists = this.findNode(node.value, tree);
-      if (!exists && !node?.parent) {
-        tree.push(node);
-      }
-      return tree;
-    }, []);
-  }
-  createTreeFromNodes(nodes: Node[]): Node[] {
-    return nodes.reduce((tree, node, _index, nodeArr) => {
-      const children = _.uniq(nodeArr).filter((x) => x.parent === node?.value) || [];
-      if (!node?.children?.length) {
-        node.children = children;
-      } else {
-        for (const child of children) {
-          const childExists = node?.children?.find((x) => x?.value === child?.value);
-          if (!childExists) {
-            node.children.push(child);
-          }
-        }
-      }
-      var exists = this.findNode(node.value, tree);
       if (!exists && !node?.parent) {
         tree.push(node);
       }
