@@ -4,6 +4,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { TreeviewModule } from 'carbon-components-angular';
 import { NgbActiveModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { Observable, of } from 'rxjs';
@@ -168,13 +169,15 @@ describe('CephfsDirectoriesComponent', () => {
     }),
     changeId: (id: number) => {
       // For some reason this spy has to be renewed after usage
-      spyOn(global, 'setTimeout').and.callFake((fn) => fn());
+
       component.id = id;
       component.ngOnChanges();
       mockData.nodes = component.cache.concat(mockData.nodes);
     },
     selectNode: (path: string) => {
-      component.treeOptions.actionMapping.mouse.click(undefined, mockLib.useNode(path), undefined);
+      // component.treeOptions.actionMapping.mouse.click(undefined, mockLib.useNode(path), undefined);
+      const node = component.findNode(path, component.cache);
+      component.treeComponent.select.emit(node);
     },
     // Creates TreeNode with parents until root
     useNode: (path: string): { id: string; parent: any; data: any; loadNodeChildren: Function } => {
@@ -357,6 +360,7 @@ describe('CephfsDirectoriesComponent', () => {
         HttpClientTestingModule,
         SharedModule,
         RouterTestingModule,
+        TreeviewModule,
         ToastrModule.forRoot(),
         NgbModalModule
       ],
@@ -387,6 +391,7 @@ describe('CephfsDirectoriesComponent', () => {
     spyOn(cephfsService, 'mkSnapshot').and.callFake(mockLib.mkSnapshot);
     spyOn(cephfsService, 'rmSnapshot').and.callFake(mockLib.rmSnapshot);
     spyOn(cephfsService, 'quota').and.callFake(mockLib.updateQuota);
+    spyOn(global, 'setTimeout').and.callFake((fn) => fn());
 
     modalShowSpy = spyOn(TestBed.inject(ModalService), 'show').and.callFake(mockLib.modalShow);
     notificationShowSpy = spyOn(TestBed.inject(NotificationService), 'show').and.stub();
@@ -530,7 +535,7 @@ describe('CephfsDirectoriesComponent', () => {
       // Tree will only show '*' if nor 'loadChildren' or 'children' are defined
       expect(
         mockData.nodes.map((node: any) => ({
-          [node.id]: node.hasChildren || node.isExpanded || Boolean(node.children)
+          [node.id]: !!node?.children || node?.expanded || Boolean(node?.children)
         }))
       ).toEqual([{ '/': true }, { '/a': true }, { '/b': false }, { '/c': true }]);
     });
@@ -589,7 +594,6 @@ describe('CephfsDirectoriesComponent', () => {
     });
 
     it('should update the tree after each selection', () => {
-      const spy = spyOn(component.treeComponent, 'sizeChanged').and.callThrough();
       expect(spy).toHaveBeenCalledTimes(0);
       mockLib.selectNode('/a');
       expect(spy).toHaveBeenCalledTimes(1);
@@ -1127,7 +1131,6 @@ describe('CephfsDirectoriesComponent', () => {
       }));
 
       it('should only update the tree once and not on every call', fakeAsync(() => {
-        const spy = spyOn(component.treeComponent, 'sizeChanged').and.callThrough();
         component.refreshAllDirectories();
         expect(spy).toHaveBeenCalledTimes(0);
         tick(3000); // To resolve all promises

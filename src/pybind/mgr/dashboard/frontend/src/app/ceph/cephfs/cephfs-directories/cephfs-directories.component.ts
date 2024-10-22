@@ -292,7 +292,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
         this.setLoadingIndicator(path, false);
 
         const hasActiveNodes = !!this.findNode(true, this.cache, 'active');
-        if (path === '/' && hasActiveNodes) {
+        if (path === '/' && !hasActiveNodes) {
           this.treeComponent.select.emit(this.getNode('/'));
         }
       });
@@ -741,7 +741,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Find a node in a given nodes array
+   * Finds a node in a given nodes array
    * @param value value you want to match against
    * @param nodes the Node[] array to search into
    * @param property property to match value against. default is 'id'
