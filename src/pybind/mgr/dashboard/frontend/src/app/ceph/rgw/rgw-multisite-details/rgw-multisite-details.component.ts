@@ -456,8 +456,9 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
   }
 
   onNodeSelected(node: Node) {
-    this.metadataTitle = node.name;
-    this.metadata = node.info;
+    this.metadataTitle = node?.value?.name;
+    this.metadata = node?.value?.info;
+    this.activeNodeId = node?.value?.id;
     node.expanded = true;
   }
 
@@ -617,13 +618,5 @@ export class RgwMultisiteDetailsComponent implements OnDestroy, OnInit {
         fnWaitUntilReconnected();
       }
     );
-  }
-
-  onNodeMouseHover(_event: Event, node: { data: Record<string, any> }) {
-    this.activeNodeId = node?.data?.id;
-  }
-
-  onNodeMouseLeave(_event: Event) {
-    this.activeNodeId = null;
   }
 }

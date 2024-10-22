@@ -11,3 +11,8 @@
 .btn:disabled {
   pointer-events: none;
 }
+
+::ng-deep .cds--tree-node__label__details {
+  width: 100%;
+  padding-block: 0.5rem;
+}
