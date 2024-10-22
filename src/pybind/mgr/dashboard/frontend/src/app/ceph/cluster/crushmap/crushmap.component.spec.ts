@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
-import { TreeModule } from '@circlon/angular-tree-component';
 import { of } from 'rxjs';
 
 import { CrushRuleService } from '~/app/shared/api/crush-rule.service';
@@ -17,7 +16,7 @@ describe('CrushmapComponent', () => {
   let crushRuleService: CrushRuleService;
   let crushRuleServiceInfoSpy: jasmine.Spy;
   configureTestBed({
-    imports: [HttpClientTestingModule, TreeModule, SharedModule],
+    imports: [HttpClientTestingModule, SharedModule],
     declarations: [CrushmapComponent]
   });
 

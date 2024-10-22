@@ -4,7 +4,6 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { TreeComponent, TreeModule, TREE_ACTIONS } from '@circlon/angular-tree-component';
 import { NgbActiveModal, NgbModalModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { Observable, of } from 'rxjs';
@@ -190,11 +189,6 @@ describe('CephfsDirectoriesComponent', () => {
         loadNodeChildren: () => mockLib.updateNodes(path)
       };
     },
-    treeActions: {
-      toggleActive: (_a: any, node: any, _b: any) => {
-        return mockLib.updateNodes(node.id);
-      }
-    },
     mkDir: (path: string, name: string, maxFiles: number, maxBytes: number) => {
       const dir = mockLib.dir(path, name, 3);
       dir.quotas.max_bytes = maxBytes * 1024;
@@ -363,7 +357,6 @@ describe('CephfsDirectoriesComponent', () => {
         HttpClientTestingModule,
         SharedModule,
         RouterTestingModule,
-        TreeModule,
         ToastrModule.forRoot(),
         NgbModalModule
       ],
@@ -401,13 +394,6 @@ describe('CephfsDirectoriesComponent', () => {
     fixture = TestBed.createComponent(CephfsDirectoriesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    spyOn(TREE_ACTIONS, 'TOGGLE_ACTIVE').and.callFake(mockLib.treeActions.toggleActive);
-
-    component.treeComponent = {
-      sizeChanged: () => null,
-      treeModel: { getNodeById: mockLib.getNodeById, update: () => null }
-    } as TreeComponent;
   });
 
   it('should create', () => {
