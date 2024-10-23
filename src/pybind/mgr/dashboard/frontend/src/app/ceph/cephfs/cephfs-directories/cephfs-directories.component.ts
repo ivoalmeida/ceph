@@ -333,7 +333,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
       label: dir.name,
       id: dir.path,
       value: dir.path,
-      expanded: true,
+      expanded: dir.path === '/volumes',
       parent: dir?.parent,
       children: children,
       hasChildren: children.length > 0
@@ -742,9 +742,9 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
 
   /**
    * Finds a node in a given nodes array
-   * @param value value you want to match against
-   * @param nodes the Node[] array to search into
-   * @param property property to match value against. default is 'id'
+   * @param value Value you want to match against
+   * @param nodes The Node[] array to search into
+   * @param property Property to match value against. default is 'id'
    * @returns Node object if is found or null otherwise
    */
   findNode<T>(value: T, nodes: Node[], property = 'id'): Node | null {
@@ -767,7 +767,7 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
       label: directory.name,
       value: directory.path,
       children: [],
-      expanded: true,
+      expanded: false,
       parent: directory?.parent
     };
   }
@@ -785,19 +785,27 @@ export class CephfsDirectoriesComponent implements OnInit, OnChanges {
   /**
    * Creates a tree structure to be used in Carbon Tree component
    * @param nodes Node[] array to create tree structure from
+   * @param expandNodes Which directory tree names should be expanded. Default is '/volumes'
    * @returns Tree structure
    */
-  createTree(nodes: Node[]): Node[] {
+  createTree(nodes: Node[], expandNodes = ['/volumes']): Node[] {
     return nodes.reduce((tree: Node[], node: Node, _index: number, nodeArr: Node[]) => {
-      const children = _.uniq(nodeArr)
-        .filter((x: Node) => x.parent === node?.value)
-        ?.filter((child: Node) => {
-          const childExists = node?.children?.find((x: Node) => x?.value === child?.value);
-          return !childExists;
-        });
-      node.children = children || node.children;
+      const children = _.sortBy(
+        _.uniq(nodeArr)
+          .filter((x: Node) => x.parent === node?.value)
+          ?.filter((child: Node) => {
+            const childExists = node?.children?.find((x: Node) => x?.value === child?.value);
+            return !childExists;
+          }),
+        (node: Node) => node.label
+      );
+
+      node.children = (children || node.children)?.map((node: Node) =>
+        expandNodes.includes(node.id) ? { ...node, expanded: true } : node
+      );
       const exists = this.findNode(node.value, tree);
       if (!exists && !node?.parent) {
+        node.expanded = true; // root node always expanded
         tree.push(node);
       }
       return tree;
