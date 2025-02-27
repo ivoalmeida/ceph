@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@use './src/styles/defaults' as *;
+@use './styles/defaults/index' as *;
 @import './src/styles/carbon-defaults.scss';
 
 // Fork-Awesome
