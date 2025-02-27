@@ -111,9 +111,9 @@ function restoreLocales() {
 }
 
 function envBuild() {
-  origFile = 'src/environments/environment.tpl.ts';
-  devFile = 'src/environments/environment.ts';
-  prodFile = 'src/environments/environment.prod.ts';
+  origFile = 'apps/ceph-dashboard/src/environments/environment.tpl.ts';
+  devFile = 'apps/ceph-dashboard/src/environments/environment.ts';
+  prodFile = 'apps/ceph-dashboard/src/environments/environment.prod.ts';
 
   const replacements = [
     { from: '{DEFAULT_LANG}', to: process.env.npm_package_config_locale },

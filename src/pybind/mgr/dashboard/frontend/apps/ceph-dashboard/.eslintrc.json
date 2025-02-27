@@ -1,10 +1,10 @@
 {
-  "root": true,
-  "ignorePatterns": ["**/*"],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts"],
       "parserOptions": {
+        "project": ["apps/ceph-dashboard/tsconfig.*?.json"],
         "createDefaultProgram": true
       },
       "extends": [
@@ -76,25 +76,7 @@
       "rules": {
         "@angular-eslint/template/eqeqeq": "off"
       }
-    },
-    {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {
-        "@nx/enforce-module-boundaries": [
-          "error",
-          {
-            "enforceBuildableLibDependency": true,
-            "allow": [],
-            "depConstraints": [
-              {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
-              }
-            ]
-          }
-        ]
-      }
     }
   ],
-  "plugins": ["@nx"]
+  "extends": "../../.eslintrc.json"
 }
