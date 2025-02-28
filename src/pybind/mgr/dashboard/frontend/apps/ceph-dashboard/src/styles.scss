@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @use './styles/defaults/index' as *;
-@import './src/styles/carbon-defaults.scss';
+@import './styles/carbon-defaults.scss';
 
 // Fork-Awesome
 $fa-font-path: '~fork-awesome/fonts';
@@ -25,16 +25,16 @@ $grid-breakpoints: (
 @import 'fork-awesome/scss/fork-awesome';
 @import 'app/ceph/dashboard/info-card/info-card-popover.scss';
 @import 'app/ceph/rgw/rgw-overview-dashboard/rgw-overview-card-popover.scss';
-@import './src/styles/bootstrap-extends';
+@import './styles/bootstrap-extends';
 
-@import './src/styles/ceph-custom/basics';
-@import './src/styles/ceph-custom/buttons';
-@import './src/styles/ceph-custom/dropdown';
-@import './src/styles/ceph-custom/forms';
-@import './src/styles/ceph-custom/grid';
-@import './src/styles/ceph-custom/icons';
-@import './src/styles/ceph-custom/navs';
-@import './src/styles/ceph-custom/toast';
+@import './styles/ceph-custom/basics';
+@import './styles/ceph-custom/buttons';
+@import './styles/ceph-custom/dropdown';
+@import './styles/ceph-custom/forms';
+@import './styles/ceph-custom/grid';
+@import './styles/ceph-custom/icons';
+@import './styles/ceph-custom/navs';
+@import './styles/ceph-custom/toast';
 
 /* If javascript is disabled. */
 .noscript {

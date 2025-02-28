@@ -1,5 +1,5 @@
-@use './src/styles/vendor/variables' as vv;
-@use './src/styles/defaults/mixins';
+@use './styles/vendor/variables' as vv;
+@use './styles/defaults/mixins';
 
 @mixin row-details-icon {
   color: vv.$gray-900;

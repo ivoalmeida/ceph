@@ -1,4 +1,4 @@
-@use './src/styles/vendor/variables' as vv;
+@use './styles/vendor/variables' as vv;
 
 .select-menu-item {
   border-bottom: 1px solid vv.$datatable-divider-color;

@@ -1,4 +1,4 @@
-@use './src/styles/defaults/mixins';
+@use './styles/defaults/mixins';
 
 .modal-header {
   @include mixins.hf;
