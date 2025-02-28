@@ -91,12 +91,12 @@
           }
         ],
         "styles": [
-          "apps/ceph-dashboard/node_modules/swagger-ui/dist/swagger-ui.css",
-          "apps/ceph-dashboard/node_modules/ngx-toastr/toastr.css",
+          "node_modules/swagger-ui/dist/swagger-ui.css",
+          "node_modules/ngx-toastr/toastr.css",
           "apps/ceph-dashboard/src/styles.scss"
         ],
         "stylePreprocessorOptions": {
-          "includePaths": ["src"]
+          "includePaths": ["apps/ceph-dashboard/src"]
         },
         "vendorChunk": true,
         "extractLicenses": false,
