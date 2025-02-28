@@ -82,7 +82,8 @@
     "timers-browserify": "2.0.12",
     "tslib": "2.3.1",
     "xml2js": "0.6.2",
-    "zone.js": "0.14.10"
+    "zone.js": "0.14.10",
+    "@nx/angular": "20.4.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "18.2.11",
@@ -99,9 +100,11 @@
     "@cypress/browserify-preprocessor": "3.0.2",
     "@jest/globals": "29.7.0",
     "@juggle/resize-observer": "3.4.0",
-    "@nx/angular": "20.4.6",
+    "@module-federation/enhanced": "^0.8.8",
     "@nx/eslint": "20.4.6",
     "@nx/js": "20.4.6",
+    "@nx/module-federation": "20.4.6",
+    "@nx/webpack": "20.4.6",
     "@nx/workspace": "20.4.6",
     "@schematics/angular": "18.2.11",
     "@swc-node/register": "~1.9.1",

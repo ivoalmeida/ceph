@@ -59,9 +59,10 @@
   },
   "sourceRoot": "apps/ceph-dashboard/src",
   "projectType": "application",
+  "cli": {},
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "options": {
         "allowedCommonJsDependencies": [
           "brace-expansion",
@@ -103,7 +104,10 @@
         "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "customWebpackConfig": {
+          "path": "apps/ceph-dashboard/webpack.config.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -125,7 +129,10 @@
               "replace": "apps/ceph-dashboard/src/environments/environment.ts",
               "with": "apps/ceph-dashboard/src/environments/environment.prod.ts"
             }
-          ]
+          ],
+          "customWebpackConfig": {
+            "path": "apps/ceph-dashboard/webpack.prod.config.ts"
+          }
         },
         "cs": {
           "localize": ["cs"]
@@ -170,10 +177,11 @@
       "defaultConfiguration": ""
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:module-federation-dev-server",
       "options": {
         "proxyConfig": "proxy.conf.json",
-        "buildTarget": "ceph-dashboard:build"
+        "buildTarget": "ceph-dashboard:build",
+        "publicHost": "http://localhost:4200"
       },
       "configurations": {
         "production": {
@@ -232,6 +240,5 @@
         "lintFilePatterns": ["apps/ceph-dashboard/**/*.ts", "apps/ceph-dashboard/**/*.html"]
       }
     }
-  },
-  "cli": {}
+  }
 }
