@@ -20,8 +20,8 @@
 
 const fs = require('fs');
 
-const filename = './angular.json';
-const backup = './angular.backup.json';
+const filename = './apps/ceph-dashboard/project.json';
+const backup = './apps/ceph-dashboard/project.backup.json';
 
 if (process.argv.includes('--env')) {
   envBuild();
@@ -60,7 +60,7 @@ function prepareLocales() {
 
   let angular = require(filename);
 
-  let allLocales = angular['projects']['ceph-dashboard']['i18n']['locales'];
+  let allLocales = angular['i18n']['locales'];
   let locales = {};
 
   langs.forEach((lang) => {
@@ -83,7 +83,7 @@ function prepareLocales() {
     }
   });
 
-  angular['projects']['ceph-dashboard']['i18n']['locales'] = locales;
+  angular['i18n']['locales'] = locales;
   const newAngular = JSON.stringify(angular, null, 2);
 
   fs.writeFile(filename, newAngular, (err) => {
