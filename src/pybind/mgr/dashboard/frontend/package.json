@@ -58,6 +58,7 @@
     "@ng-bootstrap/ng-bootstrap": "17.0.1",
     "@ngx-formly/bootstrap": "6.1.1",
     "@ngx-formly/core": "6.1.1",
+    "@nx/angular": "20.4.6",
     "@popperjs/core": "2.10.2",
     "@types/file-saver": "2.0.1",
     "async-mutex": "0.2.4",
@@ -82,8 +83,7 @@
     "timers-browserify": "2.0.12",
     "tslib": "2.3.1",
     "xml2js": "0.6.2",
-    "zone.js": "0.14.10",
-    "@nx/angular": "20.4.6"
+    "zone.js": "0.14.10"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "18.2.11",
@@ -150,7 +150,7 @@
     "stylelint-declaration-use-variable": "1.7.3",
     "table": "6.8.0",
     "transifex-i18ntool": "1.1.0",
-    "ts-node": "9.0.0",
+    "ts-node": "10.9.2",
     "typescript": "5.4.5"
   },
   "cypress-cucumber-preprocessor": {
