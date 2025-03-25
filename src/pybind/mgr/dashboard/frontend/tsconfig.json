@@ -23,6 +23,7 @@
     "baseUrl": "./",
     "resolveJsonModule": true,
     "paths": {
+      "about/Routes": ["apps/about/src/app/remote-entry/entry.routes.ts"],
       "stream": ["node_modules/stream-browserify"],
       "timers": ["node_modules/timers-browserify"],
       "~/*": ["apps/ceph-dashboard/src/*"]

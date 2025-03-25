@@ -93,13 +93,6 @@ export class StartCaseBreadcrumbsResolver extends BreadcrumbsResolver {
 const routes: Routes = [
   // Dashboard
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  {
-    path: 'about',
-    loadChildren: () =>
-      loadRemoteModule('about', './Routes').then(
-        (m: { RemoteEntryComponent: any }) => m.RemoteEntryComponent
-      )
-  },
   { path: 'api-docs', component: ApiDocsComponent },
   {
     path: '',
@@ -109,6 +102,11 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'error', component: ErrorComponent },
+      {
+        path: 'about',
+        loadChildren: () =>
+          loadRemoteModule('about', './Routes').then((m: { remoteRoutes: any }) => m.remoteRoutes)
+      },
 
       // Cluster
       {
@@ -391,7 +389,7 @@ const routes: Routes = [
         data: { breadcrumbs: true, text: 'Block', path: null },
         loadChildren: () => import('./ceph/block/block.module').then((m) => m.RoutedBlockModule)
       },
-      // File Systems      
+      // File Systems
       {
         path: 'cephfs',
         canActivate: [FeatureTogglesGuardService],
