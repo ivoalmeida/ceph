@@ -56,6 +56,7 @@ import { SmbTabsComponent } from './ceph/smb/smb-tabs/smb-tabs.component';
 import { SmbShareFormComponent } from './ceph/smb/smb-share-form/smb-share-form.component';
 import { SmbJoinAuthFormComponent } from './ceph/smb/smb-join-auth-form/smb-join-auth-form.component';
 import { SmbUsersgroupsFormComponent } from './ceph/smb/smb-usersgroups-form/smb-usersgroups-form.component';
+import { loadRemoteModule } from '@nx/angular/mf';
 
 @Injectable()
 export class PerformanceCounterBreadcrumbsResolver extends BreadcrumbsResolver {
@@ -92,6 +93,13 @@ export class StartCaseBreadcrumbsResolver extends BreadcrumbsResolver {
 const routes: Routes = [
   // Dashboard
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  {
+    path: 'about',
+    loadChildren: () =>
+      loadRemoteModule('about', './Routes').then(
+        (m: { RemoteEntryComponent: any }) => m.RemoteEntryComponent
+      )
+  },
   { path: 'api-docs', component: ApiDocsComponent },
   {
     path: '',
@@ -383,7 +391,7 @@ const routes: Routes = [
         data: { breadcrumbs: true, text: 'Block', path: null },
         loadChildren: () => import('./ceph/block/block.module').then((m) => m.RoutedBlockModule)
       },
-      // File Systems
+      // File Systems      
       {
         path: 'cephfs',
         canActivate: [FeatureTogglesGuardService],
