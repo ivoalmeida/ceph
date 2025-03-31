@@ -11,12 +11,12 @@ const esModules = [
 const jestConfig = {
   moduleNameMapper: {
     '\\.scss$': 'identity-obj-proxy',
-    '~/(.*)$': '<rootDir>/apps/ceph-dashboard/src/$1',
+    '~/(.*)$': '<rootDir>/src/$1',
     '^@carbon/icons/es/(.*)$': '@carbon/icons/lib/$1.js'
   },
   moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs', 'cjs'],
   preset: 'jest-preset-angular',
-  setupFilesAfterEnv: ['<rootDir>/apps/ceph-dashboard/src/setupJest.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupJest.ts'],
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$|'.concat(esModules.join('|'), ')')],
   transform: {
     '^.+\\.(ts|html|mjs)$': [
@@ -31,16 +31,23 @@ const jestConfig = {
     '^.+\\.(js)$': 'babel-jest'
   },
   setupFiles: ['jest-canvas-mock'],
-  coverageReporters: ['cobertura', 'html'],
   modulePathIgnorePatterns: [
-    '<rootDir>/coverage/',
-    '<rootDir>/node_modules/simplebar-angular',
-    '<rootDir>/cypress'
+    '/coverage/',
+    '/node_modules/simplebar-angular',
+    '/cypress'
   ],
-  testMatch: ['apps/ceph-dashboard/**/*.spec.ts'],
+  // testMatch: ['apps/ceph-dashboard/**/*.spec.ts'],
+  coverageDirectory: '../../coverage/apps/ceph-dashboard',
+  testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'], // Ensure this matches your test file naming convention
   testRunner: 'jest-jasmine2',
   testEnvironmentOptions: {
     detectOpenHandles: true
-  }
+  },
+  snapshotSerializers: [
+    'jest-preset-angular/build/serializers/no-ng-attributes',
+    'jest-preset-angular/build/serializers/ng-snapshot',
+    'jest-preset-angular/build/serializers/html-comment',
+  ],
 };
-module.exports = jestConfig;
+
+export default jestConfig;

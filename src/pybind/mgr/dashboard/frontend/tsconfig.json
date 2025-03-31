@@ -32,5 +32,13 @@
     "allowJs": true,
     "rootDir": "."
   },
+  "references": [
+    {
+      "path": "apps/ceph-dashboard/tsconfig.app.json"
+    },
+    {
+      "path": "apps/ceph-dashboard/tsconfig.spec.json"
+    }
+  ],
   "exclude": ["coverage", "dist", "node_modules", "cypress", "tmp"]
 }
