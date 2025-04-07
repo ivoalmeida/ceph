@@ -37,7 +37,7 @@ const jestConfig = {
     '<rootDir>/node_modules/simplebar-angular',
     '<rootDir>/cypress'
   ],
-  testMatch: ['apps/ceph-dashboard/**/*.spec.ts'],
+  testMatch: ['**/*.spec.ts'],
   testRunner: 'jest-jasmine2',
   testEnvironmentOptions: {
     detectOpenHandles: true
